@@ -1,0 +1,7 @@
+.DS_Store
+*.pyc
+*.egg-info
+*.swp
+tags
+ibg_marico_oms/docs/current
+node_modules/
