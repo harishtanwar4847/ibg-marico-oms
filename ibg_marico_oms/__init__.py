@@ -1,7 +1,7 @@
 import os
 import frappe
 
-__version__ = '0.0.1'
+__version__ = '0.1.0-dev'
 
 
 def supplychain_permission_query(user):
