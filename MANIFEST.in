@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include ibg_marico_oms *.css
+recursive-include ibg_marico_oms *.csv
+recursive-include ibg_marico_oms *.html
+recursive-include ibg_marico_oms *.ico
+recursive-include ibg_marico_oms *.js
+recursive-include ibg_marico_oms *.json
+recursive-include ibg_marico_oms *.md
+recursive-include ibg_marico_oms *.png
+recursive-include ibg_marico_oms *.py
+recursive-include ibg_marico_oms *.svg
+recursive-include ibg_marico_oms *.txt
+recursive-exclude ibg_marico_oms *.pyc
