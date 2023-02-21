@@ -15,7 +15,6 @@
   "column_break_7",
   "rate_value_from",
   "rate_value_to",
-  "sap_so_number",
   "order_created_on"
  ],
  "fields": [
@@ -50,7 +49,8 @@
    "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
    "fieldname": "billing_rate",
    "fieldtype": "Currency",
-   "label": "Billing Rate"
+   "label": "Billing Rate",
+   "read_only_depends_on": "eval:frappe.user.has_role('Initiator') == 1 || frappe.user.has_role('Supply Chain') == 1; "
   },
   {
    "fieldname": "column_break_7",
@@ -69,12 +69,6 @@
    "label": "Rate Value To"
   },
   {
-   "fieldname": "sap_so_number",
-   "fieldtype": "Data",
-   "label": "SAP SO Number",
-   "read_only": 1
-  },
-  {
    "default": "Today",
    "fieldname": "order_created_on",
    "fieldtype": "Date",
@@ -85,7 +79,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-08 17:26:33.542762",
+ "modified": "2023-02-20 17:28:22.082962",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order Items",

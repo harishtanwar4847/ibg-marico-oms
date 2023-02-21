@@ -10,13 +10,14 @@
  "field_order": [
   "country",
   "customer",
-  "status",
+  "sap_so_number",
   "column_break_4",
   "bill_to",
   "order_etd",
-  "created_date",
+  "status",
   "column_break_6",
   "ship_to",
+  "created_date",
   "items_section",
   "order_items",
   "section_break_11",
@@ -28,25 +29,32 @@
   "column_break_17",
   "distribution_channel",
   "sales_group",
-  "naming_series"
+  "naming_series",
+  "amended_from",
+  "remarks_sectionbreak",
+  "approved_by",
+  "remarks"
  ],
  "fields": [
   {
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country"
+   "options": "Country",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "ship_to",
    "fieldtype": "Data",
-   "label": "Ship To"
+   "label": "Ship To",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "column_break_4",
@@ -55,8 +63,9 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Order Status",
-   "options": "Pending\nApproved by IBG Finance\nApproved by Supply Chain\nRejected by IBG Finance\nOn Hold by IBG Finance",
+   "options": "\nPending\nApproved by IBG Finance\nApproved by Supply Chain\nRejected by IBG Finance\nOn Hold by IBG Finance",
    "read_only": 1
   },
   {
@@ -65,21 +74,23 @@
    "label": "Items"
   },
   {
-   "allow_bulk_edit": 1,
    "fieldname": "order_items",
    "fieldtype": "Table",
    "label": "Order Items",
-   "options": "IBG Order Items"
+   "options": "IBG Order Items",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "bill_to",
    "fieldtype": "Data",
-   "label": "Bill To"
+   "label": "Bill To",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "order_etd",
    "fieldtype": "Date",
-   "label": "Order ETD"
+   "label": "Order ETD",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "column_break_6",
@@ -93,12 +104,14 @@
   {
    "fieldname": "order_type",
    "fieldtype": "Data",
-   "label": "Order Type"
+   "label": "Order Type",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "division",
    "fieldtype": "Data",
-   "label": "Division"
+   "label": "Division",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "column_break_14",
@@ -107,12 +120,14 @@
   {
    "fieldname": "sales_organizational",
    "fieldtype": "Data",
-   "label": "Sales Organizational"
+   "label": "Sales Organizational",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "sales_office",
    "fieldtype": "Data",
-   "label": "Sales Office"
+   "label": "Sales Office",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "column_break_17",
@@ -121,12 +136,14 @@
   {
    "fieldname": "distribution_channel",
    "fieldtype": "Data",
-   "label": "Distribution Channel"
+   "label": "Distribution Channel",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "sales_group",
    "fieldtype": "Data",
-   "label": "Sales Group"
+   "label": "Sales Group",
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   },
   {
    "fieldname": "naming_series",
@@ -140,12 +157,46 @@
    "default": "Today",
    "fieldname": "created_date",
    "fieldtype": "Date",
-   "label": "Created Date"
+   "label": "Created Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "IBG Order",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('Initiator') == 1;"
+  },
+  {
+   "fieldname": "remarks_sectionbreak",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "sap_so_number",
+   "fieldtype": "Data",
+   "label": "SAP SO Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "label": "Approved by",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-02-08 17:27:35.147846",
+ "modified": "2023-02-21 12:35:46.110937",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
@@ -184,6 +235,7 @@
    "report": 1,
    "role": "Supply Chain",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
