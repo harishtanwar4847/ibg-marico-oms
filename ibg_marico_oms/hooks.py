@@ -103,12 +103,12 @@ permission_query_conditions = {
 # ---------------
 # Hook on document methods and events
 
-doc_events = {
-	"IBG Order": {
-		"before_save": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
-		"before_submit": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
-	}
-}
+# doc_events = {
+# 	"IBG Order": {
+# 		"before_save": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
+# 		"before_submit": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
+# 	}
+# }
 
 # Scheduled Tasks
 # ---------------
