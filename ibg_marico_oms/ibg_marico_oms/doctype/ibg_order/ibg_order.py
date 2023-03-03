@@ -286,7 +286,7 @@ def sap_price():
                     "response": str(result),
                 }
 
-            ibg_marico_oms.create_log(log, "IBG Price")
+            ibg_marico_oms.create_log(log, "IBG_Price")
 
 
             pp.pprint(result['DATA'])
