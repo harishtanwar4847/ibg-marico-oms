@@ -287,6 +287,10 @@ def sap_price():
                 }
 
             ibg_marico_oms.create_log(log, "IBG_Price")
+            frappe.log_error(frappe.log_error(
+                message= log ,
+                title="Price BAPI Call",
+            ))
 
 
             pp.pprint(result['DATA'])
@@ -294,6 +298,12 @@ def sap_price():
             rowskips += ROWS_AT_A_TIME
             if len(result['DATA']) < ROWS_AT_A_TIME:
                 break
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback()
+            + "\n\nLog details -\n{}".format(str(log)),
+            title="Create Log Error",
+        )
     except CommunicationError:
         print("Could not connect to server.")
         raise
