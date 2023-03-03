@@ -1,0 +1,106 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Order Management MME</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View IBG Order\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create IBG Order\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View SAP SO Number\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval (IBG Finance)\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Orders Onhold\",\"col\":5}}]",
+ "creation": "2023-02-20 12:55:24.750350",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "image-view",
+ "idx": 0,
+ "label": "Order Management MME",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "View IBG Order",
+   "link_count": 0,
+   "link_to": "IBG Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2023-03-01 12:15:23.580235",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Order Management MME",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "IBG Finance"
+  },
+  {
+   "role": "Initiator"
+  },
+  {
+   "role": "Supply Chain"
+  }
+ ],
+ "sequence_id": 2.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View SAP SO Number",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"sap_so_number\":[\"is\",\"set\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending for Approval (IBG Finance)",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Pending\"]};\neval:frappe.user.has_role('IBG Finance') == 1;",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "New",
+   "label": "Create IBG Order",
+   "link_to": "IBG Order",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending for Approval",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by IBG Finance\"]};\neval:frappe.user.has_role('Supply Chain') == 1;",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View IBG Order",
+   "link_to": "IBG Order",
+   "stats_filter": "",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Approved Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by Supply Chain\"]};\neval:frappe.user.has_role('Supply Chain') == 1",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Orders Onhold",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"On Hold by IBG Finance\"]};\neval:frappe.user.has_role('IBG Finance') == 1;",
+   "type": "DocType"
+  }
+ ],
+ "title": "Order Management MME"
+}

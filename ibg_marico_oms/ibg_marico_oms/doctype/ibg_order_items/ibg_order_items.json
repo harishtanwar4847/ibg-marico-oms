@@ -42,13 +42,13 @@
   {
    "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
    "fieldname": "order_value",
-   "fieldtype": "Currency",
+   "fieldtype": "Data",
    "label": "Order Value"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1;",
    "fieldname": "billing_rate",
-   "fieldtype": "Currency",
+   "fieldtype": "Data",
    "label": "Billing Rate",
    "read_only_depends_on": "eval:frappe.user.has_role('Initiator') == 1 || frappe.user.has_role('Supply Chain') == 1; "
   },
@@ -79,7 +79,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-20 17:28:22.082962",
+ "modified": "2023-03-01 13:05:31.330931",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order Items",
