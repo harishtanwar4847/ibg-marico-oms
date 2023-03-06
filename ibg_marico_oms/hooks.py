@@ -105,7 +105,7 @@ permission_query_conditions = {
 
 doc_events = {
 	"IBG Order": {
-    	"after_insert": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.sap_price",
+    	# "after_insert": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.sap_price",
 		"before_save": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
 		"on_submit": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
 	}

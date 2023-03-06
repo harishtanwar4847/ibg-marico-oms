@@ -19,6 +19,7 @@ import json
 
 class IBGOrder(Document):
     def before_save(self):
+        self.sap_price()
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
