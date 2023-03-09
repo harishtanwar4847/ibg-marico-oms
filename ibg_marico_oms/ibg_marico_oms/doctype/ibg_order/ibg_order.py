@@ -19,7 +19,7 @@ import json
 
 class IBGOrder(Document):
     def before_save(self):
-        sap_price()
+        #sap_price()
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -187,16 +187,16 @@ def set_approver_name(doc, method):
         order_doc.save()
         frappe.db.commit()
 
-@frappe.whitelist()
-def sap_rfc_data():
+#@frappe.whitelist()
+#def sap_rfc_data():
     # Use a breakpoint in the code line below to debug your script.
     # SERVICE_URL = 'https://myxxxxx-api.saps4hanacloud.cn/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002/A_OutbDeliveryItem/?$format=json'
-    SERVICE_URL = 'http://mlr3dev0:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
-    response = requests.get(SERVICE_URL,auth=('portal', 'portal@345'), headers={"Prefer": "odata.maxpagesize=500", "Prefer": "odata.track-changes"})
-    data = response.content.decode("utf-8")
+ #   SERVICE_URL = 'http://mlr3dev0:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
+  #  response = requests.get(SERVICE_URL,auth=('portal', 'portal@345'), headers={"Prefer": "odata.maxpagesize=500", "Prefer": "odata.track-changes"})
+   # data = response.content.decode("utf-8")
     # init_json = json.loads(response.content)
-    init_json = xmltodict.parse(data)
-    print("Initi json :", init_json)
+    #init_json = xmltodict.parse(data)
+    #print("Initi json :", init_json)
     # length = len(init_json['d']['results'])
     # print(length)
     # # print(init_json['d']['results'])
@@ -248,70 +248,70 @@ def sap_rfc_data():
     # # save the result in local file
     # df_so.to_csv(file_name, index=True, header=True,encoding='utf-8')
 
-@frappe.whitelist()
-def sap_price():
+#@frappe.whitelist()
+#def sap_price():
     # http://mlr3dev0:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345
 
-    from pyrfc import Connection, ABAPApplicationError, ABAPRuntimeError, LogonError, CommunicationError
-    from configparser import ConfigParser
-    from pprint import PrettyPrinter
-    import pyrfc
+ #   from pyrfc import Connection, ABAPApplicationError, ABAPRuntimeError, LogonError, CommunicationError
+  #  from configparser import ConfigParser
+   # from pprint import PrettyPrinter
+   # import pyrfc
 
-    ASHOST='219.64.5.107'
-    CLIENT='540'
-    SYSNR='00'
-    USER='portal'
-    PASSWD='portal@345'
-    conn = Connection(ashost=ASHOST, sysnr=SYSNR, client=CLIENT, user=USER, passwd=PASSWD,)
+    #ASHOST='219.64.5.107'
+    #CLIENT='540'
+    #SYSNR='00'
+    #USER='portal'
+    #PASSWD='portal@345'
+    #conn = Connection(ashost=ASHOST, sysnr=SYSNR, client=CLIENT, user=USER, passwd=PASSWD,)
     # conn = pyrfc.Connection(user='portal', passwd='portal@345',mshost='sap.example.com', sysid='TE1', client='220', msserv='3600', group='EXAMPLE',)
 
-    try:
-        options = [{ 'TEXT': "SALES_ORG = 'MIL'"}]
-        pp = PrettyPrinter(indent=4)
-        ROWS_AT_A_TIME = 10
-        rowskips = 0
-        while True:
+    #try:
+     #   options = [{ 'TEXT': "SALES_ORG = 'MIL'"}]
+      #  pp = PrettyPrinter(indent=4)
+       # ROWS_AT_A_TIME = 10
+       # rowskips = 0
+       # while True:
             # cursor = conn.cursor()
             
             # table = """ CREATE TABLE Price_items (COND_TYPE varchar(255), SALES_ORG varchar(255), CUSTOMER varchar(255), MATERIAL varchar(255), VALID_TO varchar(255), VALID_FROM varchar(255), DEL_IND varchar(255), RATE varchar(255))"""
 
-            result = conn.call('RFC_READ_TABLE', \
-            QUERY_TABLE = 'ZBAPI_PRICE_MASTER', \
-            OPTIONS = options, \
-            ROWSKIPS = rowskips, ROWCOUNT = ROWS_AT_A_TIME)
+        #    result = conn.call('RFC_READ_TABLE', \
+         #   QUERY_TABLE = 'ZBAPI_PRICE_MASTER', \
+          #  OPTIONS = options, \
+           # ROWSKIPS = rowskips, ROWCOUNT = ROWS_AT_A_TIME)
 
-            log = {
-                    "url": ASHOST,
-                    "headers": 540,
-                    "request": options,
-                    "response": str(result),
-                }
+           # log = {
+            #        "url": ASHOST,
+             #       "headers": 540,
+              #      "request": options,
+               #     "response": str(result),
+               # }
 
-            ibg_marico_oms.create_log(log, "IBG_Price")
-            frappe.log_error(frappe.log_error(
-                message= log ,
-                title="Price BAPI Call",
-            ))
+           # ibg_marico_oms.create_log(log, "IBG_Price")
+           # frappe.log_error(frappe.log_error(
+            #    message= log ,
+             #   title="Price BAPI Call",
+            #))
 
 
-            pp.pprint(result['DATA'])
+            #pp.pprint(result['DATA'])
 
-            rowskips += ROWS_AT_A_TIME
-            if len(result['DATA']) < ROWS_AT_A_TIME:
-                break
-    except Exception as e:
-        frappe.log_error(
-            message=frappe.get_traceback()
-            + "\n\nLog details -\n{}".format(str(log)),
-            title="Create Log Error",
-        )
-    except CommunicationError:
-        print("Could not connect to server.")
-        raise
-    except LogonError:
-        print("Could not log in. Wrong credentials?")
-        raise
-    except (ABAPApplicationError, ABAPRuntimeError):
-        print("An error occurred.")
-        raise
+            #rowskips += ROWS_AT_A_TIME
+           # if len(result['DATA']) < ROWS_AT_A_TIME:
+            #    break
+   # except Exception as e:
+    #    frappe.log_error(
+     #       message=frappe.get_traceback()
+      #      + "\n\nLog details -\n{}".format(str(log)),
+      #       title="Create Log Error",
+       # )
+    #except CommunicationError:
+     #   print("Could not connect to server.")
+      #  raise
+   # except LogonError:
+    #    print("Could not log in. Wrong credentials?")
+     #   raise
+   # except (ABAPApplicationError, ABAPRuntimeError):
+    #    print("An error occurred.")
+     #   raise
     
