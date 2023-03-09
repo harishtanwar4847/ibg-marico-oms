@@ -173,7 +173,7 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks",
-   "mandatory_depends_on": "eval:frappe.user.has_role('IBG Finance') == 1;",
+   "mandatory_depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 && doc.status == \"Rejected by IBG Finance\" && doc.status == \"On Hold by IBG Finance\"",
    "read_only_depends_on": "// eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Initiator') == 1;"
   },
   {
@@ -198,7 +198,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-02 12:04:30.576130",
+ "modified": "2023-03-09 18:11:18.219185",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
