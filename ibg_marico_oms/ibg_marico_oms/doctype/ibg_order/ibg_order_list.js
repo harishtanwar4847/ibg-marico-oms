@@ -26,7 +26,7 @@ frappe.listview_settings["IBG Order"] = {
     onload: function (listview) {
       var is_true = frappe.user_roles.find((role) => role === "Initiator");
       if (is_true || frappe.session.user == "Administrator") {
-        listview.page.add_menu_item(__("Download Template"), function () {
+        listview.page.add_menu_item(__("Download Order Template"), function () {
           frappe.call({
             method:
             "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.ibg_order_template",
@@ -43,7 +43,7 @@ frappe.listview_settings["IBG Order"] = {
         });
       };
       if (is_true || frappe.session.user == "Administrator") { 
-      listview.page.add_menu_item(__("Order Upload"), function () {
+      listview.page.add_menu_item(__("Upload Order"), function () {
         let d = new frappe.ui.Dialog({
           title: "Enter details",
           fields: [

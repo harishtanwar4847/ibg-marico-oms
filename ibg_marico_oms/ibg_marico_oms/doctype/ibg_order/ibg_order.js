@@ -76,12 +76,5 @@ frappe.ui.form.on('IBG Order', {
 			frm.fields_dict["order_items"].grid.wrapper.find(".grid-duplicate-row").hide();
 			frm.fields_dict["order_items"].grid.wrapper.find(".grid-append-row").hide();
 		}
-		if(is_fin && (frm.fields_dict["order_items"]["billing_rate"] == 0 || frm.fields_dict["order_items"]["order_value"] == 0 || !frm.fields_dict["order_items"]["rate_value_from"] || !frm.fields_dict["order_items"]["rate_value_to"])) {
-			console.log("Iside the if")
-			frm.fields_dict["order_items"].set_property("billing_rate", "read_only", 0);
-			frm.fields_dict["order_items"].set_property("order_value", "read_only", 0);
-			frm.fields_dict["order_items"].set_property("rate_value_from", "read_only", 0);
-			frm.fields_dict["order_items"].set_property("rate_value_to", "read_only", 0);
-		}
   },
 });
