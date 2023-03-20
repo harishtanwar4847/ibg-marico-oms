@@ -85,11 +85,11 @@ class IBGOrder(Document):
                 message= "SAP Error -\n{}".format(sap_number),
                 title="SAP Order Number Generation Error",
             )
-        if sap_number.sap_error:
-            frappe.throw(_(sap_number.sap_error))
+        if sap_number['sap_error']:
+            frappe.throw(_(sap_number['sap_error']))
 
-        if sap_number.sap_so_number:
-            self.sap_so_number = sap_number.sap_so_number
+        if sap_number['sap_so_number']:
+            self.sap_so_number = sap_number['sap_so_number']
             self.save(ignore_permissions = True)
             frappe.db.commit()
 
