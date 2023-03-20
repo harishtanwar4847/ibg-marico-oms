@@ -324,8 +324,8 @@ def sap_price():
             fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
             if len(fgcode_list) > 0:
                 fgcode_doc = frappe.get_doc("FG Code", fgcode_list[0].name)
-                fgcode_doc.rate_valid_from = i['VALID_FROM']
-                fgcode_doc.rate_valid_to = i['VALID_TO']
+                fgcode_doc.valid_from = i['VALID_FROM']
+                fgcode_doc.valid_to = i['VALID_TO']
                 fgcode_doc.rate = float(i['RATE'])
                 fgcode_doc.currency = i['CURRENCY']
                 frappe.db.commit()
