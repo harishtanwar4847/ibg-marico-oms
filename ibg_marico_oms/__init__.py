@@ -96,7 +96,7 @@ def extract_customer_shipto():
             customer = frappe.get_doc(
                 dict(
                     doctype="IBG Distributor",
-                    customer=i[2],
+                    customer_name=i[2],
                     )).insert(ignore_permissions=True)
             frappe.db.commit()
             ship_to = frappe.get_doc(
