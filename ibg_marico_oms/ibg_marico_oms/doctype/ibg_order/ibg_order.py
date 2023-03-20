@@ -33,6 +33,11 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
+        if self.status == "Pending" and (self.remarks or self.approved_by_ibgfinance or self.approved_by_supplychain):
+            self.remarks = ""
+            self.approved_by_ibgfinance = ""
+            self.approved_by_supplychain = ""
+        
         if "IBG Finance" in user_role or "System Manager" in user_role:
             if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
                 frappe.throw(_("Please enter valid reason in remarks"))
