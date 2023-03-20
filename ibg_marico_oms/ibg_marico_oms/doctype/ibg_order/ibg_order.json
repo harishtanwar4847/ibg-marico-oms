@@ -211,7 +211,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-16 17:53:55.129899",
+ "modified": "2023-03-20 15:23:11.894457",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
@@ -232,35 +232,19 @@
   },
   {
    "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Initiator",
-   "share": 1,
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Supply Chain",
-   "share": 1,
    "submit": 1,
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "IBG Finance",
-   "share": 1,
    "write": 1
   }
  ],

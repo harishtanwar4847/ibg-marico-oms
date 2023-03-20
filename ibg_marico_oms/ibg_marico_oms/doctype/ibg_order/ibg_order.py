@@ -256,20 +256,6 @@ def firm_plan_report():
         sheet_name=sheet_name,
     )
 
-
-# @frappe.whitelist()
-# def set_approver_name(doc, method):	
-#     if doc.status in ['Approved by IBG Finance']:
-#         order_doc = frappe.get_doc("IBG Order", doc.name)
-#         order_doc.approved_by_ibgfinance = doc.modified_by
-#         order_doc.save(ignore_permissions = True)
-#         frappe.db.commit()
-#     if doc.status in ['Approved by Supply Chain']:
-#         order_doc = frappe.get_doc("IBG Order", doc.name)
-#         order_doc.approved_by_supplychain = doc.modified_by
-#         order_doc.save(ignore_permissions = True)
-#         frappe.db.commit()
-
 @frappe.whitelist()
 def sap_rfc_data(doc):
     try:
