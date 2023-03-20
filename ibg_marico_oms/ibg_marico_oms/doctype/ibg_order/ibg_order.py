@@ -278,7 +278,7 @@ def sap_rfc_data(doc):
                  'IBG_ORD': doc.name, 
                  'IBG_ORD_DT' : doc.created_date,
                  'MATERIAL' : i.fg_code, 
-                 'QTY' : doc.qty_in_cases, 
+                 'QTY' : doc.qty_in_case, 
                  'UOM': '', 
                  'PLANT' : '', 
                  'ORD_ETD' : doc.order_etd}
