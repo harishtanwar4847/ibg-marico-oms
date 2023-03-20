@@ -33,7 +33,7 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        if self.status == "Pending" and (self.remarks or self.approved_by_ibgfinance or self.approved_by_supplychain):
+        if self.status == "Pending":
             self.remarks = ""
             self.approved_by_ibgfinance = ""
             self.approved_by_supplychain = ""

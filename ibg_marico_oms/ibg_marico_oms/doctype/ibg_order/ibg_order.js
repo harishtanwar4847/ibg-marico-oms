@@ -67,16 +67,16 @@ frappe.ui.form.on('IBG Order', {
 	// 	}, __("Utilities"));
 	//   }
 	},
-	onload: function(frm) {
-		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
-		if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
-			frm.set_df_property("country", "read_only", 1);
-			frm.set_df_property("bill_to", "read_only", 1);
-			frm.set_df_property("ship_to", "read_only", 1);
-			frm.set_df_property("customer", "read_only", 1);
-			frm.set_df_property("order_etd", "read_only", 1);
-		}
-	},
+	// onload: function(frm) {
+	// 	var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
+	// 	if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
+	// 		frm.set_df_property("country", "read_only", 1);
+	// 		frm.set_df_property("bill_to", "read_only", 1);
+	// 		frm.set_df_property("ship_to", "read_only", 1);
+	// 		frm.set_df_property("customer", "read_only", 1);
+	// 		frm.set_df_property("order_etd", "read_only", 1);
+	// 	}
+	// },
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
