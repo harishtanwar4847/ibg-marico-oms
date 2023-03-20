@@ -9,7 +9,14 @@
  "engine": "InnoDB",
  "field_order": [
   "fg_code",
-  "product_description"
+  "product_description",
+  "material_group",
+  "unitscs",
+  "column_break_5",
+  "rate",
+  "currency",
+  "valid_from",
+  "valid_to"
  ],
  "fields": [
   {
@@ -22,11 +29,46 @@
    "fieldname": "product_description",
    "fieldtype": "Data",
    "label": "Product Description"
+  },
+  {
+   "fieldname": "material_group",
+   "fieldtype": "Data",
+   "label": "Material Group"
+  },
+  {
+   "fieldname": "unitscs",
+   "fieldtype": "Float",
+   "label": "Units/Cs",
+   "precision": "2"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Data",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency"
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From"
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "label": "Valid To"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-02 12:39:56.604682",
+ "modified": "2023-03-16 17:51:21.501459",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "FG Code",
@@ -46,18 +88,17 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Initiator",
-   "share": 1,
-   "write": 1
+   "select": 1,
+   "share": 1
   }
  ],
+ "search_fields": "product_description",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

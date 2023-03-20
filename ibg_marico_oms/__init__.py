@@ -1,6 +1,7 @@
 import json
 import os
 import frappe
+import pyodbc as p
 
 __version__ = '0.2.0-dev'
 
@@ -56,3 +57,66 @@ def create_log(log, file_name):
             title="Create Log Error",
         )
 
+def extract_product_data():
+    try:
+        conn = p.connect('DRIVER={ODBC Driver 18 for SQL Server};Server=219.64.5.107;Port=1433;Database=IBGSCM;uid=sa;pwd=@MinetApps7;TrustServerCertificate=yes;')
+        cursor = conn.cursor()
+        cursor.execute('SELECT *  FROM MB_Item_Master_MME')
+        product_list = []
+        for i in cursor:
+            product_list.append(i)
+        for i in product_list:
+            fg_code_list = frappe.get_all("FG Code", filter={"fg_code" : i[0]}, fields = ["name"])
+            if len(fg_code_list) == 0:
+                product = frappe.get_doc(
+                    dict(
+                        doctype="FG Code",
+                        fg_code=i[0],
+                        product_description=i[1],
+                        )).insert(ignore_permissions=True)
+                frappe.db.commit()
+    
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="Product Master Error",
+        )
+
+
+def extract_customer_shipto():
+    conn = p.connect('DRIVER={ODBC Driver 18 for SQL Server};Server=219.64.5.107;Port=1433;Database=IBGSCM;uid=sa;pwd=@MinetApps7;TrustServerCertificate=yes;')
+    cursor = conn.cursor()
+    cursor.execute('SELECT *  FROM Mst_Distributor')
+    cust_list = []
+    for i in cursor:
+        cust_list.append(i)
+    for i in cust_list:
+        if i[-2] == 'A':
+            customer = frappe.get_doc(
+                dict(
+                    doctype="IBG Distributor",
+                    customer=i[2],
+                    )).insert(ignore_permissions=True)
+            frappe.db.commit()
+            ship_to = frappe.get_doc(
+                dict(
+                    doctype="Ship To",
+                    ship_to=i[1],
+                    )).insert(ignore_permissions=True)
+            frappe.db.commit()
+            bill_to = frappe.get_doc(
+                dict(
+                    doctype="Bill To",
+                    bill_to=i[1],
+                    )).insert(ignore_permissions=True)
+            frappe.db.commit()
+    cursor.execute('SELECT *  FROM Mst_customer')
+    custcode_list = []
+    for i in cursor:
+        custcode_list.append(i)
+    for i in custcode_list:
+        cust = frappe.get_doc("IBG Distributor", i[3])
+        if cust:
+            cust.customer_code = i[2]
+            cust.save(ignore_permissions=True)
+            frappe.db.commit()
