@@ -91,7 +91,7 @@ class IBGOrder(Document):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
-        # sap_rfc_data(self)
+        sap_rfc_data(self)
 
 @frappe.whitelist()
 def ibg_order_template():
@@ -327,7 +327,6 @@ def sap_price():
                 fgcode_doc.rate_valid_from = i['VALID_FROM']
                 fgcode_doc.rate_valid_to = i['VALID_TO']
                 fgcode_doc.rate = float(i['RATE'])
-                fgcode_doc.order_value = float(i['RATE']) * fgcode_doc.qty_in_cases
                 fgcode_doc.currency = i['CURRENCY']
                 frappe.db.commit()
 
