@@ -21,8 +21,8 @@ frappe.ui.form.on('IBG Order', {
 		var qty = frappe.meta.get_docfield("IBG Order Items","qty_in_cases",cur_frm.doc.name);
 		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
 		if (is_initiator && cur_frm.doc.status == 'Rejected by IBG Finance') {
-			fg_code.read_only = 1;
-			qty.read_only = 1;
+			fg_code.read_only = 0;
+			qty.read_only = 0;
 		}
 
 	// 	var is_true = frappe.user_roles.find((role) => role === "Initiator");
