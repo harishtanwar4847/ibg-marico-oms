@@ -73,6 +73,7 @@ def extract_product_data():
                         doctype="FG Code",
                         fg_code=i[0],
                         product_description=i[1],
+                        material_group = i[10],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
     
