@@ -1,6 +1,7 @@
 import json
 import os
 import frappe
+import re
 import pyodbc as p
 
 __version__ = '0.2.0-dev'
@@ -127,3 +128,6 @@ def extract_customer_shipto():
                 cust.customer_code = i[2]
                 cust.save(ignore_permissions=True)
                 frappe.db.commit()
+
+def change_date_format(dt):
+    return re.sub(r'(\d{4})-(\d{1,2})-(\d{1,2})', '\\3-\\2-\\1', dt)

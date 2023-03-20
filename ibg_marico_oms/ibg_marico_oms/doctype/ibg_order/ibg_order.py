@@ -319,15 +319,16 @@ def sap_price():
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
-
+        print("Response:", response)
         for i in response:
             fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
             if len(fgcode_list) > 0:
                 fgcode_doc = frappe.get_doc("FG Code", fgcode_list[0].name)
-                fgcode_doc.valid_from = i['VALID_FROM']
+                fgcode_doc.valid_from =i['VALID_FROM']
                 fgcode_doc.valid_to = i['VALID_TO']
                 fgcode_doc.rate = float(i['RATE'])
                 fgcode_doc.currency = i['CURRENCY']
+                fgcode_doc.save(ignore_permissions = True)
                 frappe.db.commit()
 
     except Exception as e:
