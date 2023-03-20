@@ -269,7 +269,7 @@ def sap_rfc_data(doc):
         client=Client(wsdl,transport=Transport(session=session))
         items = []
         for i in doc.order_items:
-            order_dict = {'SALES_ORG': doc.sales_organization,
+            order_dict = {'SALES_ORG': doc.sales_organizational,
                  'ORD_TYPE' : doc.order_type,
                  'DIST_CHAN': doc.distribution_channel, 
                  'DIVISION': doc.division,
@@ -319,7 +319,6 @@ def sap_price():
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
-        print("Response:", response)
         for i in response:
             fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
             if len(fgcode_list) > 0:
