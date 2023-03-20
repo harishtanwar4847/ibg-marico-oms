@@ -89,14 +89,15 @@ def extract_customer_shipto():
     cursor = conn.cursor()
     cursor.execute('SELECT *  FROM Mst_Distributor')
     cust_list = []
+    cust_name_list = []
     for i in cursor:
         cust_list.append(i)
-    customer_list = frappe.get_all("IBG Distributor", fields = ["name"])
-    customer_name_list = []
-    for i in customer_list:
-        customer_name_list.append(i.name)
     for i in cust_list:
-        if i[-2] == 'A' and i[2] not in customer_name_list:
+        customer_list = frappe.get_all("IBG Distributor", fields = ["name"])
+        customer_name_list = []
+        for j in customer_list:
+            customer_name_list.append(j.name)
+        if i[-2] == 'A'and i[2] not in customer_name_list:
             customer = frappe.get_doc(
                 dict(
                     doctype="IBG Distributor",
@@ -120,8 +121,9 @@ def extract_customer_shipto():
     for i in cursor:
         custcode_list.append(i)
     for i in custcode_list:
-        cust = frappe.get_doc("IBG Distributor", i[3])
-        if cust:
-            cust.customer_code = i[2]
-            cust.save(ignore_permissions=True)
-            frappe.db.commit()
+        if i[3] in customer_name_list:
+            cust = frappe.get_doc("IBG Distributor", i[3])
+            if cust:
+                cust.customer_code = i[2]
+                cust.save(ignore_permissions=True)
+                frappe.db.commit()
