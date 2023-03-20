@@ -20,10 +20,11 @@ frappe.ui.form.on('IBG Order', {
 		var qty = frappe.meta.get_docfield("IBG Order Items","qty_in_cases",cur_frm.doc.name);
 		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
 		if (is_initiator && cur_frm.doc.status == 'Rejected by IBG Finance') {
-			console.log("Inside if")
-			fg_code.read_only = 0;
-			console.log(fg_code)
-			qty.read_only = 0;
+			frm.set_df_property("country", "read_only", 1);
+			frm.set_df_property("bill_to", "read_only", 1);
+			frm.set_df_property("ship_to", "read_only", 1);
+			frm.set_df_property("customer", "read_only", 1);
+			frm.set_df_property("order_etd", "read_only", 1);
 		}
 		frm.refresh_field("order_items");
 
