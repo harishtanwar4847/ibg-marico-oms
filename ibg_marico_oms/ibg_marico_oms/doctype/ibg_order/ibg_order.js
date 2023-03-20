@@ -24,8 +24,8 @@ frappe.ui.form.on('IBG Order', {
 			fg_code.read_only = 0;
 			console.log(fg_code)
 			qty.read_only = 0;
-			frm.refresh_field("order_items");
 		}
+		frm.refresh_field("order_items");
 
 	// 	var is_true = frappe.user_roles.find((role) => role === "Initiator");
     //   	var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
