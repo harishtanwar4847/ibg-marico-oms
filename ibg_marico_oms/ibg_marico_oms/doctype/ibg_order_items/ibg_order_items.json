@@ -8,14 +8,14 @@
  "engine": "InnoDB",
  "field_order": [
   "fg_code",
-  "product_description",
   "qty_in_cases",
   "billing_rate",
+  "units",
   "order_value",
   "column_break_7",
-  "rate_value_from",
-  "rate_value_to",
-  "sap_so_number",
+  "product_description",
+  "rate_valid_from",
+  "rate_valid_to",
   "order_created_on"
  ],
  "fields": [
@@ -32,6 +32,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Product Description",
+   "read_only": 1,
    "search_index": 1
   },
   {
@@ -43,49 +44,58 @@
   {
    "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
    "fieldname": "order_value",
-   "fieldtype": "Currency",
+   "fieldtype": "Data",
    "label": "Order Value"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1;",
+   "fetch_from": "fg_code.rate",
    "fieldname": "billing_rate",
-   "fieldtype": "Currency",
-   "label": "Billing Rate"
+   "fieldtype": "Data",
+   "label": "Billing Rate",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; "
   },
   {
    "fieldname": "column_break_7",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
-   "fieldname": "rate_value_from",
-   "fieldtype": "Date",
-   "label": "Rate Value From"
-  },
-  {
-   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
-   "fieldname": "rate_value_to",
-   "fieldtype": "Date",
-   "label": "Rate Value To"
-  },
-  {
-   "fieldname": "sap_so_number",
-   "fieldtype": "Data",
-   "label": "SAP SO Number",
-   "read_only": 1
-  },
-  {
    "default": "Today",
    "fieldname": "order_created_on",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Order Created on"
+   "label": "Order Created on",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "fetch_from": "fg_code.valid_from",
+   "fieldname": "rate_valid_from",
+   "fieldtype": "Date",
+   "label": "Rate Valid Date From",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+  },
+  {
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "fetch_from": "fg_code.valid_to",
+   "fieldname": "rate_valid_to",
+   "fieldtype": "Date",
+   "label": "Rate Valid Date To",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+  },
+  {
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;",
+   "fetch_from": "fg_code.currency",
+   "fieldname": "units",
+   "fieldtype": "Data",
+   "label": "Units",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-08 17:26:33.542762",
+ "modified": "2023-03-16 18:10:03.843847",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order Items",
