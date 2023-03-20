@@ -236,7 +236,7 @@ def firm_plan_report():
         for i in order_items:
             if i.parent in order_name_list:
                 order_doc = frappe.get_doc("IBG Order", i.parent)
-                if order_doc:
+                if order_doc and order_doc.status == "Approved by Supply Chain":
                     units_cs = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"unitscs",)
                     material_group = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"material_group",)
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
