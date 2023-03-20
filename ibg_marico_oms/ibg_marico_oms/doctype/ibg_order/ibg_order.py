@@ -80,6 +80,13 @@ class IBGOrder(Document):
         
 
     def before_submit(self):
+        sap_number = sap_rfc_data(self)
+        frappe.log_error(
+                message= "SAP Error -\n{}".format(sap_number),
+                title="SAP Order Number Generation Error",
+            )
+        if sap_number.sap_error:
+            frappe.throw(_(sap_number.sap_error))
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -91,7 +98,6 @@ class IBGOrder(Document):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
-        sap_rfc_data(self)
 
 @frappe.whitelist()
 def ibg_order_template():
@@ -294,7 +300,8 @@ def sap_rfc_data(doc):
                 message= "SAP Error -\n{}"
                 + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(sap_error , doc.name, order_details),
                 title="SAP Order Number Generation Error",
-            )    
+            )
+            return sap_error  
 
         sap_so_number = response['IT_RET']['item'][1]['SALES_ORD']
         if sap_so_number:
