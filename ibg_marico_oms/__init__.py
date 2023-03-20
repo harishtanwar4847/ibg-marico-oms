@@ -66,7 +66,7 @@ def extract_product_data():
         for i in cursor:
             product_list.append(i)
         for i in product_list:
-            fg_code_list = frappe.get_all("FG Code", filter={"fg_code" : i[0]}, fields = ["name"])
+            fg_code_list = frappe.get_all("FG Code", filters={"fg_code" : i[0]}, fields = ["name"])
             if len(fg_code_list) == 0:
                 product = frappe.get_doc(
                     dict(
