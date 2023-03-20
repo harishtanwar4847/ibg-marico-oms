@@ -288,7 +288,7 @@ def sap_rfc_data(doc):
         response=client.service.ZBAPI_IBG_ORD(**request_data)
         sap_so_number = response['IT_RET']['item'][1]['SALES_ORD']
         sap_error = response['IT_ERR']['item'][1]['ERROR_MSG']
-        order_details = response['IT_SO']['item']
+        order_details = response
 
         if sap_so_number:
             doc.sap_so_number = sap_so_number
@@ -305,7 +305,7 @@ def sap_rfc_data(doc):
     except Exception as e:
         frappe.log_error(
             message=frappe.get_traceback()
-            + "\n\nFile name -\n{}".format(doc.name),
+            + "\n\nFile name -\n{}\n\nSAP Response -\n{}".format(doc.name, order_details),
             title="SAP Order Number Generation",
         )
 
