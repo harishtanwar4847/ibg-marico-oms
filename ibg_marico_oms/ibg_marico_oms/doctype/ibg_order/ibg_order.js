@@ -16,15 +16,6 @@ frappe.ui.form.on('IBG Order', {
 		}
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
-		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
-		if (is_initiator && cur_frm.doc.status == 'Rejected by IBG Finance') {
-			frm.set_df_property("country", "read_only", 1);
-			frm.set_df_property("bill_to", "read_only", 1);
-			frm.set_df_property("ship_to", "read_only", 1);
-			frm.set_df_property("customer", "read_only", 1);
-			frm.set_df_property("order_etd", "read_only", 1);
-		}
-		frm.refresh_field("order_items");
 
 	// 	var is_true = frappe.user_roles.find((role) => role === "Initiator");
     //   	var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
@@ -75,6 +66,16 @@ frappe.ui.form.on('IBG Order', {
 	// 	  d.show();
 	// 	}, __("Utilities"));
 	//   }
+	},
+	onload: function(frm) {
+		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
+		if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
+			frm.set_df_property("country", "read_only", 1);
+			frm.set_df_property("bill_to", "read_only", 1);
+			frm.set_df_property("ship_to", "read_only", 1);
+			frm.set_df_property("customer", "read_only", 1);
+			frm.set_df_property("order_etd", "read_only", 1);
+		}
 	},
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
