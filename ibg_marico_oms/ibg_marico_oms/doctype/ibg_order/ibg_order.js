@@ -16,8 +16,6 @@ frappe.ui.form.on('IBG Order', {
 		}
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
-		var fg_code = frappe.meta.get_docfield("IBG Order Items","fg_code",cur_frm.doc.name);
-		var qty = frappe.meta.get_docfield("IBG Order Items","qty_in_cases",cur_frm.doc.name);
 		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
 		if (is_initiator && cur_frm.doc.status == 'Rejected by IBG Finance') {
 			frm.set_df_property("country", "read_only", 1);
