@@ -87,6 +87,12 @@ class IBGOrder(Document):
             )
         if sap_number.sap_error:
             frappe.throw(_(sap_number.sap_error))
+
+        if sap_number.sap_so_number:
+            self.sap_so_number = sap_number.sap_so_number
+            self.save(ignore_permissions = True)
+            frappe.db.commit()
+
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -295,19 +301,14 @@ def sap_rfc_data(doc):
         sap_error = response['IT_ERR']['item'][1]['ERROR_MSG']
         order_details = response['IT_SO']['item']
         if sap_error:
-            frappe.throw(_(sap_error))
             frappe.log_error(
                 message= "SAP Error -\n{}"
                 + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(sap_error , doc.name, order_details),
                 title="SAP Order Number Generation Error",
-            )
-            return sap_error  
+            )        
+        sap_response = {"sap_error" : sap_error, "sap_so_number" : response['IT_RET']['item']}
 
-        sap_so_number = response['IT_RET']['item'][1]['SALES_ORD']
-        if sap_so_number:
-            doc.sap_so_number = sap_so_number
-            doc.save(ignore_permissions = True)
-            frappe.db.commit()
+        return sap_response
         
     except Exception as e:
         frappe.log_error(
