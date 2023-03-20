@@ -21,6 +21,7 @@ frappe.ui.form.on('IBG Order', {
 		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
 		if (is_initiator && cur_frm.doc.status == 'Rejected by IBG Finance') {
 			console.log("Inside if")
+			console.log(fg_code)
 			fg_code.read_only = 0;
 			qty.read_only = 0;
 		}
