@@ -241,12 +241,17 @@ def firm_plan_report():
                 if order_doc and order_doc.status == "Approved by Supply Chain":
                     units_cs = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"unitscs",)
                     material_group = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"material_group",)
+                    num = ''
+                    for i in material_group:
+                        if i.isdigit():
+                            num+=i
+                    qty = (int(num)/1000)
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
 
                     curr_month = calendar.month_abbr[order_doc.created_date.month]
                     next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
                     next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
-                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : "", "Order Value({})".format(curr_month) : i.order_value, "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
+                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : (((float(i.qty_in_cases) * float(units_cs))* qty)/1000), "Order Value({})".format(curr_month) : i.order_value, "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
 
                     data.append(order_dict)
     
