@@ -80,7 +80,7 @@ frappe.ui.form.on('IBG Order', {
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
-		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Reject" || frm.selected_workflow_action === "Hold")) {
+		if ((is_ibg) && (frm.selected_workflow_action === "Reject" || frm.selected_workflow_action === "Hold")) {
             
             var me = this;
             var d = new frappe.ui.Dialog({

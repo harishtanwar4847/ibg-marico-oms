@@ -157,7 +157,9 @@ def order_file_upload(upload_file, doc_name = None):
         csv_data = read_csv_content(fcontent)
 
     parent = ""
+    print(type(csv_data[1][2]))
     for i in csv_data[1:]:
+        print(type(i[2]))
         if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
             if parent:
                 item = frappe.get_doc(
