@@ -33,10 +33,13 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        # if self.status == "Pending":
-        #     self.remarks = ""
-        #     self.approved_by_ibgfinance = ""
-        #     self.approved_by_supplychain = ""
+        if self.status == "Pending":
+            self.order_type = ""
+            self.sales_organizational = ""
+            self.distribution_channel = ""
+            self.division = ""
+            self.sales_office = ""
+            self.sales_group = ""
         
         if "IBG Finance" in user_role or "System Manager" in user_role:
             if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
@@ -70,7 +73,7 @@ class IBGOrder(Document):
             if count_valid_to > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the Valid to date in the order items"))
 
-        if self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
+        if "IBG Finance" in user_role and self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
             self.approved_by_ibgfinance = self.modified_by
         
         if self.status == 'Rejected by IBG Finance':
