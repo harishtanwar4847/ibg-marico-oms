@@ -250,7 +250,7 @@ def firm_plan_report():
                     for i in material_group:
                         if i.isdigit():
                             num+=i
-                    qty = (float(num)/1000)
+                    qty = (int(num)/1000)
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
 
                     curr_month = calendar.month_abbr[order_doc.created_date.month]
