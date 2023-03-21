@@ -93,8 +93,8 @@ class IBGOrder(Document):
         if sap_number['sap_error']:
             frappe.throw(_(sap_number['sap_error']))
 
-        if sap_number['sap_so_number']:
-            self.sap_so_number = sap_number['sap_so_number']
+        if len(sap_number['sap_so_number']) > 1:
+            self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
             self.save(ignore_permissions = True)
             frappe.db.commit()
 
@@ -184,8 +184,8 @@ def order_file_upload(upload_file, doc_name = None):
                     doctype="IBG Order",
                     country=i[0],
                     customer=i[1],
-                    bill_to=i[2],
-                    ship_to=i[3],
+                    bill_to=str(int(float(i[2]))),
+                    ship_to=str(int(float(i[3]))),
                     order_etd=i[4],
                     )
             ).insert(ignore_permissions=True)
