@@ -33,13 +33,13 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        if self.status == "Pending":
-            self.order_type = ""
-            self.sales_organizational = ""
-            self.distribution_channel = ""
-            self.division = ""
-            self.sales_office = ""
-            self.sales_group = ""
+        # if self.status == "Pending":
+        #     self.order_type = ""
+        #     self.sales_organizational = ""
+        #     self.distribution_channel = ""
+        #     self.division = ""
+        #     self.sales_office = ""
+        #     self.sales_group = ""
         
         if "IBG Finance" in user_role or "System Manager" in user_role:
             if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
