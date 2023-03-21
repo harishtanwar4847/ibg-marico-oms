@@ -90,13 +90,11 @@ class IBGOrder(Document):
                 message= "SAP Error -\n{}".format(sap_number),
                 title="SAP Order Number Generation Error",
             )
-        if sap_number['sap_error']:
-            frappe.throw(_(sap_number['sap_error']))
+        if len(sap_number['sap_error']) > 1:
+            frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
-            self.save(ignore_permissions = True)
-            frappe.db.commit()
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -157,6 +155,11 @@ def order_file_upload(upload_file, doc_name = None):
         csv_data = read_csv_content(fcontent)
 
     parent = ""
+    frappe.log_error(
+                message= "SAP Error -\n{}"
+                + "\n\nOrder details -\n{}".format(type(csv_data[1][2]), csv_data[1]),
+                title="Upload File format",
+            )
     for i in csv_data[1:]:
         if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
             if parent:
@@ -289,15 +292,14 @@ def sap_rfc_data(doc):
 
         request_data={'IT_ERR':'','IT_RET' :'','IT_SO':{'item':items}}
         response=client.service.ZBAPI_IBG_ORD(**request_data)
-        sap_error = response['IT_ERR']['item'][1]['ERROR_MSG']
         order_details = response['IT_SO']['item']
-        if sap_error:
+        if len(response['IT_ERR']['item']) > 1:
             frappe.log_error(
                 message= "SAP Error -\n{}"
-                + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(sap_error , doc.name, order_details),
+                + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(response['IT_ERR']['item'][1]['ERROR_MSG'] , doc.name, order_details),
                 title="SAP Order Number Generation Error",
             )        
-        sap_response = {"sap_error" : sap_error, "sap_so_number" : response['IT_RET']['item']}
+        sap_response = {"sap_error" : response['IT_ERR']['item'] , "sap_so_number" : response['IT_RET']['item']}
 
         return sap_response
         
