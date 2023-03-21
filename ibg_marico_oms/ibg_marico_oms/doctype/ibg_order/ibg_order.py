@@ -98,6 +98,7 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            frappe.msgprint("SAP SO number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD']))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
