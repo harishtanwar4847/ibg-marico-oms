@@ -3,6 +3,15 @@
 
 frappe.ui.form.on('IBG Order', {
 	refresh: function(frm) {
+		if (frm.doc.__islocal === 1){
+			frm.set_value("remarks","") 
+			frm.set_value("approved_by_ibgfinance","") 
+			frm.set_value("approved_by_supplychain","") 
+			frm.refresh_field("remarks")              
+			frm.refresh_field("approved_by_ibgfinance")              
+			frm.refresh_field("approved_by_supplychain")              
+			frm.save()
+		}
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
@@ -80,11 +89,10 @@ frappe.ui.form.on('IBG Order', {
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
-		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Reject" || frm.selected_workflow_action === "Hold")) {
-            
-            var me = this;
+		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Reject")) {
+			console.log("Inside if condition")
             var d = new frappe.ui.Dialog({
-                title: __('Reason for Rejection/Hold'),
+                title: __('Reason for Rejection'),
                 fields: [
                     {
                         "label": "Remarks",
@@ -94,29 +102,61 @@ frappe.ui.form.on('IBG Order', {
                     }
                 ],
                 primary_action: function() {
+					console.log("Inside primary action condition")
                     var data = d.get_values();
-                    let reason_for_reject = 'Reason for Rejection/Hold: ' + data.remarks;
                     if (window.timeout){
+						console.log("Inside timeout if condition")
 						clearTimeout(window.timeout)
 						delete window.timeout
+						console.log("After delete condition")
 					}
 					window.timeout=setTimeout(function(){
 						frm.set_value("remarks",data.remarks) 
+						frm.set_value("status","Rejected by IBG Finance") 
+						frm.set_value("workflow_state","Rejected by IBG Finance") 
 						frm.refresh_field("remarks")              
 						frm.save()
-					},2500)
+					},50)
                     
-                    frappe.call({
-                        callback: function(r) {
-                            frm.reload_doc();
-                            d.hide();
-                        }
-                    });                    
+					d.hide();                  
                 }
             });
             d.show();          
         }
-
+		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Hold")) {
+			console.log("Inside if condition")
+            var d = new frappe.ui.Dialog({
+                title: __('Reason for Hold'),
+                fields: [
+                    {
+                        "label": "Remarks",
+						"fieldname": "remarks",
+                        "fieldtype": "Small Text",
+                        "reqd": 1,
+                    }
+                ],
+                primary_action: function() {
+					console.log("Inside primary action condition")
+                    var data = d.get_values();
+                    if (window.timeout){
+						console.log("Inside timeout if condition")
+						clearTimeout(window.timeout)
+						delete window.timeout
+						console.log("After delete condition")
+					}
+					window.timeout=setTimeout(function(){
+						frm.set_value("remarks",data.remarks) 
+						frm.set_value("status","On Hold by IBG Finance") 
+						frm.set_value("workflow_state","On Hold by IBG Finance") 
+						frm.refresh_field("remarks")              
+						frm.save()
+					},50)
+                    
+					d.hide();                   
+                }
+            });
+            d.show();          
+        }
     },
 	order_items_on_form_rendered(frm, cdt, cdn) {
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
