@@ -33,10 +33,13 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        if self.status == "Pending":
-            self.remarks = ""
-            self.approved_by_ibgfinance = ""
-            self.approved_by_supplychain = ""
+        # if self.status == "Pending":
+        #     self.order_type = ""
+        #     self.sales_organizational = ""
+        #     self.distribution_channel = ""
+        #     self.division = ""
+        #     self.sales_office = ""
+        #     self.sales_group = ""
         
         if "IBG Finance" in user_role or "System Manager" in user_role:
             if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
@@ -70,7 +73,7 @@ class IBGOrder(Document):
             if count_valid_to > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the Valid to date in the order items"))
 
-        if self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
+        if "IBG Finance" in user_role and self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
             self.approved_by_ibgfinance = self.modified_by
         
         if self.status == 'Rejected by IBG Finance':
@@ -90,13 +93,11 @@ class IBGOrder(Document):
                 message= "SAP Error -\n{}".format(sap_number),
                 title="SAP Order Number Generation Error",
             )
-        if sap_number['sap_error']:
-            frappe.throw(_(sap_number['sap_error']))
+        if len(sap_number['sap_error']) > 1:
+            frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
-        if sap_number['sap_so_number']:
-            self.sap_so_number = sap_number['sap_so_number']
-            self.save(ignore_permissions = True)
-            frappe.db.commit()
+        if len(sap_number['sap_so_number']) > 1:
+            self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -126,7 +127,7 @@ def ibg_order_template():
                 "Qty in cases (Order Items)"
             ],
         )
-        file_name = "IBG_Order_{}".format(frappe.utils.now_datetime())
+        file_name = "IBG_Order_{}".format(frappe.utils.now_datetime().date())
         sheet_name = "IBG_Order"
         return ibg_marico_oms.download_file(
             dataframe=df,
@@ -184,8 +185,8 @@ def order_file_upload(upload_file, doc_name = None):
                     doctype="IBG Order",
                     country=i[0],
                     customer=i[1],
-                    bill_to=i[2],
-                    ship_to=i[3],
+                    bill_to=str(int(float(i[2]))),
+                    ship_to=str(int(float(i[3]))),
                     order_etd=i[4],
                     )
             ).insert(ignore_permissions=True)
@@ -239,12 +240,17 @@ def firm_plan_report():
                 if order_doc and order_doc.status == "Approved by Supply Chain":
                     units_cs = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"unitscs",)
                     material_group = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"material_group",)
+                    num = ''
+                    for j in i.product_description:
+                        if j.isdigit():
+                            num+=j
+                    qty = (float((num))/1000)
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
 
                     curr_month = calendar.month_abbr[order_doc.created_date.month]
                     next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
                     next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
-                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : "", "Order Value({})".format(curr_month) : i.order_value, "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
+                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : (((float(i.qty_in_cases) * float(units_cs))*qty)/1000), "Order Value({})".format(curr_month) : float(i.order_value), "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
 
                     data.append(order_dict)
     
@@ -289,15 +295,14 @@ def sap_rfc_data(doc):
 
         request_data={'IT_ERR':'','IT_RET' :'','IT_SO':{'item':items}}
         response=client.service.ZBAPI_IBG_ORD(**request_data)
-        sap_error = response['IT_ERR']['item'][1]['ERROR_MSG']
         order_details = response['IT_SO']['item']
-        if sap_error:
+        if len(response['IT_ERR']['item']) > 1:
             frappe.log_error(
                 message= "SAP Error -\n{}"
-                + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(sap_error , doc.name, order_details),
+                + "\n\nFile name -\n{}\n\nOrder details -\n{}".format(response['IT_ERR']['item'][1]['ERROR_MSG'] , doc.name, order_details),
                 title="SAP Order Number Generation Error",
             )        
-        sap_response = {"sap_error" : sap_error, "sap_so_number" : response['IT_RET']['item']}
+        sap_response = {"sap_error" : response['IT_ERR']['item'] , "sap_so_number" : response['IT_RET']['item']}
 
         return sap_response
         
