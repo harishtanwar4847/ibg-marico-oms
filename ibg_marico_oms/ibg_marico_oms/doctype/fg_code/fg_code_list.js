@@ -3,7 +3,7 @@ frappe.listview_settings["FG Code"] = {
     refresh: function (listview) {
       var is_true = frappe.user_roles.find((role) => role === "System Manager");
       if (is_true || frappe.session.user == "Administrator") {
-        console.log("INSIDE REFRESH")
+        // console.log("INSIDE REFRESH")
         listview.page.add_menu_item(__("Download Product Units Template"), function () {
           frappe.call({
             method:
@@ -16,23 +16,28 @@ frappe.listview_settings["FG Code"] = {
         });
       };
       if (is_true || frappe.session.user == "Administrator") { 
-      listview.page.add_menu_item(__("Upload File"), function () {
+      listview.page.add_menu_item(__("Upload Units/CS File"), function () {
         let d = new frappe.ui.Dialog({
           title: "Enter details",
           fields: [
             {
-              label: "Upload CSV",
+              label: "Upload CSV/Excel",
               fieldname: "file",
               fieldtype: "Attach",
             },
+            {
+              fieldname: "columnbreak",
+              fieldtype: "Column Break",
+              label: "*Select My Device to upload the file"
+             },
           ],
           primary_action_label: "Submit",
           primary_action(values) {
-              if (values.file.split(".")[1].toLowerCase() == "csv") {
-                // pass
-              } else {
-                frappe.throw("Other than CSV file format not supported");
-              }
+              // if (values.file.split(".")[1].toLowerCase() == "csv") {
+              //   // pass
+              // } else {
+              //   frappe.throw("Other than CSV file format not supported");
+              // }
             frappe.call({
               method: "ibg_marico_oms.ibg_marico_oms.doctype.fg_code.fg_code.fgcode_unitscs_file_upload",
               args: {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.3.0-uat] - 2023-03-23
+## [v0.3.0-dev] - 2023-03-23
+
+### Added
+
+-[Feat: workflow, Xlsx file upload, workspace changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/8)
+
 ## [v0.2.0-dev] - 2023-02-21
 
 ### Added
