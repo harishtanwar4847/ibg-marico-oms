@@ -25,14 +25,19 @@ frappe.listview_settings["FG Code"] = {
               fieldname: "file",
               fieldtype: "Attach",
             },
+            {
+              fieldname: "columnbreak",
+              fieldtype: "Column Break",
+              label: "*Select My Device to upload the file"
+             },
           ],
           primary_action_label: "Submit",
           primary_action(values) {
-              if (values.file.split(".")[1].toLowerCase() == "csv") {
-                // pass
-              } else {
-                frappe.throw("Other than CSV file format not supported");
-              }
+              // if (values.file.split(".")[1].toLowerCase() == "csv") {
+              //   // pass
+              // } else {
+              //   frappe.throw("Other than CSV file format not supported");
+              // }
             frappe.call({
               method: "ibg_marico_oms.ibg_marico_oms.doctype.fg_code.fg_code.fgcode_unitscs_file_upload",
               args: {
