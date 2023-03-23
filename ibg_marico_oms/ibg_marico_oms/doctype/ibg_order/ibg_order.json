@@ -32,8 +32,10 @@
   "naming_series",
   "amended_from",
   "remarks_sectionbreak",
-  "approved_by",
-  "remarks"
+  "approved_by_ibgfinance",
+  "remarks",
+  "column_break_27",
+  "approved_by_supplychain"
  ],
  "fields": [
   {
@@ -41,20 +43,21 @@
    "fieldtype": "Link",
    "label": "Country",
    "options": "Country",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
+   "options": "IBG Distributor",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "ship_to",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Ship To",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
+   "options": "Ship To",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "column_break_4",
@@ -82,15 +85,16 @@
   },
   {
    "fieldname": "bill_to",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Bill To",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
+   "options": "Bill To",
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "order_etd",
    "fieldtype": "Date",
    "label": "Order ETD",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('IBG Finance') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
    "fieldname": "column_break_6",
@@ -105,13 +109,13 @@
    "fieldname": "order_type",
    "fieldtype": "Data",
    "label": "Order Type",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "division",
    "fieldtype": "Data",
    "label": "Division",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "column_break_14",
@@ -121,13 +125,13 @@
    "fieldname": "sales_organizational",
    "fieldtype": "Data",
    "label": "Sales Organizational",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "sales_office",
    "fieldtype": "Data",
    "label": "Sales Office",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "column_break_17",
@@ -137,13 +141,13 @@
    "fieldname": "distribution_channel",
    "fieldtype": "Data",
    "label": "Distribution Channel",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "sales_group",
    "fieldtype": "Data",
    "label": "Sales Group",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
    "fieldname": "naming_series",
@@ -173,7 +177,7 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1; frappe.user.has_role('Initiator') == 1;"
+   "read_only": 1
   },
   {
    "fieldname": "remarks_sectionbreak",
@@ -187,16 +191,27 @@
    "read_only": 1
   },
   {
-   "fieldname": "approved_by",
+   "fieldname": "approved_by_ibgfinance",
    "fieldtype": "Data",
-   "label": "Approved by",
+   "label": "Approved by IBG Finance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approved_by_supplychain",
+   "fieldtype": "Data",
+   "label": "Approved by Supply Chain",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-21 12:35:46.110937",
+ "modified": "2023-03-20 15:23:11.894457",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
@@ -217,35 +232,19 @@
   },
   {
    "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Initiator",
-   "share": 1,
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Supply Chain",
-   "share": 1,
    "submit": 1,
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "IBG Finance",
-   "share": 1,
    "write": 1
   }
  ],
