@@ -21,7 +21,7 @@ frappe.listview_settings["FG Code"] = {
           title: "Enter details",
           fields: [
             {
-              label: "Upload CSV",
+              label: "Upload CSV/Excel",
               fieldname: "file",
               fieldtype: "Attach",
             },
