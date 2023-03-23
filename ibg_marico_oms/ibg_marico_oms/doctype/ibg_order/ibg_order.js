@@ -26,7 +26,6 @@ frappe.ui.form.on('IBG Order', {
 			frm.refresh_field("sales_group") 
 			frm.refresh_field("sap_so_number")              
 			frm.refresh_field("status")
-			frm.save()
 		}
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
