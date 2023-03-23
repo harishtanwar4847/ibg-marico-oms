@@ -39,7 +39,7 @@ def fgcode_unitscs_file_upload(upload_file):
     files = frappe.get_all("File", filters={"file_url": upload_file}, page_length=1)
     file = frappe.get_doc("File", files[0].name)
     file_path = file.get_full_path()
-    with open(file_path, "r") as upfile:
+    with open(file_path, "rb") as upfile:
         fcontent = upfile.read()
 
     if ((file.file_name).split('.'))[1] == 'xlsx':
