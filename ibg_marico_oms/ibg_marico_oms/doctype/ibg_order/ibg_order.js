@@ -14,16 +14,18 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_value("sales_office","") 
 			frm.set_value("sales_group","") 
 			frm.set_value("sap_so_number","")
+			frm.set_value("status","")
 			frm.refresh_field("remarks")              
 			frm.refresh_field("approved_by_ibgfinance")              
 			frm.refresh_field("approved_by_supplychain")
-			frm.refresh_field("order_type","") 
-			frm.refresh_field("sales_organizational","") 
-			frm.refresh_field("distribution_channel","") 
-			frm.refresh_field("division","") 
-			frm.refresh_field("sales_office","") 
-			frm.refresh_field("sales_group","") 
-			frm.refresh_field("sap_so_number","")              
+			frm.refresh_field("order_type") 
+			frm.refresh_field("sales_organizational") 
+			frm.refresh_field("distribution_channel") 
+			frm.refresh_field("division") 
+			frm.refresh_field("sales_office") 
+			frm.refresh_field("sales_group") 
+			frm.refresh_field("sap_so_number")              
+			frm.refresh_field("status")
 			frm.save()
 		}
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
@@ -39,67 +41,17 @@ frappe.ui.form.on('IBG Order', {
 		}
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
-
-	// 	var is_true = frappe.user_roles.find((role) => role === "Initiator");
-    //   	var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
-	// 	if (is_true || is_supuser || frappe.session.user == "Administrator") {
-	// 	  frm.add_custom_button(__("Download Order Template"), function () {
-	// 		frappe.call({
-	// 		  method:
-	// 		  "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.ibg_order_template",
-	// 		  freeze: true,
-	// 		  args: {
-	// 			doc_filters: frappe
-	// 			  .get_user_settings("IBG Order")
-	// 			  ["List"].filters.map((filter) => filter.slice(1, 4)),
-	// 		  },
-	// 		  callback: (res) => {
-	// 			window.open(res.message);
-	// 		  },
-	// 		});
-	// 	  }, __("Utilities")); 
-	// 	  frm.add_custom_button(__("Upload Order"), function () {
-	// 		let d = new frappe.ui.Dialog({
-	// 		title: "Enter details",
-	// 		fields: [
-	// 		  {
-	// 			label: "Upload CSV",
-	// 			fieldname: "file",
-	// 			fieldtype: "Attach",
-	// 		  },
-	// 		],
-	// 		primary_action_label: "Submit",
-	// 		primary_action(values) {
-	// 			// if (values.file.split(".")[1].toLowerCase() == "csv") {
-	// 			//   // pass
-	// 			// } else {
-	// 			//   frappe.throw("Other than CSV file format not supported");
-	// 			// }
-	// 		  frappe.call({
-	// 			method: "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.order_file_upload",
-	// 			args: {
-	// 			  upload_file: values.file,
-	// 			  doc_name : frm.doc.name
-	// 			},  
-	// 			freeze: false,
-	// 		  });
-	// 		  d.hide();
-	// 		},
-	// 	  });
-	// 	  d.show();
-	// 	}, __("Utilities"));
-	//   }
 	},
-	// onload: function(frm) {
-	// 	var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
-	// 	if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
-	// 		frm.set_df_property("country", "read_only", 1);
-	// 		frm.set_df_property("bill_to", "read_only", 1);
-	// 		frm.set_df_property("ship_to", "read_only", 1);
-	// 		frm.set_df_property("customer", "read_only", 1);
-	// 		frm.set_df_property("order_etd", "read_only", 1);
-	// 	}
-	// },
+	onload: function(frm) {
+		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
+		if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
+			frm.set_df_property("country", "read_only", 1);
+			frm.set_df_property("bill_to", "read_only", 1);
+			frm.set_df_property("ship_to", "read_only", 1);
+			frm.set_df_property("customer", "read_only", 1);
+			frm.set_df_property("order_etd", "read_only", 1);
+		}
+	},
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");

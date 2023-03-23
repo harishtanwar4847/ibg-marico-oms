@@ -98,7 +98,6 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
-            frappe.msgprint("SAP SO number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD']))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -128,7 +127,7 @@ def ibg_order_template():
                 "Qty in cases (Order Items)"
             ],
         )
-        file_name = "IBG_Order_{}".format(frappe.utils.now_datetime())
+        file_name = "IBG_Order_{}".format(frappe.utils.now_datetime().date())
         sheet_name = "IBG_Order"
         return ibg_marico_oms.download_file(
             dataframe=df,
@@ -159,11 +158,6 @@ def order_file_upload(upload_file, doc_name = None):
         csv_data = read_csv_content(fcontent)
 
     parent = ""
-    frappe.log_error(
-                message= "SAP Error -\n{}"
-                + "\n\nOrder details -\n{}".format(type(csv_data[1][2]), csv_data[1]),
-                title="Upload File format",
-            )
     for i in csv_data[1:]:
         if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
             if parent:

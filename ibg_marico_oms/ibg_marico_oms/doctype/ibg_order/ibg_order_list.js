@@ -13,11 +13,6 @@ frappe.listview_settings["IBG Order"] = {
               method:
                 "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.firm_plan_report",
               freeze: true,
-              // args: {
-              //   doc_filters: frappe
-              //     .get_user_settings("IBG Order")
-              //     ["List"].filters.map((filter) => filter.slice(1, 4)),
-              // },
               callback: (res) => {
                 window.open(res.message);
               },
@@ -52,17 +47,22 @@ frappe.listview_settings["IBG Order"] = {
           title: "Enter details",
           fields: [
             {
-              label: "Upload CSV",
+              label: "Upload CSV/Excel File",
               fieldname: "file",
               fieldtype: "Attach",
             },
+            {
+              fieldname: "columnbreak",
+              fieldtype: "Column Break",
+              label: "*Select My Device to upload the file"
+             },
           ],
           primary_action_label: "Submit",
           primary_action(values) {
-              // if (values.file.split(".")[1].toLowerCase() == "csv") {
-              //   // pass
+              // if (!(values.file.split(".")[1].toLowerCase() == "csv") || !(values.file.split(".")[1].toLowerCase() == "xlsx")) {
+              //   pass
               // } else {
-              //   frappe.throw("Other than CSV file format not supported");
+              //   frappe.throw("Other than CSV/XLSX file format not supported");
               // }
             frappe.call({
               method: "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.order_file_upload",
