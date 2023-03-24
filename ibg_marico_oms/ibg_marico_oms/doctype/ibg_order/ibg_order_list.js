@@ -13,6 +13,11 @@ frappe.listview_settings["IBG Order"] = {
               method:
                 "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.firm_plan_report",
               freeze: true,
+              args: {
+                doc_filters: frappe
+                  .get_user_settings("IBG Order")
+                  ["List"].filters.map((filter) => filter.slice(1, 4)),
+              },      
               callback: (res) => {
                 window.open(res.message);
               },

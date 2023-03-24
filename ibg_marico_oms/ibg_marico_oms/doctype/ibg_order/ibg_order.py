@@ -32,22 +32,21 @@ class IBGOrder(Document):
         user_role = []
         for i in list(user_roles):
             user_role.append(i[0])
-        
-        # if self.status == "Pending":
-        #     self.order_type = ""
-        #     self.sales_organizational = ""
-        #     self.distribution_channel = ""
-        #     self.division = ""
-        #     self.sales_office = ""
-        #     self.sales_group = ""
-        
+            
         if "IBG Finance" in user_role or "System Manager" in user_role:
-            if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
+            if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance"):
                 frappe.throw(_("Please enter valid reason in remarks"))
 
+        total_order_value = 0
+        total_qty = 0
         for i in self.order_items:
             if i.billing_rate:
                 i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                total_qty += float(i.qty_in_cases)
+                total_order_value += i.order_value
+        self.total_qty_in_cases = total_qty
+        self.total_order_value = total_order_value
+
                 
         count_billing_rate = 0
         count_order_value = 0
@@ -98,6 +97,7 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            frappe.msgprint(_("SAP SO Number generated is {}",format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -158,9 +158,7 @@ def order_file_upload(upload_file, doc_name = None):
         csv_data = read_csv_content(fcontent)
 
     parent = ""
-    print(type(csv_data[1][2]))
     for i in csv_data[1:]:
-        print(type(i[2]))
         if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
             if parent:
                 item = frappe.get_doc(
@@ -217,19 +215,26 @@ def order_file_upload(upload_file, doc_name = None):
 
 
 @frappe.whitelist()
-def firm_plan_report():
+def firm_plan_report(doc_filters = None):
     data =[]
     order_name_list =[]
     curr_first = frappe.utils.now_datetime().date().replace(day=1)
-    calendar.monthrange(curr_first.year, curr_first.month)
     res = calendar.monthrange(curr_first.year, curr_first.month) 
     curr_last = frappe.utils.now_datetime().date().replace(day=res[1])
     
-    order_items = frappe.get_all(
+    if len(doc_filters) > 2:
+        order_items = frappe.get_all(
+            "IBG Order Items",
+            filters = doc_filters,
+            fields=["*"],
+        )
+    else:
+        order_items = frappe.get_all(
         "IBG Order Items",
-        filters={"order_created_on" :["BETWEEN", [curr_first, curr_last]]},
+        filters={"created_date" :["BETWEEN", [curr_first, curr_last]]},
         fields=["*"],
-    )
+        )
+
     order_list = frappe.get_all("IBG Order",fields=["name"])
     for i in order_list:
         order_name_list.append(i.name)
@@ -249,10 +254,16 @@ def firm_plan_report():
                     qty = (float((num))/1000)
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
 
-                    curr_month = calendar.month_abbr[order_doc.created_date.month]
-                    next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
-                    next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
-                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : (((float(i.qty_in_cases) * float(units_cs))*qty)/1000), "Order Value({})".format(curr_month) : float(i.order_value), "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
+                    if len(doc_filters)>2:
+                        curr_month = doc_filters
+                        next_month = calendar.month_abbr[(order_items[-1].created_date.month)+1]
+                        next_nd_month = calendar.month_abbr[(order_items[-1].created_date.month)+2]
+                    else:
+                        curr_month = calendar.month_abbr[order_doc.created_date.month]
+                        next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
+                        next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
+
+                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : calendar.month_abbr[order_doc.created_date.month], "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : "(float(i.qty_in_cases) * float(units_cs))", "Qty in kl({})".format(curr_month) : "(((float(i.qty_in_cases) * float(units_cs))*qty)/1000)", "Order Value({})".format(curr_month) : "float(i.order_value)", "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
 
                     data.append(order_dict)
     

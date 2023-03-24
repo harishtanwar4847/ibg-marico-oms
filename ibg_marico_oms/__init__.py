@@ -7,12 +7,12 @@ import pyodbc as p
 __version__ = '0.3.0-uat'
 
 
-def supplychain_permission_query(user):
-    if not user:
-        user = frappe.session.user
-    user_doc = frappe.get_doc("User", user).as_dict()
-    if "Supply Chain" in [r.role for r in user_doc.roles]:
-        return "(`tabIBG Order`.status = 'Approved by IBG Finance' or `tabIBG Order`.status = 'Approved by Supply Chain' or `tabIBG Order`._assign like '%{user_session}%')".format(user_session=user)
+# def supplychain_permission_query(user):
+#     if not user:
+#         user = frappe.session.user
+#     user_doc = frappe.get_doc("User", user).as_dict()
+#     if "Supply Chain" in [r.role for r in user_doc.roles]:
+#         return "(`tabIBG Order`.status = 'Approved by IBG Finance' or `tabIBG Order`.status = 'Approved by Supply Chain' or `tabIBG Order`._assign like '%{user_session}%')".format(user_session=user)
 
 def download_file(dataframe, file_name, file_extention, sheet_name):
     file_name = "{}.{}".format(file_name, file_extention)
@@ -103,18 +103,20 @@ def extract_customer_shipto():
                 dict(
                     doctype="IBG Distributor",
                     customer_name=i[2],
+                    ship_to = i[1]
                     )).insert(ignore_permissions=True)
             frappe.db.commit()
-            ship_to = frappe.get_doc(
-                dict(
-                    doctype="Ship To",
-                    ship_to=i[1],
-                    )).insert(ignore_permissions=True)
-            frappe.db.commit()
+            # ship_to = frappe.get_doc(
+            #     dict(
+            #         doctype="Ship To",
+            #         ship_to=i[1],
+            #         )).insert(ignore_permissions=True)
+            # frappe.db.commit()
             bill_to = frappe.get_doc(
                 dict(
                     doctype="Bill To",
                     bill_to=i[1],
+                    customer = i[2],
                     )).insert(ignore_permissions=True)
             frappe.db.commit()
     cursor.execute('SELECT *  FROM Mst_customer')
@@ -126,6 +128,7 @@ def extract_customer_shipto():
             cust = frappe.get_doc("IBG Distributor", i[3])
             if cust:
                 cust.customer_code = i[2]
+                cust.country = i[5],
                 cust.save(ignore_permissions=True)
                 frappe.db.commit()
 

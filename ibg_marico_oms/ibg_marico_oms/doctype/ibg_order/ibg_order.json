@@ -20,10 +20,14 @@
   "created_date",
   "items_section",
   "order_items",
+  "section_break_13",
+  "total_qty_in_cases",
+  "column_break_14",
+  "total_order_value",
   "section_break_11",
   "order_type",
   "division",
-  "column_break_14",
+  "column_break_sales",
   "sales_organizational",
   "sales_office",
   "column_break_17",
@@ -39,10 +43,10 @@
  ],
  "fields": [
   {
+   "fetch_from": "customer.country",
    "fieldname": "country",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Country",
-   "options": "Country",
    "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
@@ -53,10 +57,10 @@
    "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
+   "fetch_from": "customer.ship_to",
    "fieldname": "ship_to",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Ship To",
-   "options": "Ship To",
    "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
   },
   {
@@ -206,12 +210,32 @@
    "fieldtype": "Data",
    "label": "Approved by Supply Chain",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_qty_in_cases",
+   "fieldtype": "Float",
+   "label": "Total Qty in cases",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_order_value",
+   "fieldtype": "Float",
+   "label": "Total Order Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sales",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-20 15:23:11.894457",
+ "modified": "2023-03-23 19:34:52.719171",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
