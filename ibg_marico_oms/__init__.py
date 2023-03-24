@@ -94,11 +94,11 @@ def extract_customer_shipto():
     for i in cursor:
         cust_list.append(i)
     for i in cust_list:
-        customer_doc = frappe.get_all("IBG Distributor", filters = {"customer_name" :i[2]}, fields =["name"])
+        customer_doc = frappe.get_all("IBG Distributor", filters = {"customer_name" :i[3]}, fields =["name"])
         # # customer_name_list = []
         # for j in customer_list:
         #     customer_name_list.append(j.name)
-        if i[-2] == 'A'and len(customer_doc)==0 and i[2] not in cust_name_list:
+        if i[-2] == 'A'and len(customer_doc)==0 and i[3] not in cust_name_list:
             customer = frappe.get_doc(
                 dict(
                     doctype="IBG Distributor",
@@ -106,7 +106,7 @@ def extract_customer_shipto():
                     ship_to = i[1]
                     )).insert(ignore_permissions=True)
             frappe.db.commit()
-            cust_name_list.append(i[2])
+            cust_name_list.append(i[3])
             # ship_to = frappe.get_doc(
             #     dict(
             #         doctype="Ship To",
@@ -125,7 +125,7 @@ def extract_customer_shipto():
     for i in cursor:
         custcode_list.append(i)
     for i in custcode_list:
-        if i[3] in customer_name_list:
+        if (customer_doc) > 0:
             cust = frappe.get_doc("IBG Distributor", i[3])
             if cust:
                 cust.customer_code = i[2]
