@@ -98,7 +98,8 @@ def extract_customer_shipto():
         customer_name_list = []
         for j in customer_list:
             customer_name_list.append(j.name)
-        if i[-2] == 'A'and i[2] not in customer_name_list:
+        cust_name_list.append(i[2])
+        if i[-2] == 'A'and i[2] not in customer_name_list and i[2] not in cust_name_list:
             customer = frappe.get_doc(
                 dict(
                     doctype="IBG Distributor",

@@ -255,7 +255,7 @@ def firm_plan_report(doc_filters = None):
                     cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
 
                     if len(doc_filters)>2:
-                        curr_month = doc_filters
+                        curr_month = ""
                         next_month = calendar.month_abbr[(order_items[-1].created_date.month)+1]
                         next_nd_month = calendar.month_abbr[(order_items[-1].created_date.month)+2]
                     else:
