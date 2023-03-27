@@ -22,7 +22,6 @@ from zeep import Client
 from zeep.transports import Transport
 from requests import Session
 from requests.auth import HTTPBasicAuth
-from zeep import Client
 
 class IBGOrder(Document):
     def before_save(self):
