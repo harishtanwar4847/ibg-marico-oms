@@ -102,6 +102,7 @@ def extract_customer_shipto():
                 dict(
                     doctype="IBG Distributor",
                     customer_name=i[2],
+                    country = i[5],
                     ship_to = i[1]
                     )).insert(ignore_permissions=True)
             frappe.db.commit()
@@ -123,9 +124,15 @@ def extract_customer_shipto():
             cust = frappe.get_doc("IBG Distributor", i[3])
             if cust:
                 cust.customer_code = i[2]
-                cust.country = i[5],
                 cust.save(ignore_permissions=True)
                 frappe.db.commit()
+    customer_list = frappe.get_all("IBG Distributor", fields =["*"])
+    for i in customer_list:
+        if i.customer_code == None:
+            customer = frappe.get_doc("IBG Distributor", i.name)
+            customer.customer_code = customer.ship_to
+            customer.save(ignore_permissions=True)
+            frappe.db.commit()
 
 def change_date_format(dt):
     return re.sub(r'(\d{4})-(\d{1,2})-(\d{1,2})', '\\3-\\2-\\1', dt)
