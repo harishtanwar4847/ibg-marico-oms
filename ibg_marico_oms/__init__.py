@@ -137,7 +137,7 @@ def extract_customer_shipto():
     except Exception as e:
         frappe.log_error(
             message=frappe.get_traceback(),
-            title="Product Master Error",
+            title="Customer Master Storage Error",
         )
 
 def change_date_format(dt):
