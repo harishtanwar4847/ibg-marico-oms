@@ -39,7 +39,8 @@
   "approved_by_ibgfinance",
   "remarks",
   "column_break_27",
-  "approved_by_supplychain"
+  "approved_by_supplychain",
+  "supplychain_remarks"
  ],
  "fields": [
   {
@@ -47,21 +48,21 @@
    "fieldname": "country",
    "fieldtype": "Data",
    "label": "Country",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
+   "read_only": 1
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
    "options": "IBG Distributor",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
   },
   {
    "fetch_from": "customer.ship_to",
    "fieldname": "ship_to",
    "fieldtype": "Data",
    "label": "Ship To",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
+   "read_only": 1
   },
   {
    "fieldname": "column_break_4",
@@ -72,7 +73,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Order Status",
-   "options": "\nPending\nApproved by IBG Finance\nApproved by Supply Chain\nRejected by IBG Finance\nOn Hold by IBG Finance",
+   "options": "\nPending\nApproved by IBG Finance\nApproved by Supply Chain\nRejected by IBG Finance\nOn Hold by IBG Finance\nRejected by Supply Chain",
    "read_only": 1
   },
   {
@@ -92,13 +93,13 @@
    "fieldtype": "Link",
    "label": "Bill To",
    "options": "Bill To",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
   },
   {
    "fieldname": "order_etd",
    "fieldtype": "Date",
    "label": "Order ETD",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
   },
   {
    "fieldname": "column_break_6",
@@ -230,12 +231,18 @@
   {
    "fieldname": "section_break_13",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "supplychain_remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-23 19:34:52.719171",
+ "modified": "2023-03-29 17:24:38.088679",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
@@ -252,6 +259,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
