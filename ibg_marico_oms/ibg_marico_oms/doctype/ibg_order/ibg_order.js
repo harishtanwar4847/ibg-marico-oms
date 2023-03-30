@@ -5,6 +5,7 @@ frappe.ui.form.on('IBG Order', {
 	refresh: function(frm) {
 		if (frm.doc.__islocal === 1){
 			frm.set_value("remarks","") 
+			frm.set_value("created_date",new Date().toJSON().slice(0, 10)) 
 			frm.set_value("approved_by_ibgfinance","") 
 			frm.set_value("approved_by_supplychain","") 
 			frm.set_value("order_type","") 
@@ -16,6 +17,7 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_value("sap_so_number","")
 			frm.set_value("status","")
 			frm.refresh_field("remarks")              
+			frm.refresh_field("created_date")              
 			frm.refresh_field("approved_by_ibgfinance")              
 			frm.refresh_field("approved_by_supplychain")
 			frm.refresh_field("order_type") 
