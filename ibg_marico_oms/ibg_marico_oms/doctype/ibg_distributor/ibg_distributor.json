@@ -9,7 +9,9 @@
  "engine": "InnoDB",
  "field_order": [
   "customer_name",
-  "customer_code"
+  "customer_code",
+  "country",
+  "ship_to"
  ],
  "fields": [
   {
@@ -22,11 +24,21 @@
    "fieldname": "customer_code",
    "fieldtype": "Data",
    "label": "Customer Code"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "ship_to",
+   "fieldtype": "Data",
+   "label": "Ship To"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 13:53:51.139634",
+ "modified": "2023-03-23 19:25:27.036663",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Distributor",

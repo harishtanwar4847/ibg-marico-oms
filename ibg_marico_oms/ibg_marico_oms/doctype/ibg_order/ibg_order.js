@@ -5,6 +5,7 @@ frappe.ui.form.on('IBG Order', {
 	refresh: function(frm) {
 		if (frm.doc.__islocal === 1){
 			frm.set_value("remarks","") 
+			frm.set_value("created_date",new Date().toJSON().slice(0, 10)) 
 			frm.set_value("approved_by_ibgfinance","") 
 			frm.set_value("approved_by_supplychain","") 
 			frm.set_value("order_type","") 
@@ -16,6 +17,7 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_value("sap_so_number","")
 			frm.set_value("status","")
 			frm.refresh_field("remarks")              
+			frm.refresh_field("created_date")              
 			frm.refresh_field("approved_by_ibgfinance")              
 			frm.refresh_field("approved_by_supplychain")
 			frm.refresh_field("order_type") 
@@ -41,21 +43,12 @@ frappe.ui.form.on('IBG Order', {
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 	},
-	onload: function(frm) {
-		var is_initiator = frappe.user_roles.find((role) => role === "Initiator");
-		if (is_initiator && frm.doc.status == 'Rejected by IBG Finance') {
-			frm.set_df_property("country", "read_only", 1);
-			frm.set_df_property("bill_to", "read_only", 1);
-			frm.set_df_property("ship_to", "read_only", 1);
-			frm.set_df_property("customer", "read_only", 1);
-			frm.set_df_property("order_etd", "read_only", 1);
-		}
-	},
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
-		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
-		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Reject")) {
-			console.log("Inside if condition")
+		var is_sc = frappe.user_roles.find((role) => role === "Supply Chain");
+		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");	
+		if ((is_ibg || is_supuser) && (frm.doc.status === "Pending") && (frm.selected_workflow_action === "Reject")) {
+			console.log("AAAA Inside if condition")
             var d = new frappe.ui.Dialog({
                 title: __('Reason for Rejection'),
                 fields: [
@@ -67,19 +60,54 @@ frappe.ui.form.on('IBG Order', {
                     }
                 ],
                 primary_action: function() {
-					console.log("Inside primary action condition")
+					console.log("AAAA Inside primary action condition")
                     var data = d.get_values();
                     if (window.timeout){
-						console.log("Inside timeout if condition")
+						console.log("AAAA Inside timeout if condition")
 						clearTimeout(window.timeout)
 						delete window.timeout
-						console.log("After delete condition")
+						console.log("AAAA After delete condition")
 					}
 					window.timeout=setTimeout(function(){
+						console.log("AAAA Inside  222 primary action condition")
 						frm.set_value("remarks",data.remarks) 
 						frm.set_value("status","Rejected by IBG Finance") 
 						frm.set_value("workflow_state","Rejected by IBG Finance") 
 						frm.refresh_field("remarks")              
+						frm.save()
+					},50)
+                    
+					d.hide();                  
+                }
+            });
+            d.show();          
+        }
+		if ((is_sc || is_supuser) && (frm.doc.status === "Approved by IBG Finance") && (frm.selected_workflow_action === "Reject")) {
+			console.log("BBBB Inside if condition")
+            var d = new frappe.ui.Dialog({
+                title: __('Reason for Rejection'),
+                fields: [
+                    {
+                        "label": "Remarks",
+						"fieldname": "remarks",
+                        "fieldtype": "Small Text",
+                        "reqd": 1,
+                    }
+                ],
+                primary_action: function() {
+					console.log("BBB Inside primary action condition")
+                    var data = d.get_values();
+                    if (window.timeout){
+						console.log("BBB Inside timeout if condition")
+						clearTimeout(window.timeout)
+						delete window.timeout
+						console.log("BBB After delete condition")
+					}
+					window.timeout=setTimeout(function(){
+						frm.set_value("supplychain_remarks",data.remarks) 
+						frm.set_value("status","Rejected by Supply Chain") 
+						frm.set_value("workflow_state","Rejected by Supply Chain") 
+						frm.refresh_field("supplychain_remarks")              
 						frm.save()
 					},50)
                     

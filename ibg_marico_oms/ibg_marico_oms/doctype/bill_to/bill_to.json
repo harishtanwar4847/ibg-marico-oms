@@ -8,7 +8,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "bill_to"
+  "bill_to",
+  "customer"
  ],
  "fields": [
   {
@@ -16,11 +17,16 @@
    "fieldtype": "Data",
    "label": "Bill To",
    "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 11:49:56.253983",
+ "modified": "2023-03-23 19:33:53.718079",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Bill To",
@@ -46,6 +52,7 @@
    "select": 1
   }
  ],
+ "search_fields": "customer",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

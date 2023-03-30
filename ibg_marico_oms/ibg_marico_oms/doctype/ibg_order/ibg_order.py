@@ -22,7 +22,6 @@ from zeep import Client
 from zeep.transports import Transport
 from requests import Session
 from requests.auth import HTTPBasicAuth
-from zeep import Client
 
 class IBGOrder(Document):
     def before_save(self):
@@ -32,22 +31,23 @@ class IBGOrder(Document):
         user_role = []
         for i in list(user_roles):
             user_role.append(i[0])
-        
-        # if self.status == "Pending":
-        #     self.order_type = ""
-        #     self.sales_organizational = ""
-        #     self.distribution_channel = ""
-        #     self.division = ""
-        #     self.sales_office = ""
-        #     self.sales_group = ""
-        
-        if "IBG Finance" in user_role or "System Manager" in user_role:
+            
+        if "IBG Finance" in user_role or "System Manager" in user_role or "Supply Chain" in user_role:
             if (self.status == "Rejected by IBG Finance" or self.status == "On Hold by IBG Finance") and not self.remarks:
                 frappe.throw(_("Please enter valid reason in remarks"))
+            if self.status == "Rejected by Supply Chain" and not self.supplychain_remarks:
+                frappe.throw(_("Please enter valid reason in remarks"))
 
+        total_order_value = 0
+        total_qty = 0
         for i in self.order_items:
             if i.billing_rate:
                 i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                total_qty += float(i.qty_in_cases)
+                total_order_value += i.order_value
+        self.total_qty_in_cases = total_qty
+        self.total_order_value = total_order_value
+
                 
         count_billing_rate = 0
         count_order_value = 0
@@ -76,7 +76,7 @@ class IBGOrder(Document):
         if "IBG Finance" in user_role and self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
             self.approved_by_ibgfinance = self.modified_by
         
-        if self.status == 'Rejected by IBG Finance':
+        if self.status == 'Rejected by IBG Finance' or self.status == "Rejected by Supply Chain" :
             modified_by = self.modified_by
             user_roles = frappe.db.get_values("Has Role", {"parent": modified_by, "parenttype": "User"}, ["role"])
             user_role = []
@@ -85,6 +85,8 @@ class IBGOrder(Document):
             if "Initiator" in user_role:
                 self.status = 'Pending'
                 self.workflow_state = 'Pending'
+                self.remarks = ''
+                self.supplychain_remarks =''
         
 
     def before_submit(self):
@@ -98,6 +100,7 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            frappe.msgprint(_("SAP SO Number generated is {}",format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -136,32 +139,69 @@ def ibg_order_template():
             sheet_name=sheet_name,
         )
     except Exception as e:
-        frappe.log_error(e)
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="IBG Order Download template Error",
+        )
 
 @frappe.whitelist()
 def order_file_upload(upload_file, doc_name = None):
-    files = frappe.get_all("File", filters={"file_url": upload_file}, page_length=1)
-    file = frappe.get_doc("File", files[0].name)
-    file_path = file.get_full_path()
-    with open(file_path, "rb") as upfile:
-        fcontent = upfile.read()
+    try:
+        files = frappe.get_all("File", filters={"file_url": upload_file}, page_length=1)
+        file = frappe.get_doc("File", files[0].name)
+        file_path = file.get_full_path()
+        with open(file_path, "rb") as upfile:
+            fcontent = upfile.read()
 
-    if ((file.file_name).split('.'))[1] == 'xlsx':
-        excelFile = pd.read_excel (fcontent)
-        file_name = (file.file_name).split('.')
-        csv_name = "{order}{rand}.csv".format(order = file_name[0],rand = randint(1111,9999))
-        name_csv = excelFile.to_csv (csv_name, index = None, header=True)
-        with open(csv_name, "r") as csv_upfile:
-            csv_fcontent = csv_upfile.read()
-        csv_data = read_csv_content(csv_fcontent)
-    else:
-        csv_data = read_csv_content(fcontent)
+        if ((file.file_name).split('.'))[1] == 'xlsx':
+            excelFile = pd.read_excel (fcontent)
+            file_name = (file.file_name).split('.')
+            csv_name = "{order}{rand}.csv".format(order = file_name[0],rand = randint(1111,9999))
+            name_csv = excelFile.to_csv (csv_name, index = None, header=True)
+            with open(csv_name, "r") as csv_upfile:
+                csv_fcontent = csv_upfile.read()
+            csv_data = read_csv_content(csv_fcontent)
+        else:
+            csv_data = read_csv_content(fcontent)
 
-    parent = ""
-    for i in csv_data[1:]:
-        if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
-            if parent:
-                item = frappe.get_doc(
+        parent = ""
+        for i in csv_data[1:]:
+            if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
+                if parent:
+                    item = frappe.get_doc(
+                        {
+                            "doctype": "IBG Order Items",
+                            "parent": parent,
+                            "parentfield": "order_items",
+                            "parenttype": "IBG Order",
+                            "fg_code": i[5],
+                            "product_description":frappe.db.get_value(
+                                "FG Code",
+                                {"name": i[5]},
+                                "product_description",
+                            ),
+
+                            "qty_in_cases": i[6],
+                            "order_created_on": frappe.utils.now_datetime().date()
+                        }
+                    ).insert(ignore_permissions=True)
+                    frappe.db.commit()
+            else:
+                ibg_order = frappe.get_doc(
+                    dict(
+                        doctype="IBG Order",
+                        country=i[0],
+                        customer=i[1],
+                        bill_to=str(int(float(i[2]))),
+                        ship_to=str(int(float(i[3]))),
+                        order_etd=i[4],
+                        )
+                ).insert(ignore_permissions=True)
+                frappe.db.commit()
+
+                parent = ibg_order.name
+
+                item = item = frappe.get_doc(
                     {
                         "doctype": "IBG Order Items",
                         "parent": parent,
@@ -179,93 +219,84 @@ def order_file_upload(upload_file, doc_name = None):
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
-        else:
-            ibg_order = frappe.get_doc(
-                dict(
-                    doctype="IBG Order",
-                    country=i[0],
-                    customer=i[1],
-                    bill_to=str(int(float(i[2]))),
-                    ship_to=str(int(float(i[3]))),
-                    order_etd=i[4],
-                    )
-            ).insert(ignore_permissions=True)
-            frappe.db.commit()
-
-            parent = ibg_order.name
-
-            item = item = frappe.get_doc(
-                {
-                    "doctype": "IBG Order Items",
-                    "parent": parent,
-                    "parentfield": "order_items",
-                    "parenttype": "IBG Order",
-                    "fg_code": i[5],
-                    "product_description":frappe.db.get_value(
-                        "FG Code",
-                        {"name": i[5]},
-                        "product_description",
-                    ),
-
-                    "qty_in_cases": i[6],
-                    "order_created_on": frappe.utils.now_datetime().date()
-                }
-            ).insert(ignore_permissions=True)
-            frappe.db.commit()
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="IBG Order Uplaod file Error",
+        )
 
 
 @frappe.whitelist()
-def firm_plan_report():
-    data =[]
-    order_name_list =[]
-    curr_first = frappe.utils.now_datetime().date().replace(day=1)
-    calendar.monthrange(curr_first.year, curr_first.month)
-    res = calendar.monthrange(curr_first.year, curr_first.month) 
-    curr_last = frappe.utils.now_datetime().date().replace(day=res[1])
-    
-    order_items = frappe.get_all(
-        "IBG Order Items",
-        filters={"order_created_on" :["BETWEEN", [curr_first, curr_last]]},
-        fields=["*"],
-    )
-    order_list = frappe.get_all("IBG Order",fields=["name"])
-    for i in order_list:
-        order_name_list.append(i.name)
-
-
-    if order_items:
-        for i in order_items:
-            if i.parent in order_name_list:
-                order_doc = frappe.get_doc("IBG Order", i.parent)
-                if order_doc and order_doc.status == "Approved by Supply Chain":
-                    units_cs = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"unitscs",)
-                    material_group = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"material_group",)
-                    num = ''
-                    for j in i.product_description:
-                        if j.isdigit():
-                            num+=j
-                    qty = (float((num))/1000)
-                    cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
-
-                    curr_month = calendar.month_abbr[order_doc.created_date.month]
-                    next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
-                    next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
-                    order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : order_doc.created_date, "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : (((float(i.qty_in_cases) * float(units_cs))*qty)/1000), "Order Value({})".format(curr_month) : float(i.order_value), "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
-
-                    data.append(order_dict)
-    
+def firm_plan_report(doc_filters = None):
+    try:
+        data =[]
+        order_name_list =[]
+        curr_first = frappe.utils.now_datetime().date().replace(day=1)
+        res = calendar.monthrange(curr_first.year, curr_first.month) 
+        curr_last = frappe.utils.now_datetime().date().replace(day=res[1])
         
-    if data == []:
-        frappe.throw(("Record does not exist"))
-    final = pd.DataFrame(data)
-    file_name = "Firm_Plan_Report_{}".format(frappe.utils.now_datetime())
-    sheet_name = "Firm Plan Report"
-    return ibg_marico_oms.download_file(
-        dataframe=final,
-        file_name=file_name,
-        file_extention="xlsx",
-        sheet_name=sheet_name,
-    )
+        if len(doc_filters) > 2:
+            order_items = frappe.get_all(
+                "IBG Order Items",
+                filters = doc_filters,
+                fields=["*"],
+            )
+        else:
+            order_items = frappe.get_all(
+            "IBG Order Items",
+            filters={"created_date" :["BETWEEN", [curr_first, curr_last]]},
+            fields=["*"],
+            )
+
+        order_list = frappe.get_all("IBG Order",fields=["name"])
+        for i in order_list:
+            order_name_list.append(i.name)
+
+
+        if order_items:
+            for i in order_items:
+                if i.parent in order_name_list:
+                    order_doc = frappe.get_doc("IBG Order", i.parent)
+                    if order_doc and order_doc.status == "Approved by Supply Chain":
+                        units_cs = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"unitscs",)
+                        material_group = frappe.db.get_value("FG Code",{"fg_code": i.fg_code},"material_group",)
+                        num = ''
+                        for j in i.product_description:
+                            if j.isdigit():
+                                num+=j
+                        qty = (float((num))/1000)
+                        cust_code = frappe.db.get_value("IBG Distributor",{"customer_name": order_doc.customer},"customer_code",)
+
+                        if len(doc_filters)>2:
+                            curr_month = ""
+                            next_month = calendar.month_abbr[(order_items[-1].created_date.month)+1]
+                            next_nd_month = calendar.month_abbr[(order_items[-1].created_date.month)+2]
+                        else:
+                            curr_month = calendar.month_abbr[order_doc.created_date.month]
+                            next_month = calendar.month_abbr[(order_doc.created_date.month)+1]
+                            next_nd_month = calendar.month_abbr[(order_doc.created_date.month)+2]
+
+                        order_dict = {"Customer Code" : cust_code, "Customer Name" : order_doc.customer, "Country" : order_doc.country, "Order ID" : order_doc.name, "Month" : calendar.month_abbr[order_doc.created_date.month], "FG Code" : i.fg_code, "Rate/Cs" : i.billing_rate, "Currency" : i.units, "Units/Cs": units_cs, "SAP Plant Code" : "", "Material Group" : material_group, "Product Description" : i.product_description, "Qty in Case({})".format(curr_month) : i.qty_in_cases, "Qty in Nos({})".format(curr_month) : (float(i.qty_in_cases) * float(units_cs)), "Qty in kl({})".format(curr_month) : (((float(i.qty_in_cases) * float(units_cs))*qty)/1000), "Order Value({})".format(curr_month) : float(i.order_value), "Qty in Case({})".format(next_month) : "", "Qty in Nos({})".format(next_month) : "", "Qty in kl({})".format(next_month) : "", "Order Value({})".format(next_month) : "", "Qty in Case({})".format(next_nd_month) : "", "Qty in Nos({})".format(next_nd_month) : "", "Qty in kl({})".format(next_nd_month) : "", "Order Value({})".format(next_nd_month) : ""}
+
+                        data.append(order_dict)
+        
+            
+        if data == []:
+            frappe.throw(("Record does not exist"))
+        final = pd.DataFrame(data)
+        file_name = "Firm_Plan_Report_{}".format(frappe.utils.now_datetime())
+        sheet_name = "Firm Plan Report"
+        return ibg_marico_oms.download_file(
+            dataframe=final,
+            file_name=file_name,
+            file_extention="xlsx",
+            sheet_name=sheet_name,
+        )
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="Firm Plan Report Error",
+        )
 
 @frappe.whitelist()
 def sap_rfc_data(doc):
@@ -339,56 +370,3 @@ def sap_price():
             message=frappe.get_traceback(),
             title="SAP Price Master Entry",
         )
-
-# @frappe.whitelist()
-# def ibg_order_items_template():
-#     try:
-#         data = []
-#         df = pd.DataFrame(
-#             data,
-#             columns=[
-#                 "FG Code (Order Items)",
-#                 "Qty in cases (Order Items)"
-#             ],
-#         )
-#         file_name = "IBG_Order_{}".format(frappe.utils.now_datetime())
-#         sheet_name = "IBG_Order"
-#         return ibg_marico_oms.download_file(
-#             dataframe=df,
-#             file_name=file_name,
-#             file_extention="xlsx",
-#             sheet_name=sheet_name,
-#         )
-#     except Exception as e:
-#         frappe.log_error(e)
-
-# @frappe.whitelist()
-# def order_items_file_upload(upload_file, doc_name):
-#     files = frappe.get_all("File", filters={"file_url": upload_file}, page_length=1)
-#     file = frappe.get_doc("File", files[0].name)
-#     file_path = file.get_full_path()
-#     with open(file_path, "r") as upfile:
-#         fcontent = upfile.read()
-
-#     csv_data = read_csv_content(fcontent)
-#     parent = doc_name
-
-#     for i in csv_data[1:]:
-#         if parent:
-#             item = frappe.get_doc(
-#                 {
-#                     "doctype": "IBG Order Items",
-#                     "parent": parent,
-#                     "parentfield": "order_items",
-#                     "parenttype": "IBG Order",
-#                     "fg_code": i[0],
-#                     "product_description":frappe.db.get_value(
-#                         "FG Code",
-#                         {"name": i[0]},
-#                         "product_description",
-#                     ),
-#                     "qty_in_cases": i[1],
-#                     "order_created_on": frappe.utils.now_datetime().date()
-#                 }
-#             ).insert(ignore_permissions=True)
-#             frappe.db.commit()
