@@ -4,7 +4,7 @@ import frappe
 import re
 import pyodbc as p
 
-__version__ = '0.4.1-dev'
+__version__ = '0.4.1-uat'
 
 
 # def supplychain_permission_query(user):
