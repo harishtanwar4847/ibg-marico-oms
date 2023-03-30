@@ -4,7 +4,7 @@
 
 ### Added
 
--[Feat: workflow, Xlsx file upload, workspace changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/10)
+-[Feat: Order doc visiblity based on user roles, rejection by supplychain scenario change] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/10)
 
 
 ## [v0.3.0-uat] - 2023-03-23
