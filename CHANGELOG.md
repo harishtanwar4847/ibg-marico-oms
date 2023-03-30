@@ -4,7 +4,7 @@
 
 ### Added
 
--[Feat: Order firm plan report changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/10)
+-[Feat: Order firm plan report changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/11)
 
 ## [v0.4.0-dev] - 2023-03-30
 
