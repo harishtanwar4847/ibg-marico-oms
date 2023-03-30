@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.4.1-dev] - 2023-03-30
+
+### Added
+
+-[Feat: Order firm plan report changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/10)
+
 ## [v0.4.0-dev] - 2023-03-30
 
 ### Added
