@@ -4,7 +4,7 @@
 
 ### Added
 
--[Feat: SAP BAPI url for production server integrated] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/12)
+-[Feat: SAP BAPI url for production server integrated] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/13)
 
 ## [v0.4.1-uat] - 2023-03-30
 ## [v0.4.1-dev] - 2023-03-30
