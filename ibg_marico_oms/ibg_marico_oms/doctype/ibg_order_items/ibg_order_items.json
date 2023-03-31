@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-02-01 12:19:22.995997",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fg_code",
+  "qty_in_cases",
+  "billing_rate",
+  "units",
+  "order_value",
+  "column_break_7",
+  "product_description",
+  "rate_valid_from",
+  "rate_valid_to",
+  "created_date"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "fg_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "FG Code",
+   "options": "FG Code"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "fg_code.product_description",
+   "fieldname": "product_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Description",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty_in_cases",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty in cases"
+  },
+  {
+   "columns": 1,
+   "fieldname": "order_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Order Value",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "fg_code.rate",
+   "fieldname": "billing_rate",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Billing Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "fetch_from": "fg_code.valid_from",
+   "fieldname": "rate_valid_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Rate Valid Date From",
+   "read_only": 1,
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('Administrator') == 1;",
+   "fetch_from": "fg_code.valid_to",
+   "fieldname": "rate_valid_to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Rate Valid Date To",
+   "read_only": 1,
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "fg_code.currency",
+   "fieldname": "units",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Units",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "created_date",
+   "fieldtype": "Date",
+   "label": "Order Created on",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-24 12:30:10.836080",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "IBG Order Items",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "show_preview_popup": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

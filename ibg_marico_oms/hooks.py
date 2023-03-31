@@ -83,7 +83,8 @@ app_license = "MIT"
 # Permissions evaluated in scripted ways
 
 # permission_query_conditions = {
-#	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+# 	# "Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+#     "IBG Order": "ibg_marico_oms.supplychain_permission_query",
 # }
 #
 # has_permission = {
@@ -103,33 +104,42 @@ app_license = "MIT"
 # Hook on document methods and events
 
 # doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
+# 	"IBG Order": {
+# 		"before_save": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
+# 		"on_submit": "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.set_approver_name",
+# 	}
 # }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"ibg_marico_oms.tasks.all"
-#	],
-#	"daily": [
-#		"ibg_marico_oms.tasks.daily"
-#	],
-#	"hourly": [
-#		"ibg_marico_oms.tasks.hourly"
-#	],
-#	"weekly": [
-#		"ibg_marico_oms.tasks.weekly"
-#	],
-#	"monthly": [
-#		"ibg_marico_oms.tasks.monthly"
-#	],
-# }
+scheduler_events = {
+	# "all": [
+	# 	"ibg_marico_oms.tasks.all"
+	# ],
+	# "daily": [
+	# 	"ibg_marico_oms.tasks.daily"
+	# ],
+	# "hourly": [
+	# 	"ibg_marico_oms.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"ibg_marico_oms.tasks.weekly"
+	# ],
+	# "monthly": [
+	# 	"ibg_marico_oms.tasks.monthly"
+	# ],
+	"cron" : {
+		"0 2 * * *": ["ibg_marico_oms.extract_product_data"],  # At 02:00 AM daily
+        "0 0,12 * * *": [
+            "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.sap_price"
+        ],  # At 12:00 AM daily
+        "0 1 * * *": [
+            "ibg_marico_oms.extract_customer_shipto"
+        ],  # At 01:00 AM
+
+	},
+}
 
 # Testing
 # -------
