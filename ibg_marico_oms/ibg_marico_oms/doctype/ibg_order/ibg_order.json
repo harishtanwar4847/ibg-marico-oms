@@ -86,7 +86,8 @@
    "fieldtype": "Table",
    "label": "Order Items",
    "options": "IBG Order Items",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1;",
+   "reqd": 1
   },
   {
    "fieldname": "bill_to",
@@ -111,12 +112,14 @@
    "label": "Only for Supply Chain"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "order_type",
    "fieldtype": "Data",
    "label": "Order Type",
    "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "division",
    "fieldtype": "Data",
    "label": "Division",
@@ -127,12 +130,14 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "sales_organizational",
    "fieldtype": "Data",
    "label": "Sales Organizational",
    "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "sales_office",
    "fieldtype": "Data",
    "label": "Sales Office",
@@ -143,12 +148,14 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "distribution_channel",
    "fieldtype": "Data",
    "label": "Distribution Channel",
    "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1;",
    "fieldname": "sales_group",
    "fieldtype": "Data",
    "label": "Sales Group",
@@ -181,7 +188,7 @@
   {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
-   "label": "Remarks",
+   "label": "IBG Finance Remarks",
    "read_only": 1
   },
   {
@@ -235,14 +242,14 @@
   {
    "fieldname": "supplychain_remarks",
    "fieldtype": "Small Text",
-   "label": "Remarks",
+   "label": "Supply Chain Remarks",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 17:24:38.088679",
+ "modified": "2023-03-31 16:00:14.774404",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",

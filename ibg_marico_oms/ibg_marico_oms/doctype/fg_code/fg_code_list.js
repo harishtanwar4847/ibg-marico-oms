@@ -3,7 +3,6 @@ frappe.listview_settings["FG Code"] = {
     refresh: function (listview) {
       var is_true = frappe.user_roles.find((role) => role === "System Manager");
       if (is_true || frappe.session.user == "Administrator") {
-        // console.log("INSIDE REFRESH")
         listview.page.add_menu_item(__("Download Product Units Template"), function () {
           frappe.call({
             method:
