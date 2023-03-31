@@ -4,15 +4,7 @@ import frappe
 import re
 import pyodbc as p
 
-__version__ = '0.4.1-uat'
-
-
-# def supplychain_permission_query(user):
-#     if not user:
-#         user = frappe.session.user
-#     user_doc = frappe.get_doc("User", user).as_dict()
-#     if "Supply Chain" in [r.role for r in user_doc.roles]:
-#         return "(`tabIBG Order`.status = 'Approved by IBG Finance' or `tabIBG Order`.status = 'Approved by Supply Chain' or `tabIBG Order`._assign like '%{user_session}%')".format(user_session=user)
+__version__ = '0.5.1-dev'
 
 def download_file(dataframe, file_name, file_extention, sheet_name):
     file_name = "{}.{}".format(file_name, file_extention)

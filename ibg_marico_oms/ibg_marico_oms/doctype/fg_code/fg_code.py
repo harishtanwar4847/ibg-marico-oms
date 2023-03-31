@@ -1,7 +1,6 @@
 # Copyright (c) 2023, Atrina Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-# import frappe
 import frappe
 from frappe.model.document import Document
 from frappe.utils.csvutils import read_csv_content
