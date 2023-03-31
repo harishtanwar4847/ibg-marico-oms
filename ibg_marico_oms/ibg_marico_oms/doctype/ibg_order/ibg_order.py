@@ -303,7 +303,7 @@ def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
         if frappe.utils.get_url() == "https://marico.atriina.com":
-            wdsl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
+            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
         else:
