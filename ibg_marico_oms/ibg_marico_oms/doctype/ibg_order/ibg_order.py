@@ -182,7 +182,7 @@ def order_file_upload(upload_file, doc_name = None):
                             ),
 
                             "qty_in_cases": i[6],
-                            "order_created_on": frappe.utils.now_datetime().date()
+                            "created_date": frappe.utils.now_datetime().date()
                         }
                     ).insert(ignore_permissions=True)
                     frappe.db.commit()
@@ -215,7 +215,7 @@ def order_file_upload(upload_file, doc_name = None):
                         ),
 
                         "qty_in_cases": i[6],
-                        "order_created_on": frappe.utils.now_datetime().date()
+                        "created_date": frappe.utils.now_datetime().date()
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()

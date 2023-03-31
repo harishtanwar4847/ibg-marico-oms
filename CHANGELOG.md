@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.5.2-dev] - 2023-03-31
+
+### Added
+
+-[Feat: Minor order items table changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/15)
+
 ## [v0.5.1-uat] - 2023-03-31
 ## [v0.5.1-dev] - 2023-03-31
 
