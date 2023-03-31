@@ -100,7 +100,7 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
-            frappe.msgprint(_("SAP SO Number generated is {}",format(sap_number['sap_so_number'][1]['SALES_ORD'])))
+            frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -302,10 +302,17 @@ def firm_plan_report(doc_filters = None):
 def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
-        wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
+        if frappe.utils.get_url() == "https://marico.atriina.com":
+            wdsl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
+            userid = "minet"
+            pswd = "ramram"
+        else:
+            wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
+            userid = "portal"
+            pswd = "portal@345"
         client = Client(wsdl)
         session = Session()
-        session.auth = HTTPBasicAuth("portal", "portal@345")
+        session.auth = HTTPBasicAuth(userid, pswd)
         client=Client(wsdl,transport=Transport(session=session))
         items = []
         for i in doc.order_items:
@@ -347,10 +354,17 @@ def sap_rfc_data(doc):
 @frappe.whitelist()
 def sap_price():
     try:
-        wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
+        if frappe.utils.get_url() == "https://marico.atriina.com":
+            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
+            userid = "minet"
+            pswd = "ramram"
+        else:
+            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
+            userid = "portal"
+            pswd = "portal@345"
         client = Client(wsdl)
         session = Session()
-        session.auth = HTTPBasicAuth("portal", "portal@345")
+        session.auth = HTTPBasicAuth(userid, pswd)
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)

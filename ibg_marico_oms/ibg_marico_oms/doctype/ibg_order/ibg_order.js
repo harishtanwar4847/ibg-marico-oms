@@ -15,7 +15,7 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_value("sales_office","") 
 			frm.set_value("sales_group","") 
 			frm.set_value("sap_so_number","")
-			frm.set_value("status","")
+			frm.set_value("status","Pending")
 			frm.refresh_field("remarks")              
 			frm.refresh_field("created_date")              
 			frm.refresh_field("approved_by_ibgfinance")              
@@ -48,7 +48,6 @@ frappe.ui.form.on('IBG Order', {
 		var is_sc = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");	
 		if ((is_ibg || is_supuser) && (frm.doc.status === "Pending") && (frm.selected_workflow_action === "Reject")) {
-			console.log("AAAA Inside if condition")
             var d = new frappe.ui.Dialog({
                 title: __('Reason for Rejection'),
                 fields: [
@@ -60,16 +59,12 @@ frappe.ui.form.on('IBG Order', {
                     }
                 ],
                 primary_action: function() {
-					console.log("AAAA Inside primary action condition")
                     var data = d.get_values();
                     if (window.timeout){
-						console.log("AAAA Inside timeout if condition")
 						clearTimeout(window.timeout)
 						delete window.timeout
-						console.log("AAAA After delete condition")
 					}
 					window.timeout=setTimeout(function(){
-						console.log("AAAA Inside  222 primary action condition")
 						frm.set_value("remarks",data.remarks) 
 						frm.set_value("status","Rejected by IBG Finance") 
 						frm.set_value("workflow_state","Rejected by IBG Finance") 
@@ -83,7 +78,6 @@ frappe.ui.form.on('IBG Order', {
             d.show();          
         }
 		if ((is_sc || is_supuser) && (frm.doc.status === "Approved by IBG Finance") && (frm.selected_workflow_action === "Reject")) {
-			console.log("BBBB Inside if condition")
             var d = new frappe.ui.Dialog({
                 title: __('Reason for Rejection'),
                 fields: [
@@ -95,13 +89,10 @@ frappe.ui.form.on('IBG Order', {
                     }
                 ],
                 primary_action: function() {
-					console.log("BBB Inside primary action condition")
                     var data = d.get_values();
                     if (window.timeout){
-						console.log("BBB Inside timeout if condition")
 						clearTimeout(window.timeout)
 						delete window.timeout
-						console.log("BBB After delete condition")
 					}
 					window.timeout=setTimeout(function(){
 						frm.set_value("supplychain_remarks",data.remarks) 
@@ -117,7 +108,6 @@ frappe.ui.form.on('IBG Order', {
             d.show();          
         }
 		if ((is_ibg || is_supuser) && (frm.selected_workflow_action === "Hold")) {
-			console.log("Inside if condition")
             var d = new frappe.ui.Dialog({
                 title: __('Reason for Hold'),
                 fields: [
@@ -129,13 +119,10 @@ frappe.ui.form.on('IBG Order', {
                     }
                 ],
                 primary_action: function() {
-					console.log("Inside primary action condition")
                     var data = d.get_values();
                     if (window.timeout){
-						console.log("Inside timeout if condition")
 						clearTimeout(window.timeout)
 						delete window.timeout
-						console.log("After delete condition")
 					}
 					window.timeout=setTimeout(function(){
 						frm.set_value("remarks",data.remarks) 
