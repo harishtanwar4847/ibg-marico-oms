@@ -22,7 +22,7 @@ def fgcode_unitscs_template():
                 "Units/CS",
             ],
         )
-        file_name = "Product_list_{}".format(frappe.utils.now_datetime())
+        file_name = "Product_list_{}".format(frappe.utils.now_datetime().date())
         sheet_name = "Product_list"
         return ibg_marico_oms.download_file(
             dataframe=df,
