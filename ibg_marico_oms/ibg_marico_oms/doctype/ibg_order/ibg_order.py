@@ -109,7 +109,7 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        if "Supply Chain" in user_role and (not self.order_type or not self.division or not self.sales_organizational or not self.sales_office or not self.distribution_channel or not self.sales_group):
+        if "Supply Chain" in user_role and (self.status == "Approved by Supply Chain" or self.status == "Approved by IBG Finance") and (not self.order_type or not self.division or not self.sales_organizational or not self.sales_office or not self.distribution_channel or not self.sales_group):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
@@ -302,7 +302,7 @@ def firm_plan_report(doc_filters = None):
 def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
-        if frappe.utils.get_url() == "https://marico.atriina.com":
+        if frappe.utils.get_url() == "http://marico_prod":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
@@ -354,7 +354,7 @@ def sap_rfc_data(doc):
 @frappe.whitelist()
 def sap_price():
     try:
-        if frappe.utils.get_url() == "https://marico.atriina.com":
+        if frappe.utils.get_url() == "http://marico_prod":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
