@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.1] - 2023-04-13
+## [v1.0.1-uat] - 2023-04-13
+## [v1.0.1-dev] - 2023-04-13
+
+### Added
+
+-[Feat: Superuser conditions] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/18)
+
 ## [v1.0.0] - 2023-03-31 
 ## [v0.5.2-uat] - 2023-03-31
 ## [v0.5.2-dev] - 2023-03-31
