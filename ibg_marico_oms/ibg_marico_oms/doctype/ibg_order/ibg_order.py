@@ -34,7 +34,11 @@ class IBGOrder(Document):
         if price:
             for i in self.order_items:
                 for j in price:
-                    if i.fg_code == j['MATERIAL'] and float(self.bill_to) == float(j['CUSTOMER']):
+                    if float(i.fg_code) == float(j['MATERIAL']) and float(self.bill_to) == float(j['CUSTOMER']):
+                        frappe.log_error(
+                            message=j,
+                            title="inside condition in PRICE BAPI",
+                        )
                         i.billing_rate = float(j['RATE'])
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
