@@ -32,8 +32,8 @@ class IBGOrder(Document):
         )
         print("rESPONSE :", price)
         if price:
-            for i in self.items:
-                for j in price.response:
+            for i in self.order_items:
+                for j in price:
                     if i.fg_code == j['MATERIAL'] and float(self.bill_to) == float(j['CUSTOMER']):
                         i.billing_rate = float(j['RATE'])
                         i.rate_valid_from = j['VALID_FROM']
