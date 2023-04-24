@@ -26,23 +26,21 @@ from requests.auth import HTTPBasicAuth
 class IBGOrder(Document):
     def before_save(self):
         price = sap_price()
-        frappe.log_error(
-            message=price,
-            title="PRICE BAPI",
-        )
-        print("rESPONSE :", price)
         if price:
             for i in self.order_items:
                 for j in price:
                     if float(i.fg_code) == float(j['MATERIAL']) and float(self.bill_to) == float(j['CUSTOMER']):
-                        frappe.log_error(
-                            message=j,
-                            title="inside condition in PRICE BAPI",
-                        )
                         i.billing_rate = float(j['RATE'])
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
                         i.units = j['CURRENCY']
+                    else:
+                        frappe.log_error(
+                            message= "Order details - {}\n"
+                            + "Customer name - {}, Bill To - {}"
+                            + "order item(FG Code)- {}".format(self.name, self.customer,self.bill_to,i.fg_code),
+                            title="Data Unavailable in Price BAPI",
+                        )
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
