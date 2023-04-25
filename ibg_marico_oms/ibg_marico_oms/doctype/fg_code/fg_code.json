@@ -10,13 +10,9 @@
  "field_order": [
   "fg_code",
   "product_description",
-  "material_group",
-  "unitscs",
   "column_break_5",
-  "rate",
-  "currency",
-  "valid_from",
-  "valid_to"
+  "material_group",
+  "unitscs"
  ],
  "fields": [
   {
@@ -42,33 +38,13 @@
    "precision": "2"
   },
   {
-   "fieldname": "rate",
-   "fieldtype": "Data",
-   "label": "Rate"
-  },
-  {
-   "fieldname": "currency",
-   "fieldtype": "Data",
-   "label": "Currency"
-  },
-  {
-   "fieldname": "valid_from",
-   "fieldtype": "Date",
-   "label": "Valid From"
-  },
-  {
-   "fieldname": "valid_to",
-   "fieldtype": "Date",
-   "label": "Valid To"
-  },
-  {
    "fieldname": "column_break_5",
    "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 17:51:21.501459",
+ "modified": "2023-04-24 12:18:31.596206",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "FG Code",
