@@ -26,14 +26,28 @@ from requests.auth import HTTPBasicAuth
 class IBGOrder(Document):
     def before_save(self):
         price = sap_price()
+        price_data = []
         if price:
+            for j in price:
+                if (j['CUSTOMER'].isnumeric()==True) and (int(self.bill_to) == int(j['CUSTOMER'])):
+                    price_data.append(j)
+        if len(price_data) >= 1:
             for i in self.order_items:
-                for j in price:
-                    if int(i.fg_code) == int(j['MATERIAL']) and float(self.bill_to) == float(j['CUSTOMER']):
+                for j in price_data:
+                    if int(i.fg_code) == int(j['MATERIAL']):
                         i.billing_rate = float(j['RATE'])
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
                         i.units = j['CURRENCY']
+        else:
+            frappe.throw(_("Data for the Customer name {}/Bill To {} unavailable in SAP."))
+            frappe.log_error(
+                message= "Order Id -{}\n"
+                + "Customer name -{}\n"
+                + "Bill To Code -{}\n"
+                + "Message - Price Data Unavailable".format(self.name,self.customer,self.bill_to),
+                title="Price Data unavailable in SAP Price BAPI",
+            )
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
