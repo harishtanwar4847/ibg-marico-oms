@@ -47,7 +47,7 @@ class IBGOrder(Document):
                 + "Message - Price Data Unavailable.".format(self.name,self.customer,self.bill_to),
                 title="Price Data unavailable in SAP Price BAPI",
             )
-            frappe.throw(_("Data for the Customer name {}/Bill To {} unavailable in SAP.".format(self.customer, self.bill_to)))
+            frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(self.customer, self.bill_to)))
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
