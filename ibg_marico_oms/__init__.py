@@ -4,7 +4,7 @@ import frappe
 import re
 import pyodbc as p
 
-__version__ = '1.1.1'
+__version__ = '1.1.1-uat'
 
 def download_file(dataframe, file_name, file_extention, sheet_name):
     file_name = "{}.{}".format(file_name, file_extention)
