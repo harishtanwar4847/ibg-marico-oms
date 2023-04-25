@@ -44,7 +44,7 @@ class IBGOrder(Document):
                 message= "Order Id -{}\n"
                 + "Customer name -{}\n"
                 + "Bill To Code -{}\n"
-                + "Message - Price Data Unavailable".format(self.name,self.customer,self.bill_to),
+                + "Message - Price Data Unavailable.".format(self.name,self.customer,self.bill_to),
                 title="Price Data unavailable in SAP Price BAPI",
             )
             frappe.throw(_("Data for the Customer name {}/Bill To {} unavailable in SAP.".format(self.customer, self.bill_to)))
