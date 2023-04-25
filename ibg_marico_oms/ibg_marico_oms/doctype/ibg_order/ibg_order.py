@@ -77,7 +77,7 @@ class IBGOrder(Document):
         count_order_value = 0
         count_valid_from = 0
         count_valid_to = 0
-        if "IBG Finance" in user_role:
+        if ("IBG Finance" in user_role) or ("System Manager" in user_role):
             for i in self.order_items:
                 if not i.billing_rate or float(i.billing_rate) <= 0:
                     count_billing_rate += 1
