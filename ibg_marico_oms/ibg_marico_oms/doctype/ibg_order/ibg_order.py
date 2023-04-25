@@ -25,6 +25,16 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
+        price = sap_price()
+        if price:
+            for i in self.order_items:
+                for j in price:
+                    if int(i.fg_code) == int(j['MATERIAL']) and float(self.bill_to) == float(j['CUSTOMER']):
+                        i.billing_rate = float(j['RATE'])
+                        i.rate_valid_from = j['VALID_FROM']
+                        i.rate_valid_to = j['VALID_TO']
+                        i.units = j['CURRENCY']
+
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -368,16 +378,17 @@ def sap_price():
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
-        for i in response:
-            fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
-            if len(fgcode_list) > 0:
-                fgcode_doc = frappe.get_doc("FG Code", fgcode_list[0].name)
-                fgcode_doc.valid_from =i['VALID_FROM']
-                fgcode_doc.valid_to = i['VALID_TO']
-                fgcode_doc.rate = float(i['RATE'])
-                fgcode_doc.currency = i['CURRENCY']
-                fgcode_doc.save(ignore_permissions = True)
-                frappe.db.commit()
+        # for i in response:
+        #     fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
+        #     if len(fgcode_list) > 0:
+        #         fgcode_doc = frappe.get_doc("FG Code", fgcode_list[0].name)
+        #         fgcode_doc.valid_from =i['VALID_FROM']
+        #         fgcode_doc.valid_to = i['VALID_TO']
+        #         fgcode_doc.rate = float(i['RATE'])
+        #         fgcode_doc.currency = i['CURRENCY']
+        #         fgcode_doc.save(ignore_permissions = True)
+        #         frappe.db.commit()
+        return response
 
     except Exception as e:
         frappe.log_error(

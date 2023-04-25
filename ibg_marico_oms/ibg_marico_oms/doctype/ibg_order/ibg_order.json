@@ -8,16 +8,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "country",
   "customer",
-  "sap_so_number",
-  "column_break_4",
   "bill_to",
   "order_etd",
-  "status",
-  "column_break_6",
+  "column_break_4",
   "ship_to",
+  "bill_to_customer",
+  "sap_so_number",
+  "column_break_6",
+  "country",
   "created_date",
+  "status",
   "items_section",
   "order_items",
   "section_break_13",
@@ -53,15 +54,16 @@
   {
    "fieldname": "customer",
    "fieldtype": "Link",
-   "label": "Customer",
+   "label": "Ship To Customer Name",
    "options": "IBG Distributor",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";",
+   "reqd": 1
   },
   {
    "fetch_from": "customer.ship_to",
    "fieldname": "ship_to",
    "fieldtype": "Data",
-   "label": "Ship To",
+   "label": "Ship To Code",
    "read_only": 1
   },
   {
@@ -91,15 +93,17 @@
   {
    "fieldname": "bill_to",
    "fieldtype": "Link",
-   "label": "Bill To",
+   "label": "Bill To Code",
    "options": "Bill To",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";",
+   "reqd": 1
   },
   {
    "fieldname": "order_etd",
    "fieldtype": "Date",
    "label": "Order ETD",
-   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";"
+   "read_only_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || doc.status == \"Rejected by IBG Finance\" || doc.status == \"Rejected by Supply Chain\";",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_6",
@@ -243,12 +247,19 @@
    "fieldtype": "Small Text",
    "label": "Supply Chain Remarks",
    "read_only": 1
+  },
+  {
+   "fetch_from": "bill_to.customer",
+   "fieldname": "bill_to_customer",
+   "fieldtype": "Data",
+   "label": "Bill To Customer Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-04 15:12:38.301898",
+ "modified": "2023-04-24 16:26:19.332474",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
