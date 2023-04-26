@@ -28,7 +28,7 @@ class IBGOrder(Document):
         price = sap_price()
 
         ibg_marico_oms.create_log(
-            {"datetime" : frappe.utils.now_datetime(),"response" : price,},
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(price),},
             "sap_price_after_request",
         )
         price_data = []
@@ -384,7 +384,7 @@ def sap_rfc_data(doc):
 def sap_price():
     try:
         ibg_marico_oms.create_log(
-            {"datetime" : frappe.utils.now_datetime(),"response" : "",},
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "sap_price_before_request",
         )
         if frappe.utils.get_url() == "http://marico_prod":

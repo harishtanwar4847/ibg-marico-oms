@@ -19,6 +19,7 @@ def download_file(dataframe, file_name, file_extention, sheet_name):
 def create_log(log, file_name):
     try:
         log_file = frappe.utils.get_files_path("{}.json".format(file_name))
+        print(log_file)
         logs = None
         if os.path.exists(log_file):
             with open(log_file, "r") as f:
