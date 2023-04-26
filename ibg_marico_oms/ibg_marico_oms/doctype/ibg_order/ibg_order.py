@@ -25,7 +25,23 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
+        ibg_marico_oms.create_log(
+            log = {
+            "datetime" : frappe.utils.now_datetime(),
+            "response" : "",
+            },
+            file_name= "sap_price_before_request"
+        )
+        
         price = sap_price()
+
+        ibg_marico_oms.create_log(
+            log = {
+            "datetime" : frappe.utils.now_datetime(),
+            "response" : price,
+            },
+            file_name= "sap_price_after_request"
+        )
         price_data = []
         if price:
             for j in price:
