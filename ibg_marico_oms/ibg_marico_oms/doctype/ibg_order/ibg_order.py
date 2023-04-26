@@ -26,11 +26,6 @@ from requests.auth import HTTPBasicAuth
 class IBGOrder(Document):
     def before_save(self):
         price = sap_price()
-
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(price),},
-            "sap_price_after_request",
-        )
         price_data = []
         if price:
             for j in price:
@@ -401,6 +396,10 @@ def sap_price():
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+            "sap_price_after_request",
+        )
         # for i in response:
         #     fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
         #     if len(fgcode_list) > 0:
