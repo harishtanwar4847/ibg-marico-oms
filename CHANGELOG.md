@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.1.3-dev] - 2023-04-26
+
+### Added
+
+-[Feat: Price BAPI integration changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/27)
+
 ## [v1.1.2] - 2023-04-25
 ## [v1.1.2-uat] - 2023-04-25
 
