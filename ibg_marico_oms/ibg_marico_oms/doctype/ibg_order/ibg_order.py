@@ -378,6 +378,10 @@ def sap_rfc_data(doc):
 @frappe.whitelist()
 def sap_price():
     try:
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+            "sap_price_before_request",
+        )
         if frappe.utils.get_url() == "http://marico_prod":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
@@ -392,6 +396,10 @@ def sap_price():
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+            "sap_price_after_request",
+        )
         # for i in response:
         #     fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
         #     if len(fgcode_list) > 0:
