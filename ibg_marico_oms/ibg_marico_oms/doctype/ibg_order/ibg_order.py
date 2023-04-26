@@ -25,11 +25,6 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
-        ibg_marico_oms.create_log(
-            {"datetime" : frappe.utils.now_datetime(),"response" : "",},
-            "sap_price_before_request",
-        )
-
         price = sap_price()
 
         ibg_marico_oms.create_log(
@@ -388,6 +383,10 @@ def sap_rfc_data(doc):
 @frappe.whitelist()
 def sap_price():
     try:
+        ibg_marico_oms.create_log(
+            {"datetime" : frappe.utils.now_datetime(),"response" : "",},
+            "sap_price_before_request",
+        )
         if frappe.utils.get_url() == "http://marico_prod":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
