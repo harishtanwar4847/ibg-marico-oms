@@ -401,7 +401,7 @@ def sap_price():
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "sap_price_before_request",
         )
-        if frappe.utils.get_url() == "http://marico_prod":
+        if frappe.utils.get_url() == "https://marico.atriina.com":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
