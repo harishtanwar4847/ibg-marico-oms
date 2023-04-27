@@ -48,7 +48,6 @@ class IBGOrder(Document):
                 title="Price Data unavailable in SAP Price BAPI",
             )
             frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(self.customer, self.bill_to)))
-
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -111,7 +110,7 @@ class IBGOrder(Document):
                 self.workflow_state = 'Pending'
                 self.remarks = ''
                 self.supplychain_remarks =''
-        
+
 
     def before_submit(self):
         sap_number = sap_rfc_data(self)
@@ -326,7 +325,11 @@ def firm_plan_report(doc_filters = None):
 def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
-        if frappe.utils.get_url() == "http://marico_prod":
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Order_id" : str(doc.name)},
+            "sap_ord_before_request",
+        )
+        if frappe.utils.get_url() == "https://marico.atriina.com":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
@@ -356,7 +359,15 @@ def sap_rfc_data(doc):
             items.append(order_dict)
 
         request_data={'IT_ERR':'','IT_RET' :'','IT_SO':{'item':items}}
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data), "Order_id" : str(doc.name),},
+            "sap_ord_request",
+        )
         response=client.service.ZBAPI_IBG_ORD(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response), "Order_id" : str(doc.name),},
+            "sap_ord_response",
+        )
         order_details = response['IT_SO']['item']
         if len(response['IT_ERR']['item']) > 1:
             frappe.log_error(
@@ -382,7 +393,7 @@ def sap_price():
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "sap_price_before_request",
         )
-        if frappe.utils.get_url() == "http://marico_prod":
+        if frappe.utils.get_url() == "https://marico.atriina.com":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
@@ -395,21 +406,15 @@ def sap_price():
         session.auth = HTTPBasicAuth(userid, pswd)
         client=Client(wsdl,transport=Transport(session=session))
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+            "sap_price_request",
+        )
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
-            "sap_price_after_request",
+            "sap_price_response",
         )
-        # for i in response:
-        #     fgcode_list = frappe.get_all("FG Code", filters = {"fg_code": int(i['MATERIAL'])}, fields=["*"])
-        #     if len(fgcode_list) > 0:
-        #         fgcode_doc = frappe.get_doc("FG Code", fgcode_list[0].name)
-        #         fgcode_doc.valid_from =i['VALID_FROM']
-        #         fgcode_doc.valid_to = i['VALID_TO']
-        #         fgcode_doc.rate = float(i['RATE'])
-        #         fgcode_doc.currency = i['CURRENCY']
-        #         fgcode_doc.save(ignore_permissions = True)
-        #         frappe.db.commit()
         return response
 
     except Exception as e:
