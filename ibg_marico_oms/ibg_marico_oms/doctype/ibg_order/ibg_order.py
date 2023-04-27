@@ -410,7 +410,7 @@ def sap_price():
             userid = "portal"
             pswd = "portal@345"
         ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()), "wsdl" : str(wsdl), "userid" : str(userid), "pswd" : str(pswd)},
+            {"datetime" : str(frappe.utils.now_datetime()),"url" : str(frappe.utils.get_url()), "wsdl" : str(wsdl), "userid" : str(userid), "pswd" : str(pswd)},
             "sap_price_client",
         )
         client = Client(wsdl)
