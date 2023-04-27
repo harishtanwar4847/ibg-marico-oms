@@ -335,7 +335,11 @@ def firm_plan_report(doc_filters = None):
 def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
-        if frappe.utils.get_url() == "http://marico_prod":
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Order_id" : str(doc.name)},
+            "sap_ord_before_request",
+        )
+        if frappe.utils.get_url() == "https://marico.atriina.com":
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
@@ -365,7 +369,15 @@ def sap_rfc_data(doc):
             items.append(order_dict)
 
         request_data={'IT_ERR':'','IT_RET' :'','IT_SO':{'item':items}}
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data), "Order_id" : str(doc.name),},
+            "sap_ord_request",
+        )
         response=client.service.ZBAPI_IBG_ORD(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response), "Order_id" : str(doc.name),},
+            "sap_ord_response",
+        )
         order_details = response['IT_SO']['item']
         if len(response['IT_ERR']['item']) > 1:
             frappe.log_error(
@@ -399,10 +411,6 @@ def sap_price():
             wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
             userid = "portal"
             pswd = "portal@345"
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"url" : str(frappe.utils.get_url()), "wsdl" : str(wsdl), "userid" : str(userid), "pswd" : str(pswd)},
-            "sap_price_client",
-        )
         client = Client(wsdl)
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
