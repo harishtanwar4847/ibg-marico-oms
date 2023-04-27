@@ -35,16 +35,6 @@ class IBGOrder(Document):
             for i in self.order_items:
                 for j in price_data:
                     if int(i.fg_code) == int(j['MATERIAL']):
-                        # frappe.db.set_value(
-                        #     "IBG Order Items",
-                        #     i.name,
-                        #     {
-                        #         "billing_rate": float(j['RATE']),
-                        #         "rate_valid_from": j['VALID_FROM'],
-                        #         "rate_valid_to": j['VALID_TO'],
-                        #         "units": j['CURRENCY'],
-                        #     },
-                        # )
                         i.billing_rate = float(j['RATE'])
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
@@ -343,7 +333,7 @@ def sap_rfc_data(doc):
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
-        elif frappe.utils.get_url() == "https://uat.marico.atriina.com":
+        else:
             wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
             userid = "portal"
             pswd = "portal@345"
