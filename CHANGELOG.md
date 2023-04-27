@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.1.4-dev] - 2023-04-27
+
+### Added
+
+-[Feat: Price BAPI integration mapped with live url changes] (https://gitlab.com/atri-tech/atri-maintainers/ibg-marico-oms/-/merge_requests/30)
+
+
 ## [v1.1.3] - 2023-04-26
 ## [v1.1.3-uat] - 2023-04-26
 ## [v1.1.3-dev] - 2023-04-26
