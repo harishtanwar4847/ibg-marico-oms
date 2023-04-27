@@ -88,8 +88,16 @@ class IBGOrder(Document):
                 self.remarks = ''
                 self.supplychain_remarks =''
         
-    def after_save(self):
+    def on_update(self):
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+            "sap_price_on_update",
+        )
         price = sap_price()
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(price),},
+            "sap_price_on_update_price",
+        )
         price_data = []
         if price:
             for j in price:
@@ -99,10 +107,20 @@ class IBGOrder(Document):
             for i in self.order_items:
                 for j in price_data:
                     if int(i.fg_code) == int(j['MATERIAL']):
-                        i.billing_rate = float(j['RATE'])
-                        i.rate_valid_from = j['VALID_FROM']
-                        i.rate_valid_to = j['VALID_TO']
-                        i.units = j['CURRENCY']
+                        frappe.db.set_value(
+                            "IBG Order Items",
+                            i.name,
+                            {
+                                "billing_rate": float(j['RATE']),
+                                "rate_valid_from": j['VALID_FROM'],
+                                "rate_valid_to": j['VALID_TO'],
+                                "units": j['CURRENCY'],
+                            },
+                        )
+                        # i.billing_rate = float(j['RATE'])
+                        # i.rate_valid_from = j['VALID_FROM']
+                        # i.rate_valid_to = j['VALID_TO']
+                        # i.units = j['CURRENCY']
         else:
             frappe.log_error(
                 message= "Order Id -{}\n"
