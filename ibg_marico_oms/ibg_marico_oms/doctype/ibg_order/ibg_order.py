@@ -343,7 +343,7 @@ def sap_rfc_data(doc):
             wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
             userid = "minet"
             pswd = "ramram"
-        else:
+        elif frappe.utils.get_url() == "https://uat.marico.atriina.com":
             wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
             userid = "portal"
             pswd = "portal@345"
@@ -423,7 +423,7 @@ def sap_price():
         response=client.service.ZBAPI_PRICE_MASTER(**request_data)
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
-            "sap_price_after_request",
+            "sap_price_response",
         )
         return response
 
