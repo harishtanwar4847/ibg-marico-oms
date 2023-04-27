@@ -410,12 +410,24 @@ def sap_price():
             userid = "portal"
             pswd = "portal@345"
         client = Client(wsdl)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()), "client" : str(client)},
+            "sap_price_client",
+        )
         session = Session()
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"session" : str(session),},
+            "sap_price_session",
+        )
         session.auth = HTTPBasicAuth(userid, pswd)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()), "session.auth" : str(session.auth)},
+            "sap_price_sessionauth",
+        )
         client=Client(wsdl,transport=Transport(session=session))
         ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"session" : str(session), "session.auth" : str(session.auth), "client" : str(client)},
-            "sap_price_client",
+            {"datetime" : str(frappe.utils.now_datetime()), "client" : str(client)},
+            "sap_price_clientwdsl",
         )
         request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
         ibg_marico_oms.create_log(
