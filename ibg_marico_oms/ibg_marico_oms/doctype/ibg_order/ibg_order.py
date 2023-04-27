@@ -409,6 +409,10 @@ def sap_price():
             wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
             userid = "portal"
             pswd = "portal@345"
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()), "wsdl" : str(wsdl), "userid" : str(userid), "pswd" : str(pswd)},
+            "sap_price_client",
+        )
         client = Client(wsdl)
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()), "client" : str(client)},
