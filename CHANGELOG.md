@@ -1,4 +1,10 @@
 # Changelog
+## [v1.1.5-dev] - 2023-07-11
+
+### Fixed
+
+-[Fix: Sales Group & Sales Office field changes and Date Validation] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/1)
+
 
 ## [v1.1.4] - 2023-04-27
 ## [v1.1.4-uat] - 2023-04-27
