@@ -215,7 +215,7 @@ def order_file_upload(upload_file, doc_name = None):
                 if len(customer) == 0:
                     frappe.throw(_("Please enter a Valid Customer Name in Customer column."))
                 
-                date_pattern_str = r'^\d{2}/\d{2}/\d{4}$'
+                date_pattern_str = r'^\d{4}/\d{2}/\d{2}$'
                 if not re.match(date_pattern_str, i[4]):
                     frappe.throw(_("Please enter Order ETD date in valid date format."))
                 
