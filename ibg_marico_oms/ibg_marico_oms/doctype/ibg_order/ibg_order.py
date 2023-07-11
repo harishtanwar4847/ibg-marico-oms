@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import calendar
 from random import randint
+import re
 
 import frappe
 import pandas as pd
@@ -80,20 +81,20 @@ class IBGOrder(Document):
             for i in self.order_items:
                 if not i.billing_rate or float(i.billing_rate) <= 0:
                     count_billing_rate += 1
-                if not i.order_value or float(i.order_value) <= 0:
+                elif not i.order_value or float(i.order_value) <= 0:
                     count_order_value += 1
-                if not i.rate_valid_from:
+                elif not i.rate_valid_from:
                     count_valid_from +=1
-                if not i.rate_valid_to:
+                elif not i.rate_valid_to:
                     count_valid_to +=1
 
             if count_billing_rate > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the billing rate in the order items"))
-            if count_order_value > 0 and self.status == "Approved by IBG Finance":
+            elif count_order_value > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the order value in the order items"))
-            if count_valid_from > 0 and self.status == "Approved by IBG Finance":
+            elif count_valid_from > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the Valid from date in the order items"))
-            if count_valid_to > 0 and self.status == "Approved by IBG Finance":
+            elif count_valid_to > 0 and self.status == "Approved by IBG Finance":
                 frappe.throw(_("Please enter the Valid to date in the order items"))
 
         if "IBG Finance" in user_role and self.status == 'Approved by IBG Finance' and not self.approved_by_ibgfinance:
@@ -145,9 +146,8 @@ def ibg_order_template():
             data,
             columns=[
                 "Country",
-                "Customer",
+                "Customer Name",
                 "Bill To",
-                "Ship To",
                 "Order ETD (yyyy/mm/dd)",
                 "FG Code (Order Items)",
                 "Qty in cases (Order Items)"
@@ -187,9 +187,10 @@ def order_file_upload(upload_file, doc_name = None):
         else:
             csv_data = read_csv_content(fcontent)
 
+        parent_list = []
         parent = ""
         for i in csv_data[1:]:
-            if not i[0] and not i[1] and not i[2] and not i[3] and not i[4]:
+            if not i[0] and not i[1] and not i[2] and not i[3]:
                 if parent:
                     item = frappe.get_doc(
                         {
@@ -197,32 +198,45 @@ def order_file_upload(upload_file, doc_name = None):
                             "parent": parent,
                             "parentfield": "order_items",
                             "parenttype": "IBG Order",
-                            "fg_code": i[5],
+                            "fg_code": i[4],
                             "product_description":frappe.db.get_value(
                                 "FG Code",
-                                {"name": i[5]},
+                                {"name": i[4]},
                                 "product_description",
                             ),
 
-                            "qty_in_cases": i[6],
+                            "qty_in_cases": i[5],
                             "created_date": frappe.utils.now_datetime().date()
                         }
                     ).insert(ignore_permissions=True)
                     frappe.db.commit()
             else:
+                customer = frappe.get_all("IBG Distributor", filters={"name" : i[1]}, fields = ["name"])
+                if len(customer) == 0:
+                    frappe.throw(_("Please enter a Valid Customer Name in Customer column."))
+                
+                date_pattern_str = r'^\d{4}/\d{2}/\d{2}$'
+                print("Date --> ", i[3])
+                if not re.match(date_pattern_str, i[3]):
+                    frappe.throw(_("Please enter Order ETD date in valid date format."))
+                
+                bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
+                if len(bill_to) == 0:
+                    frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
+
                 ibg_order = frappe.get_doc(
                     dict(
                         doctype="IBG Order",
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
-                        ship_to=str(int(float(i[3]))),
-                        order_etd=i[4],
+                        order_etd=i[3],
                         )
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
 
                 parent = ibg_order.name
+                parent_list.append(parent)
 
                 item = item = frappe.get_doc(
                     {
@@ -230,18 +244,46 @@ def order_file_upload(upload_file, doc_name = None):
                         "parent": parent,
                         "parentfield": "order_items",
                         "parenttype": "IBG Order",
-                        "fg_code": i[5],
+                        "fg_code": i[4],
                         "product_description":frappe.db.get_value(
                             "FG Code",
-                            {"name": i[5]},
+                            {"name": i[4]},
                             "product_description",
                         ),
 
-                        "qty_in_cases": i[6],
+                        "qty_in_cases": i[5],
                         "created_date": frappe.utils.now_datetime().date()
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
+        for i in parent_list:
+            doc = frappe.get_doc("IBG Order", i)
+            price = sap_price()
+            price_data = []
+            if price:
+                for j in price:
+                    if (j['CUSTOMER'].isnumeric()==True) and (int(doc.bill_to) == int(j['CUSTOMER'])):
+                        price_data.append(j)
+            if len(price_data) >= 1:
+                for i in doc.order_items:
+                    for j in price_data:
+                        if int(i.fg_code) == int(j['MATERIAL']):
+                            i.billing_rate = float(j['RATE'])
+                            i.rate_valid_from = j['VALID_FROM']
+                            i.rate_valid_to = j['VALID_TO']
+                            i.units = j['CURRENCY']
+                doc.save(ignore_permissions = True)
+                frappe.db.commit()
+            else:
+                frappe.log_error(
+                    message= "Order Id -{}\n"
+                    + "Customer name -{}\n"
+                    + "Bill To Code -{}\n"
+                    + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
+                    title="Price Data unavailable in SAP Price BAPI",
+                )
+                frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(doc.customer, doc.bill_to)))
+
     except Exception as e:
         frappe.log_error(
             message=frappe.get_traceback(),
