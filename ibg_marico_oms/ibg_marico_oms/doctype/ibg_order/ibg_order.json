@@ -143,8 +143,7 @@
    "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('System Manager') == 1 || doc.status == \"Approved by Supply Chain\";",
    "fieldname": "sales_office",
    "fieldtype": "Data",
-   "label": "Sales Office",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
+   "label": "Sales Office"
   },
   {
    "fieldname": "column_break_17",
@@ -161,8 +160,7 @@
    "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('System Manager') == 1 || doc.status == \"Approved by Supply Chain\";",
    "fieldname": "sales_group",
    "fieldtype": "Data",
-   "label": "Sales Group",
-   "mandatory_depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;"
+   "label": "Sales Group"
   },
   {
    "fieldname": "naming_series",
@@ -259,7 +257,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-25 18:42:12.911420",
+ "modified": "2023-07-10 12:25:07.129355",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
