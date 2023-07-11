@@ -216,7 +216,8 @@ def order_file_upload(upload_file, doc_name = None):
                     frappe.throw(_("Please enter a Valid Customer Name in Customer column."))
                 
                 date_pattern_str = r'^\d{4}/\d{2}/\d{2}$'
-                if not re.match(date_pattern_str, i[4]):
+                print("Date --> ", i[3])
+                if not re.match(date_pattern_str, i[3]):
                     frappe.throw(_("Please enter Order ETD date in valid date format."))
                 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
