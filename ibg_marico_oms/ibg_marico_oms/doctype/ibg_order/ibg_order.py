@@ -221,9 +221,8 @@ def order_file_upload(upload_file, doc_name = None):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
                 elif re.match(date_pattern_str2, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
-                else:
-                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
                 
+
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
                 if len(bill_to) == 0:
                     frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
