@@ -210,7 +210,7 @@ def order_file_upload(upload_file, doc_name = None):
                 elif re.match(date_pattern_str4, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
                 else:
-                    frappe.throw(_("Please enter Order ETD date in valid date format."))
+                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
                 
 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
