@@ -250,6 +250,10 @@ def order_file_upload(upload_file, doc_name = None):
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
         for i in parent_list:
+            frappe.log_error(
+                message="ibg order {}".format(i),
+                title="IBG Order Uplaod file fetch",
+            )
             fetch_price_data(doc = i)
 
     except Exception as e:
@@ -433,7 +437,7 @@ def sap_price():
             title="SAP Price Master Entry",
         )
 
-# @frappe.whitelist()
+@frappe.whitelist()
 def fetch_price_data(doc):
     frappe.log_error(
             message= "Order Id -{}\n"
