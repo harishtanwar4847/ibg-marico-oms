@@ -234,7 +234,7 @@ def order_file_upload(upload_file, doc_name = None):
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
-                        order_etd=i[3],
+                        order_etd=date,
                         )
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
