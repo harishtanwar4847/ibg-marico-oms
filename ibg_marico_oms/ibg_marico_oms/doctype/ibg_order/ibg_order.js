@@ -43,14 +43,6 @@ frappe.ui.form.on('IBG Order', {
 		}
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
-
-		frappe.call({
-			method: "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.fetch_price_data",
-			freeze: true,
-			args: {
-			  doc: frm.doc.name,
-			}
-		  });
 	},
 	before_workflow_action: (frm) => {
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
