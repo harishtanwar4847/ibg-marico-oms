@@ -433,7 +433,7 @@ def sap_price():
             title="SAP Price Master Entry",
         )
 
-@frappe.whitelist()
+# @frappe.whitelist()
 def fetch_price_data(doc):
     frappe.log_error(
             message= "Order Id -{}\n"
