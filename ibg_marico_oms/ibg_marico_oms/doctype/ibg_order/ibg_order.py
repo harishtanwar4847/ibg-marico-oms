@@ -26,29 +26,6 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
-        # price = sap_price()
-        # price_data = []
-        # if price:
-        #     for j in price:
-        #         if (j['CUSTOMER'].isnumeric()==True) and (int(self.bill_to) == int(j['CUSTOMER'])):
-        #             price_data.append(j)
-        # if len(price_data) >= 1:
-        #     for i in self.order_items:
-        #         for j in price_data:
-        #             if int(i.fg_code) == int(j['MATERIAL']):
-        #                 i.billing_rate = float(j['RATE'])
-        #                 i.rate_valid_from = j['VALID_FROM']
-        #                 i.rate_valid_to = j['VALID_TO']
-        #                 i.units = j['CURRENCY']
-        # else:
-        #     frappe.log_error(
-        #         message= "Order Id -{}\n"
-        #         + "Customer name -{}\n"
-        #         + "Bill To Code -{}\n"
-        #         + "Message - Price Data Unavailable.".format(self.name,self.customer,self.bill_to),
-        #         title="Price Data unavailable in SAP Price BAPI",
-        #     )
-        #     frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(self.customer, self.bill_to)))
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -111,6 +88,7 @@ class IBGOrder(Document):
                 self.workflow_state = 'Pending'
                 self.remarks = ''
                 self.supplychain_remarks =''
+        fetch_price_data(doc = self.name)
     
     def after_save(self):
         fetch_price_data(doc = self.name)
@@ -271,33 +249,8 @@ def order_file_upload(upload_file, doc_name = None):
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
-        # for i in parent_list:
-        #     doc = frappe.get_doc("IBG Order", i)
-        #     price = sap_price()
-        #     price_data = []
-        #     if price:
-        #         for j in price:
-        #             if (j['CUSTOMER'].isnumeric()==True) and (int(doc.bill_to) == int(j['CUSTOMER'])):
-        #                 price_data.append(j)
-        #     if len(price_data) >= 1:
-        #         for i in doc.order_items:
-        #             for j in price_data:
-        #                 if int(i.fg_code) == int(j['MATERIAL']):
-        #                     i.billing_rate = float(j['RATE'])
-        #                     i.rate_valid_from = j['VALID_FROM']
-        #                     i.rate_valid_to = j['VALID_TO']
-        #                     i.units = j['CURRENCY']
-        #         doc.save(ignore_permissions = True)
-        #         frappe.db.commit()
-        #     else:
-        #         frappe.log_error(
-        #             message= "Order Id -{}\n"
-        #             + "Customer name -{}\n"
-        #             + "Bill To Code -{}\n"
-        #             + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
-        #             title="Price Data unavailable in SAP Price BAPI",
-        #         )
-        #         frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(doc.customer, doc.bill_to)))
+        for i in parent_list:
+            fetch_price_data(doc = i)
 
     except Exception as e:
         frappe.log_error(
