@@ -111,6 +111,9 @@ class IBGOrder(Document):
                 self.workflow_state = 'Pending'
                 self.remarks = ''
                 self.supplychain_remarks =''
+    
+    def after_save(self):
+        fetch_price_data(doc = self.name)
 
 
     def before_submit(self):
