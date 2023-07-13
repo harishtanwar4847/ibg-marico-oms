@@ -148,7 +148,7 @@ def ibg_order_template():
                 "Country",
                 "Customer Name",
                 "Bill To",
-                "Order ETD (yyyy/mm/dd)",
+                "Order ETD (yyyy-mm-dd)",
                 "FG Code (Order Items)",
                 "Qty in cases (Order Items)"
             ],
@@ -215,11 +215,14 @@ def order_file_upload(upload_file, doc_name = None):
                 if len(customer) == 0:
                     frappe.throw(_("Please enter a Valid Customer Name in Customer column."))
                 
-                date_pattern_str = r'^\d{4}/\d{2}/\d{2}$'
-                print("Date --> ", i[3])
-                if not re.match(date_pattern_str, i[3]):
-                    frappe.throw(_("Please enter Order ETD date in valid date format."))
+                date_pattern_str1 = r'^\d{4}-\d{2}-\d{2}$'
+                date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
+                if re.match(date_pattern_str1, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
+                elif re.match(date_pattern_str2, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
                 
+
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
                 if len(bill_to) == 0:
                     frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
@@ -230,7 +233,7 @@ def order_file_upload(upload_file, doc_name = None):
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
-                        order_etd=i[3],
+                        order_etd=date,
                         )
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
@@ -272,6 +275,14 @@ def order_file_upload(upload_file, doc_name = None):
                             i.rate_valid_from = j['VALID_FROM']
                             i.rate_valid_to = j['VALID_TO']
                             i.units = j['CURRENCY']
+                        else:
+                           frappe.log_error(
+                                message= "Order Id -{}\n"
+                                + "Customer name -{}\n"
+                                + "Bill To Code -{}\n"
+                                + "Message - Price Data for {} Unavailable.".format(doc.name,doc.customer, doc.bill_to, i.fg_code),
+                                title="Price Data unavailable in SAP Price BAPI",
+                            ) 
                 doc.save(ignore_permissions = True)
                 frappe.db.commit()
             else:
