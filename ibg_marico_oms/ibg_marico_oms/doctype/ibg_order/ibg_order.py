@@ -215,11 +215,23 @@ def order_file_upload(upload_file, doc_name = None):
                 if len(customer) == 0:
                     frappe.throw(_("Please enter a Valid Customer Name in Customer column."))
                 
-                date_pattern_str = r'^\d{4}/\d{2}/\d{2}$'
+                date_pattern_str1 = r'^\d{4}-\d{2}-\d{2}$'
+                date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
+                date_pattern_str3 = r'^\d{4}/\d{2}/\d{2}$'
+                date_pattern_str4 = r'^\d{2}/\d{2}/\d{4}$'
                 print("Date --> ", i[3])
-                if not re.match(date_pattern_str, i[3]):
+                if re.match(date_pattern_str1, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
+                elif re.match(date_pattern_str2, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
+                elif re.match(date_pattern_str3, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d/%m/%Y")
+                elif re.match(date_pattern_str4, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
+                else:
                     frappe.throw(_("Please enter Order ETD date in valid date format."))
                 
+
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
                 if len(bill_to) == 0:
                     frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
@@ -230,7 +242,7 @@ def order_file_upload(upload_file, doc_name = None):
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
-                        order_etd=i[3],
+                        order_etd=date,
                         )
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
