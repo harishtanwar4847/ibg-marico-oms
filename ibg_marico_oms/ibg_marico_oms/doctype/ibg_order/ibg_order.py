@@ -200,7 +200,6 @@ def order_file_upload(upload_file, doc_name = None):
                 date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
                 date_pattern_str3 = r'^\d{4}/\d{2}/\d{2}$'
                 date_pattern_str4 = r'^\d{2}/\d{2}/\d{4}$'
-                print("Date --> ", i[3])
                 frappe.log_error(
                     message="ibg order etd date {}".format(i[3]),
                     title="IBG Order Uplaod file fetch date",
