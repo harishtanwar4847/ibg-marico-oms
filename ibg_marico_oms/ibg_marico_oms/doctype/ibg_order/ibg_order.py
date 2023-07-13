@@ -148,7 +148,7 @@ def ibg_order_template():
                 "Country",
                 "Customer Name",
                 "Bill To",
-                "Order ETD (yyyy/mm/dd)",
+                "Order ETD (yyyy-mm-dd)",
                 "FG Code (Order Items)",
                 "Qty in cases (Order Items)"
             ],
@@ -224,11 +224,12 @@ def order_file_upload(upload_file, doc_name = None):
                 elif re.match(date_pattern_str2, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
                 elif re.match(date_pattern_str3, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d/%m/%Y")
-                elif re.match(date_pattern_str4, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
+                elif re.match(date_pattern_str4, i[3]):
+                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d/%m/%Y")
                 else:
-                    frappe.throw(_("Please enter Order ETD date in valid date format."))
+                    date = ""
+                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
                 
 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
@@ -283,6 +284,14 @@ def order_file_upload(upload_file, doc_name = None):
                             i.rate_valid_from = j['VALID_FROM']
                             i.rate_valid_to = j['VALID_TO']
                             i.units = j['CURRENCY']
+                        else:
+                           frappe.log_error(
+                                message= "Order Id -{}\n"
+                                + "Customer name -{}\n"
+                                + "Bill To Code -{}\n"
+                                + "Message - Price Data for {} Unavailable.".format(doc.name,doc.customer, doc.bill_to, i.fg_code),
+                                title="Price Data unavailable in SAP Price BAPI",
+                            ) 
                 doc.save(ignore_permissions = True)
                 frappe.db.commit()
             else:
