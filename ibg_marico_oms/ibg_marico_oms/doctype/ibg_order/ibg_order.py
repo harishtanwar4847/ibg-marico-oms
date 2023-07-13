@@ -276,6 +276,14 @@ def order_file_upload(upload_file, doc_name = None):
                             i.rate_valid_from = j['VALID_FROM']
                             i.rate_valid_to = j['VALID_TO']
                             i.units = j['CURRENCY']
+                        else:
+                           frappe.log_error(
+                                message= "Order Id -{}\n"
+                                + "Customer name -{}\n"
+                                + "Bill To Code -{}\n"
+                                + "Message - Price Data for {} Unavailable.".format(doc.name,doc.customer, doc.bill_to, i.fg_code),
+                                title="Price Data unavailable in SAP Price BAPI",
+                            ) 
                 doc.save(ignore_permissions = True)
                 frappe.db.commit()
             else:
