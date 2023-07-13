@@ -479,6 +479,12 @@ def sap_price():
 
 @frappe.whitelist()
 def fetch_price_data(doc):
+    frappe.log_error(
+            message= "Order Id -{}\n"
+            + "Message - Price Data fetch.".format(doc.name),
+            title="Price Data Fetch",
+        )
+    print(doc)
     ibg_doc = frappe.get_doc("IBG Order", doc)
     price = sap_price()
     price_data = []
