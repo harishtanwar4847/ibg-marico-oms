@@ -29,6 +29,13 @@ frappe.ui.form.on('IBG Order', {
 			frm.refresh_field("sap_so_number")              
 			frm.refresh_field("status")
 		}
+		frappe.call({
+			method: "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.fetch_price_data",
+			freeze: true,
+			args: {
+			  doc: frm.doc.name,
+			}
+		});  
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_ini = frappe.user_roles.find((role) => role === "Initiator");
 		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
@@ -139,15 +146,6 @@ frappe.ui.form.on('IBG Order', {
             d.show();          
         }
     },
-	on_load: function (frm) {
-		frappe.call({
-		  method: "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.fetch_price_data",
-		  freeze: true,
-		  args: {
-			doc: frm.doc.name,
-		  }
-		});  
-	},	
 	order_items_on_form_rendered(frm, cdt, cdn) {
 		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_fin = frappe.user_roles.find((role) => role === "IBG Finance");
