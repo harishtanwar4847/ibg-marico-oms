@@ -26,6 +26,29 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
+        price = sap_price()
+        price_data = []
+        if price:
+            for j in price:
+                if (j['CUSTOMER'].isnumeric()==True) and (int(self.bill_to) == int(j['CUSTOMER'])):
+                    price_data.append(j)
+        if len(price_data) >= 1:
+            for i in self.order_items:
+                for j in price_data:
+                    if int(i.fg_code) == int(j['MATERIAL']):
+                        i.billing_rate = float(j['RATE'])
+                        i.rate_valid_from = j['VALID_FROM']
+                        i.rate_valid_to = j['VALID_TO']
+                        i.units = j['CURRENCY']
+        else:
+            frappe.log_error(
+                message= "Order Id -{}\n"
+                + "Customer name -{}\n"
+                + "Bill To Code -{}\n"
+                + "Message - Price Data Unavailable.".format(self.name,self.customer,self.bill_to),
+                title="Price Data unavailable in SAP Price BAPI",
+            )
+            frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(self.customer, self.bill_to)))
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -88,10 +111,6 @@ class IBGOrder(Document):
                 self.workflow_state = 'Pending'
                 self.remarks = ''
                 self.supplychain_remarks =''
-        fetch_price_data(doc = self.name)
-    
-    def after_save(self):
-        fetch_price_data(doc = self.name)
 
 
     def before_submit(self):
@@ -200,10 +219,6 @@ def order_file_upload(upload_file, doc_name = None):
                 date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
                 date_pattern_str3 = r'^\d{4}/\d{2}/\d{2}$'
                 date_pattern_str4 = r'^\d{2}/\d{2}/\d{4}$'
-                frappe.log_error(
-                    message="ibg order etd date {}".format(i[3]),
-                    title="IBG Order Uplaod file fetch date",
-                )
                 if re.match(date_pattern_str1, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
                 elif re.match(date_pattern_str2, i[3]):
@@ -213,7 +228,7 @@ def order_file_upload(upload_file, doc_name = None):
                 elif re.match(date_pattern_str4, i[3]):
                     date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
                 else:
-                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
+                    frappe.throw(_("Please enter Order ETD date in valid date format."))
                 
 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
@@ -253,11 +268,32 @@ def order_file_upload(upload_file, doc_name = None):
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
         for i in parent_list:
-            frappe.log_error(
-                message="ibg order {}".format(i),
-                title="IBG Order Uplaod file fetch",
-            )
-            fetch_price_data(doc = i)
+            doc = frappe.get_doc("IBG Order", i)
+            price = sap_price()
+            price_data = []
+            if price:
+                for j in price:
+                    if (j['CUSTOMER'].isnumeric()==True) and (int(doc.bill_to) == int(j['CUSTOMER'])):
+                        price_data.append(j)
+            if len(price_data) >= 1:
+                for i in doc.order_items:
+                    for j in price_data:
+                        if int(i.fg_code) == int(j['MATERIAL']):
+                            i.billing_rate = float(j['RATE'])
+                            i.rate_valid_from = j['VALID_FROM']
+                            i.rate_valid_to = j['VALID_TO']
+                            i.units = j['CURRENCY']
+                doc.save(ignore_permissions = True)
+                frappe.db.commit()
+            else:
+                frappe.log_error(
+                    message= "Order Id -{}\n"
+                    + "Customer name -{}\n"
+                    + "Bill To Code -{}\n"
+                    + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
+                    title="Price Data unavailable in SAP Price BAPI",
+                )
+                frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(doc.customer, doc.bill_to)))
 
     except Exception as e:
         frappe.log_error(
@@ -439,38 +475,3 @@ def sap_price():
             message=frappe.get_traceback(),
             title="SAP Price Master Entry",
         )
-
-@frappe.whitelist()
-def fetch_price_data(doc):
-    frappe.log_error(
-            message= "Order Id -{}\n"
-            + "Message - Price Data fetch.".format(doc.name),
-            title="Price Data Fetch",
-        )
-    print(doc)
-    ibg_doc = frappe.get_doc("IBG Order", doc)
-    price = sap_price()
-    price_data = []
-    if price:
-        for j in price:
-            if (j['CUSTOMER'].isnumeric()==True) and (int(ibg_doc.bill_to) == int(j['CUSTOMER'])):
-                price_data.append(j)
-    if len(price_data) >= 1:
-        for i in ibg_doc.order_items:
-            for j in price_data:
-                if int(i.fg_code) == int(j['MATERIAL']):
-                    i.billing_rate = float(j['RATE'])
-                    i.rate_valid_from = j['VALID_FROM']
-                    i.rate_valid_to = j['VALID_TO']
-                    i.units = j['CURRENCY']
-        doc.save(ignore_permissions = True)
-        frappe.db.commit()
-    else:
-        frappe.log_error(
-            message= "Order Id -{}\n"
-            + "Customer name -{}\n"
-            + "Bill To Code -{}\n"
-            + "Message - Price Data Unavailable.".format(ibg_doc.name,ibg_doc.customer,ibg_doc.bill_to),
-            title="Price Data unavailable in SAP Price BAPI",
-        )
-        frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(ibg_doc.customer, ibg_doc.bill_to)))
