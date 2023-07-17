@@ -133,7 +133,7 @@ class IBGOrder(Document):
         for i in list(user_roles):
             user_role.append(i[0])
         
-        if "Supply Chain" in user_role and (self.status == "Approved by Supply Chain" or self.status == "Approved by IBG Finance") and (not self.order_type or not self.division or not self.sales_organizational or not self.sales_office or not self.distribution_channel or not self.sales_group):
+        if "Supply Chain" in user_role and (self.status == "Approved by Supply Chain" or self.status == "Approved by IBG Finance") and (not self.order_type or not self.division or not self.sales_organizational or not self.distribution_channel):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
