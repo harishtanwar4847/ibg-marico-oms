@@ -153,6 +153,7 @@ class IBGOrder(Document):
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
+                "sap_so_number" : self.sap_so_number,
                 "items" : items
             }
         ).insert(ignore_permissions=True)
