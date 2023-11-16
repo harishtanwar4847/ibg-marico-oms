@@ -11,7 +11,7 @@ from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
     def before_save(self):
-        order_status = order_status(doc = self)
+        order_status = order_status_bapi(doc = self)
         if order_status:
             for i in order_status:
                 for j in self.items:
