@@ -125,6 +125,7 @@ class IBGOrder(Document):
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
+            sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -153,7 +154,7 @@ class IBGOrder(Document):
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
-                "sap_so_number" : self.sap_so_number,
+                "sap_so_number" : sap_so_number,
                 "items" : items
             }
         ).insert(ignore_permissions=True)
