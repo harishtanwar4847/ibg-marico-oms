@@ -147,6 +147,7 @@ class IBGOrder(Document):
                 "sap_so_number" : sap_so_number,
             }
         ).insert(ignore_permissions=True)
+        frappe.db.commit()
 
         for i in self.order_items:
             item_entry = frappe.get_doc(
@@ -161,6 +162,8 @@ class IBGOrder(Document):
                 }
             ).insert(ignore_permissions=True)
         frappe.db.commit()
+
+		self.reload()
         frappe.log_error(
             message="items ==> {} ".format(item_entry),
             title="SAP Order Status BAPI Response",
