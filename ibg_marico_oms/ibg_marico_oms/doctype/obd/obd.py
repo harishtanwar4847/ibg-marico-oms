@@ -15,7 +15,7 @@ class OBD(Document):
         if order_status:
             for i in order_status:
                 for j in self.items:
-                    if self.sap_so_number == i["SALES_ORDER"] and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                    if int(self.sap_so_number) == int(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                         j.sales_item =  i['SALES_ITEM']
                         j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                         j.obd_sap_qty = float(i['OBD_QTY'])
