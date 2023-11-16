@@ -148,7 +148,7 @@ class IBGOrder(Document):
                     "fg_description": i.product_description,
                     "sales_order_qty": i.qty_in_cases,
                 }
-            )
+            ).insert(ignore_permissions=True)
             items.append(temp)
         frappe.log_error(
             message="items ==> {} ".format(items),
