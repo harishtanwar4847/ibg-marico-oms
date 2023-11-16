@@ -16,7 +16,7 @@ class OBD(Document):
             for i in order_status:
                 for j in self.items:
                     frappe.log_error(
-                        message="SO Number SO: {}, SO Number BAPI : {}, Type : bapi - {} --> so - {}".format(self.sap_so_number, i["SALES_ORDER"], type(self.sap_so_number), type(i["SALES_ORDER"])),
+                        message="i ==> {} ".format(self.sap_so_number, i["SALES_ORDER"], type(self.sap_so_number), type(i["SALES_ORDER"])),
                         title="SAP Order Status BAPI Response",
                     )
                     if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
