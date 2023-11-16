@@ -162,8 +162,7 @@ class IBGOrder(Document):
                 }
             ).insert(ignore_permissions=True)
         frappe.db.commit()
-
-		self.reload()
+        self.reload()
         frappe.log_error(
             message="items ==> {} ".format(item_entry),
             title="SAP Order Status BAPI Response",
