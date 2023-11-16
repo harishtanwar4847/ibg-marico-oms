@@ -13,7 +13,7 @@ class OBD(Document):
     def before_save(self):
         order_status = order_status_bapi(doc = self)
         if order_status:
-            for i in order_status:
+            for i in order_status['IT_SO']['item']:
                 for j in self.items:
                     frappe.log_error(
                         message="i ==> {} ".format(i),
