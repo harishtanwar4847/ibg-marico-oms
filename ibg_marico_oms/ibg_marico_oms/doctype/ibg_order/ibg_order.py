@@ -139,30 +139,32 @@ class IBGOrder(Document):
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
         
-        items = []
-        for i in self.order_items:
-            temp = frappe.get_doc(
-                {
-                    "doctype": "OBD Items",
-                    "fg_code": i.fg_code,
-                    "fg_description": i.product_description,
-                    "sales_order_qty": i.qty_in_cases,
-                }
-            ).insert(ignore_permissions=True)
-            items.append(temp)
-        frappe.log_error(
-            message="items ==> {} ".format(items),
-            title="SAP Order Status BAPI Response",
-        )
+        # items = []
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
                 "sap_so_number" : sap_so_number,
-                "items" : items
             }
         ).insert(ignore_permissions=True)
+
+        for i in self.order_items:
+            item_entry = frappe.get_doc(
+                {
+                    "doctype": "OBD Items",
+                    "parentfield" : "items",
+                    "parenttype" : "OBD",
+                    "parent" : obd.name,
+                    "fg_code": i.fg_code,
+                    "fg_description": i.product_description,
+                    "sales_order_qty": i.qty_in_cases,
+                }
+            ).insert(ignore_permissions=True)
         frappe.db.commit()
+        frappe.log_error(
+            message="items ==> {} ".format(item_entry),
+            title="SAP Order Status BAPI Response",
+        )
 
 
 @frappe.whitelist()
