@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "creation": "2023-11-06 14:21:09.356063",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fg_code",
+  "sales_item",
+  "delivery_no",
+  "reason_of_reject",
+  "order_status",
+  "final_status",
+  "column_break_5",
+  "fg_description",
+  "sales_order_qty",
+  "obd_sap_qty",
+  "pending_qty",
+  "rejected_qty"
+ ],
+ "fields": [
+  {
+   "fieldname": "fg_code",
+   "fieldtype": "Link",
+   "label": "FG Code",
+   "options": "FG Code"
+  },
+  {
+   "fieldname": "sales_order_qty",
+   "fieldtype": "Float",
+   "label": "Sales Order Qty"
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Data",
+   "label": "Order Status"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "fg_code.product_description",
+   "fieldname": "fg_description",
+   "fieldtype": "Data",
+   "label": "FG Description"
+  },
+  {
+   "fieldname": "obd_sap_qty",
+   "fieldtype": "Float",
+   "label": "OBD SAP Qty"
+  },
+  {
+   "fieldname": "pending_qty",
+   "fieldtype": "Float",
+   "label": "Pending Qty"
+  },
+  {
+   "fieldname": "sales_item",
+   "fieldtype": "Data",
+   "label": "Sales Item"
+  },
+  {
+   "fieldname": "delivery_no",
+   "fieldtype": "Data",
+   "label": "Delivery No"
+  },
+  {
+   "fieldname": "final_status",
+   "fieldtype": "Data",
+   "label": "Final Status"
+  },
+  {
+   "fieldname": "reason_of_reject",
+   "fieldtype": "Data",
+   "label": "Reason of Reject",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-11-16 12:38:40.220728",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "OBD Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -26,7 +26,7 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
-        price = sap_price()
+        price = sap_price(doc = self)
         price_data = []
         if price:
             for j in price:
@@ -137,6 +137,27 @@ class IBGOrder(Document):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
+        
+        items = []
+        for i in self.order_items:
+            temp = frappe.get_doc(
+                {
+                    "doctype": "OBD Items",
+                    "fg_code": i.fg_code,
+                    "fg_description": i.product_description,
+                    "sales_order_qty": i.qty_in_cases,
+                }
+            )
+            items.append(temp)
+        obd = frappe.get_doc(
+            {
+                "doctype" : "OBD",
+                "ibg_order_id" : self.name,
+                "items" : items
+            }
+        ).insert(ignore_permissions=True)
+        frappe.db.commit()
+
 
 @frappe.whitelist()
 def ibg_order_template():
@@ -270,7 +291,7 @@ def order_file_upload(upload_file, doc_name = None):
                 frappe.db.commit()
         for i in parent_list:
             doc = frappe.get_doc("IBG Order", i)
-            price = sap_price()
+            price = sap_price(doc = doc)
             price_data = []
             if price:
                 for j in price:
@@ -449,35 +470,39 @@ def sap_rfc_data(doc):
         )
 
 @frappe.whitelist()
-def sap_price():
+def sap_price(doc):
     try:
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-            "sap_price_before_request",
-        )
-        if frappe.utils.get_url() == "https://marico.atriina.com":
-            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
-            userid = "minet"
-            pswd = "ramram"
+        if doc.company_code:
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+                "sap_price_before_request",
+            )
+            if frappe.utils.get_url() == "https://marico.atriina.com":
+                wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
+                userid = "minet"
+                pswd = "ramram"
+            else:
+                wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
+                userid = "portal"
+                pswd = "portal@345"
+            client = Client(wsdl)
+            session = Session()
+            session.auth = HTTPBasicAuth(userid, pswd)
+            client=Client(wsdl,transport=Transport(session=session))
+            request_data={'IT_PRICE': '','SALES_ORG' : doc.company_code}
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+                "sap_price_request",
+            )
+            response=client.service.ZBAPI_PRICE_MASTER(**request_data)
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+                "sap_price_response",
+            )
+            return response
+        
         else:
-            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
-            userid = "portal"
-            pswd = "portal@345"
-        client = Client(wsdl)
-        session = Session()
-        session.auth = HTTPBasicAuth(userid, pswd)
-        client=Client(wsdl,transport=Transport(session=session))
-        request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
-            "sap_price_request",
-        )
-        response=client.service.ZBAPI_PRICE_MASTER(**request_data)
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
-            "sap_price_response",
-        )
-        return response
+            frappe.throw(_("Please Enter a valid Company Code"))
 
     except Exception as e:
         frappe.log_error(

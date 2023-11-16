@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "autoname": "format:OBD-{sap_so_number}",
+ "creation": "2023-11-06 12:40:24.357620",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ibg_order_id",
+  "customer_name",
+  "sap_obd_number",
+  "order_status",
+  "column_break_5",
+  "sap_so_number",
+  "country",
+  "order_created_date",
+  "final_status",
+  "items_section",
+  "items",
+  "amended_from",
+  "naming_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "ibg_order_id",
+   "fieldtype": "Link",
+   "label": "IBG Order ID",
+   "options": "IBG Order"
+  },
+  {
+   "fieldname": "sap_obd_number",
+   "fieldtype": "Data",
+   "label": "SAP OBD Number"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Select",
+   "label": "Order Status",
+   "options": "Partially Serviced\nFully Serviced"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "ibg_order_id.sap_so_number",
+   "fieldname": "sap_so_number",
+   "fieldtype": "Data",
+   "label": "SAP SO Number"
+  },
+  {
+   "fetch_from": "ibg_order_id.customer",
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "label": "Customer Name",
+   "options": "IBG Distributor"
+  },
+  {
+   "fetch_from": "ibg_order_id.created_date",
+   "fieldname": "order_created_date",
+   "fieldtype": "Date",
+   "label": "Order Created Date"
+  },
+  {
+   "fieldname": "final_status",
+   "fieldtype": "Select",
+   "label": "Final Status",
+   "options": "Pending\nCompleted"
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "label": "Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "IBG Order Items"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "OBD",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "customer_name.country",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "OBD-#####"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-16 12:55:14.014086",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "OBD",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

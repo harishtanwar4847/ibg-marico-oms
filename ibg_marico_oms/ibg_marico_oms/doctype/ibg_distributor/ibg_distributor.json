@@ -11,7 +11,9 @@
   "customer_name",
   "customer_code",
   "country",
-  "ship_to"
+  "column_break_4",
+  "ship_to",
+  "company_code"
  ],
  "fields": [
   {
@@ -34,11 +36,21 @@
    "fieldname": "ship_to",
    "fieldtype": "Data",
    "label": "Ship To"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-23 19:25:27.036663",
+ "modified": "2023-11-07 14:53:56.198213",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Distributor",
