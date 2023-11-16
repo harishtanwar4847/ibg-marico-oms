@@ -1,0 +1,69 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"VHZDEA96cc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Home (Initiator)</span>\",\"col\":12}},{\"id\":\"NrRdLvLz2n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View Orders\",\"col\":5}},{\"id\":\"WZRRYfHb60\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval\",\"col\":5}},{\"id\":\"t1-glQ3jjN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"id\":\"qb466O9Dbo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Orders\",\"col\":5}}]",
+ "creation": "2023-05-23 17:19:05.669733",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "image-view",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Home (Supply Chain)",
+ "links": [],
+ "modified": "2023-05-23 17:20:32.966860",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Home (Supply Chain)",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Supply Chain"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "sequence_id": 1.2,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending for Approval",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by IBG Finance\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View Orders",
+   "link_to": "IBG Order",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Rejected Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Rejected by Supply Chain\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Approved Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by Supply Chain\"]}",
+   "type": "DocType"
+  }
+ ],
+ "title": "Home (Supply Chain)"
+}
