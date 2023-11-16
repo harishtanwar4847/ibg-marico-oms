@@ -150,6 +150,10 @@ class IBGOrder(Document):
                 }
             )
             items.append(temp)
+        frappe.log_error(
+            message="items ==> {} ".format(items),
+            title="SAP Order Status BAPI Response",
+        )
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
