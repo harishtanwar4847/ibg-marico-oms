@@ -48,10 +48,10 @@ def order_status_bapi(doc):
         session.auth = HTTPBasicAuth(userid, pswd)
         client=Client(wsdl,transport=Transport(session=session))
         items = []
-        for i in doc.order_items:
+        for i in doc.items:
             order_dict = {'FG_CODE': i.fg_code}
             items.append(order_dict)
-        request_data={"SALES_ORDER" : doc.sap_so_number ,"IBG_NO" : doc.name,"FG_CODE" : items}
+        request_data={"SALES_ORDER" : doc.sap_so_number ,'IT_SO': "", 'IT_RETURN':""}
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
             "order_status_request",
