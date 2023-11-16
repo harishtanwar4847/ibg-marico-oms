@@ -10,7 +10,7 @@ from requests import Session
 from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
-    def before_save(self):
+    def after_save(self):
         order_status = order_status_bapi(doc = self)
         if order_status:
             for i in order_status['IT_SO']['item']:
@@ -22,14 +22,12 @@ class OBD(Document):
                     if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                         j.sales_item =  i['SALES_ITEM']
                         j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                        self.sap_obd_number = j.delivery_no
                         j.obd_sap_qty = float(i['OBD_QTY'])
                         j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
                         j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
                         j.order_status = i['ORDER_STATUS']
-                        j.final_status = i['FINAL_STATUS']
-            
-            if self.items[0].delivery_no:
-                self.sap_obd_number = self.items[0].delivery_no        
+                        j.final_status = i['FINAL_STATUS']        
 
 
 @frappe.whitelist()
