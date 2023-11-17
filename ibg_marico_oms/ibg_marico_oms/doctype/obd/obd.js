@@ -12,7 +12,7 @@ frappe.ui.form.on('OBD', {
 					method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_reject',
 					freeze: true,
 					args: {
-						doc: frm.doc,
+						doc: frm.doc.name,
 					},
 					// callback: (res) => {
 					// 	res.message;
