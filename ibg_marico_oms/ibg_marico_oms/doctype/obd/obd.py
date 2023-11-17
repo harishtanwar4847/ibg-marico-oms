@@ -25,10 +25,9 @@ class OBD(Document):
                     "sales_order_qty": i.qty_in_cases,
                 }
             ).insert(ignore_permissions=True)
-        
-        frappe.db.commit()
+            frappe.db.commit() 
         self.reload()
-        
+
         order_status = order_status_bapi(doc = self)
         if order_status:
             for i in order_status['IT_SO']['item']:
