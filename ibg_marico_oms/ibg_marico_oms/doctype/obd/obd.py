@@ -143,7 +143,7 @@ def order_reject(doc):
                     {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details),},
                     "order_details",
                 )
-                for i in order_details:
+                for i in order_details[1:]:
                     if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == i.sales_item and i.fg_code == i["FG_CODE"].lstrip('0'):
                         item = frappe.get_doc("OBD Items", i.name)
                         item.rejected_qty == i["REJECTED_QTY"]
