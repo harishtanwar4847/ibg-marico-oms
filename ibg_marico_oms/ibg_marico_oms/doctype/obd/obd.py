@@ -127,7 +127,7 @@ def order_reject(doc):
                 fg_code = i.fg_code
                 if len(fg_code)< 18:
                     fg_code = fg_code.zfill(18) 
-                request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : doc.name,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
+                request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : i.sales_item,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
                 ibg_marico_oms.create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
                     "order_reject_request",
