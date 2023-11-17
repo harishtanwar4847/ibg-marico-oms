@@ -150,6 +150,10 @@ def order_reject(doc):
                         item.reason_of_reject = i["REASON_OF_REJECT"]
                         item.order_status = "Fully serviced"
                         item.final_status = "Completed"
+                        ibg_marico_oms.create_log(
+                            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item),},
+                            "obd_item",
+                        )
         doc.save(ignore_permissions = True)
         frappe.db.commit()
 
