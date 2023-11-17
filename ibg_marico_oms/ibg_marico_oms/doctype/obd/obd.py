@@ -11,6 +11,7 @@ from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
     def before_save(self):
+        order_item_status = []
         order_status = order_status_bapi(doc = self)
         if len(order_status['IT_SO']['item'])>1:
             for i in order_status['IT_SO']['item']:
@@ -23,8 +24,14 @@ class OBD(Document):
                         j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
                         j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
                         j.order_status = i['ORDER_STATUS']
-                        j.final_status = i['FINAL_STATUS']        
+                        j.final_status = i['FINAL_STATUS'] 
+                        order_item_status.append(str(i["ORDER_STATUS"]))       
 
+        if "Partial serviced" in order_item_status:
+            self.order_status = "Partial serviced"
+        else:
+            self.order_status = "Fully serviced"
+            self.final_status = "Completed"
 
 @frappe.whitelist()
 def order_status_bapi(doc):
@@ -69,7 +76,7 @@ def order_status_bapi(doc):
 
 
 @frappe.whitelist()
-def order_status(doc):
+def order_status():
     try:
         obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending", "sap_obd_number" : ""}, fields = ["name"])
 

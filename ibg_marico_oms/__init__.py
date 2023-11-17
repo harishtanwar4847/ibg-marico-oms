@@ -183,11 +183,10 @@ def order_reject(doc):
                         item = frappe.get_doc("OBD Items", i.name)
                         item.rejected_qty == i["REJECTED_QTY"]
                         item.reason_of_reject = i["REASON_OF_REJECT"]
-                        item.order_status = "Full serviced"
+                        item.order_status = "Fully serviced"
                         item.final_status = "Completed"
                         item.save(ignore_permissions = True)
                         frappe.db.commit()
-
 
     except Exception as e:
         frappe.log_error(
