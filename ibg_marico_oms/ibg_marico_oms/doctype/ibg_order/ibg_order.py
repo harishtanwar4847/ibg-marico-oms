@@ -155,7 +155,7 @@ class IBGOrder(Document):
 			)
             items.append(item_entry)
             frappe.logger().info(
-                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items.as_dict()))
+                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items))
 			)
         obd = frappe.get_doc(
             {
