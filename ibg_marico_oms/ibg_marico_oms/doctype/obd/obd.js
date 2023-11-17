@@ -9,14 +9,14 @@ frappe.ui.form.on('OBD', {
 		if (frm.doc.final_status === "Pending") {
 			frm.add_custom_button(__('Short Close'), function () {
 				frappe.call({
-					method: 'ibg_marico_oms.order_reject',
+					method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_reject',
 					freeze: true,
 					args: {
 						doc: frm.doc,
 					},
-					callback: (res) => {
-						res.message;
-					},
+					// callback: (res) => {
+					// 	res.message;
+					// },
 				});
 			});
 		}
