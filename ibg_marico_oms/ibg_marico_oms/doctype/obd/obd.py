@@ -11,6 +11,24 @@ from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
     def after_save(self):
+        order = frappe.get_doc("IBG Order", self.ibg_order_id)
+        self.sap_so_number = order.sap_so_number
+        for i in order.order_items:
+            item_entry = frappe.get_doc(
+                {
+                    "doctype": "OBD Items",
+                    "parentfield" : "items",
+                    "parenttype" : "OBD",
+                    "parent" : self.name,
+                    "fg_code": i.fg_code,
+                    "fg_description": i.product_description,
+                    "sales_order_qty": i.qty_in_cases,
+                }
+            ).insert(ignore_permissions=True)
+        
+        frappe.db.commit()
+        self.reload()
+        
         order_status = order_status_bapi(doc = self)
         if order_status:
             for i in order_status['IT_SO']['item']:

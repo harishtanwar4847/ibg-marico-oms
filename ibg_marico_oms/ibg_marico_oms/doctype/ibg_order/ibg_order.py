@@ -144,29 +144,9 @@ class IBGOrder(Document):
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
-                "sap_so_number" : sap_so_number,
             }
         ).insert(ignore_permissions=True)
         frappe.db.commit()
-
-        for i in self.order_items:
-            item_entry = frappe.get_doc(
-                {
-                    "doctype": "OBD Items",
-                    "parentfield" : "items",
-                    "parenttype" : "OBD",
-                    "parent" : obd.name,
-                    "fg_code": i.fg_code,
-                    "fg_description": i.product_description,
-                    "sales_order_qty": i.qty_in_cases,
-                }
-            ).insert(ignore_permissions=True)
-        frappe.db.commit()
-        self.reload()
-        frappe.log_error(
-            message="items ==> {} ".format(item_entry),
-            title="SAP Order Status BAPI Response",
-        )
 
 
 @frappe.whitelist()
