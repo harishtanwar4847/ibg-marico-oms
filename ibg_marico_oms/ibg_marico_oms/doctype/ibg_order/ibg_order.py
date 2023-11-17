@@ -125,7 +125,6 @@ class IBGOrder(Document):
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
-            sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
 
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -139,14 +138,30 @@ class IBGOrder(Document):
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
         
-        # items = []
+        items = []
+        for i in self.order_items:
+            item_entry = frappe.get_doc(
+                {
+                    "doctype": "OBD Items",
+                    # "parentfield" : "items",
+                    # "parenttype" : "OBD",
+                    # "parent" : self.name,
+                    "fg_code": i.fg_code,
+                    "fg_description": i.product_description,
+                    "sales_order_qty": i.qty_in_cases,
+                }
+            )
+            items.append(item_entry)
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
+                "sap_so_number" : sap_number['sap_so_number'][1]['SALES_ORD'],
+                "items" : items
             }
         ).insert(ignore_permissions=True)
         frappe.db.commit()
+        obd.reload()
 
 
 @frappe.whitelist()
