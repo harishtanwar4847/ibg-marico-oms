@@ -161,7 +161,6 @@ class IBGOrder(Document):
             }
         ).insert(ignore_permissions=True)
         frappe.db.commit()
-        obd.reload()
 
 
 @frappe.whitelist()
