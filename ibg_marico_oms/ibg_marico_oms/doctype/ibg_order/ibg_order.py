@@ -143,15 +143,17 @@ class IBGOrder(Document):
             item_entry = frappe.get_doc(
                 {
                     "doctype": "OBD Items",
-                    # "parentfield" : "items",
-                    # "parenttype" : "OBD",
-                    # "parent" : self.name,
                     "fg_code": i.fg_code,
                     "fg_description": i.product_description,
                     "sales_order_qty": i.qty_in_cases,
                 }
-            )
+            ).insert(ignore_permissions=True)
+            frappe.db.commit()
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Item Entry" : str(item_entry.as_dict())},"sap_create_obd",)
             items.append(item_entry)
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Items" : str(items)},"sap_create_obd",)
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
