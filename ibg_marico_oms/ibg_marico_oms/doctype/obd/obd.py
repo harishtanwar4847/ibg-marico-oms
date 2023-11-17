@@ -151,6 +151,6 @@ def order_reject(doc):
 
     except Exception as e:
         frappe.log_error(
-            message=frappe.get_traceback(),
+            message="Traceback : {},  Doc : {},  doc_type : {}".format(frappe.get_traceback(),doc,type(doc)),
             title="SAP Order Rejection Entry",
         )
