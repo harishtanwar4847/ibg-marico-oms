@@ -132,7 +132,7 @@ def order_reject(doc):
                     {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
                     "order_reject_request",
                 )
-                response=client.service.ZBAPI_ORD_STATUS(**request_data)
+                response=client.service.ZBAPI_ORD_REJ(**request_data)
                 ibg_marico_oms.create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
                     "order_reject_response",
