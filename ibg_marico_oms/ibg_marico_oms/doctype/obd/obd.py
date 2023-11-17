@@ -17,7 +17,7 @@ class OBD(Document):
             for i in order_status['IT_SO']['item']:
                 for j in self.items:
                     if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                        j.sales_item =  int(i['SALES_ITEM'])
+                        j.sales_item =  i['SALES_ITEM']
                         j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                         self.sap_obd_number = j.delivery_no
                         j.obd_sap_qty = float(i['OBD_QTY'])
@@ -87,7 +87,7 @@ def order_status():
                 for i in order_status_details:
                     for j in doc.items:
                         if doc.sap_so_number == i["SALES_ORDER"] and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                            j.sales_item =  int(i['SALES_ITEM'])
+                            j.sales_item =  i['SALES_ITEM']
                             j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                             j.obd_sap_qty = float(i['OBD_QTY'])
                             j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
@@ -146,12 +146,10 @@ def order_reject(doc):
                 for i in order_details[1:]:
                     if str(i["SALES_ORDER"]) == str(doc.sap_so_number) and int(i["SALES_ITEM"]) == int(item.sales_item) and int(item.fg_code) == int(i["FG_CODE"]):
                         # item_doc = frappe.get_doc("OBD Items", item.name)
-                        frappe.db.set_value('OBD Items', item.name, {
-                            'rejected_qty': float(i["REJECTED_QTY"]),
-                            "reason_of_reject" : i["REASON_OF_REJECT"],
-                            "order_status" : "Fully serviced",
-                            "final_status" : "Completed",
-                        })
+                        item.rejected_qty = float(i["REJECTED_QTY"])
+                        item.reason_of_reject = i["REASON_OF_REJECT"]
+                        item.order_status = "Fully serviced"
+                        item.final_status = "Completed"
                         ibg_marico_oms.create_log(
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()),},
                             "obd_item",
