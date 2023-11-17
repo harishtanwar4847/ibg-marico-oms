@@ -106,7 +106,7 @@ def order_status():
 @frappe.whitelist()
 def order_reject(doc):
     try:
-        doc = frappe.get_doc("OBD", doc)
+        doc = frappe.get_doc("OBD", doc.name)
         for i in doc.items:
             if i.final_status == "Pending":
                 ibg_marico_oms.create_log(
