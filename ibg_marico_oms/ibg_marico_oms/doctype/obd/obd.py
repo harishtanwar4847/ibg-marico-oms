@@ -106,7 +106,7 @@ def order_status():
 @frappe.whitelist()
 def order_reject(doc):
     try:
-        doc = frappe.get_doc("OBD", doc)
+        doc = frappe.get_doc("OBD", doc.name)
         for i in doc.items:
             if i.final_status == "Pending":
                 ibg_marico_oms.create_log(
@@ -155,6 +155,6 @@ def order_reject(doc):
 
     except Exception as e:
         frappe.log_error(
-            message="Traceback : {},  Doc : {},  doc_type : {}".format(frappe.get_traceback(),doc,type(doc)),
+            message="Traceback : {},  Doc : {},  doc_type : {}".format(frappe.get_traceback(),doc.name,type(doc)),
             title="SAP Order Rejection Entry",
         )
