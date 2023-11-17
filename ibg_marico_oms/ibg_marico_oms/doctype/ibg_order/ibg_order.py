@@ -147,7 +147,7 @@ class IBGOrder(Document):
                     "fg_description": i.product_description,
                     "sales_order_qty": i.qty_in_cases,
                 }
-            ).insert(ignore_permissions=True)
+            )
             frappe.db.commit()
             ibg_marico_oms.create_log(
                 {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Item Entry" : str(item_entry.as_dict())},"sap_create_obd",)
