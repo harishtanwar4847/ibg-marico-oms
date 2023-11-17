@@ -147,7 +147,7 @@ def change_date_format(dt):
 def order_reject(doc):
     try:
         for i in doc.items:
-            if i.order_status == "Partial serviced":
+            if i.final_status == "Pending":
                 create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
                     "order_reject_before_request",
