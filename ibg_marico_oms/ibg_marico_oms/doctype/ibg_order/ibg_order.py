@@ -139,36 +139,36 @@ class IBGOrder(Document):
             self.approved_by_supplychain = self.modified_by
         
     def on_submit(self):
-        items = []
-        for i in self.order_items:
-            item_entry = frappe.get_doc(
-                {
-                    "doctype": "OBD Items",
-                    "fg_code": i.fg_code,
-                    "fg_description": i.product_description,
-                    "sales_order_qty": i.qty_in_cases,
-                }
-            )
-            frappe.logger().info(
-                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(item_entry.as_dict()))
-			)
-            items.append(item_entry)
-            frappe.logger().info(
-                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items))
-			)
+        # items = []
+        # for i in self.order_items:
+        #     item_entry = frappe.get_doc(
+        #         {
+        #             "doctype": "OBD Items",
+        #             "fg_code": i.fg_code,
+        #             "fg_description": i.product_description,
+        #             "sales_order_qty": i.qty_in_cases,
+        #         }
+        #     )
+        #     frappe.logger().info(
+        #         "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(item_entry.as_dict()))
+		# 	)
+        #     items.append(item_entry)
+        #     frappe.logger().info(
+        #         "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items))
+		# 	)
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
                 "sap_so_number" : self.sap_so_number,
-                "items" : items
+                # "items" : items
             }
         )
         obd.insert(ignore_permissions=True)
         frappe.db.commit()
 
-        obd.reload()
-        obd.save(ignore_permissions=True)
+        # obd.reload()
+        # obd.save(ignore_permissions=True)
 
 
 @frappe.whitelist()
