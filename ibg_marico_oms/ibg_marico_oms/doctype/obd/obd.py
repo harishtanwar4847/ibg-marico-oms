@@ -11,58 +11,19 @@ from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
     def before_save(self):
-        # order = frappe.get_doc("IBG Order", self.ibg_order_id)
-        # print("--------------------{}---------------".format(self.name))
-        # self.sap_so_number = order.sap_so_number
-        # for i in order.order_items:
-        #     item_entry = frappe.get_doc(
-        #         {
-        #             "doctype": "OBD Items",
-        #             "parentfield" : "items",
-        #             "parenttype" : "OBD",
-        #             "parent" : self.name,
-        #             "fg_code": i.fg_code,
-        #             "fg_description": i.product_description,
-        #             "sales_order_qty": i.qty_in_cases,
-        #         }
-        #     ).insert(ignore_permissions=True)
-        #     frappe.db.commit() 
-
         order_status = order_status_bapi(doc = self)
         if len(order_status['IT_SO']['item'])>1:
             for i in order_status['IT_SO']['item']:
-                frappe.log_error(
-                    message="i ==> {} ".format(i),
-                    title="SAP Order Status BAPI Response",
-                )
-                item = frappe.get_doc(
-                    {
-                        "doctype" : "OBD Items",
-                        "parenttype": "OBD",
-                        "parent" : self.name,
-                        "parentfield" : "items",
-                        "fg_code" : i['FG_CODE'],
-                        "fg_description" : i['FG_DESCRIPTION'],
-                        "sales_order_qty" : float(i["SALES_QTY"]),
-                        "sales_item" :  i['SALES_ITEM'],
-                        "delivery_no" : i['DELIVERY_NO'] if i['DELIVERY_NO'] else '',
-                        "obd_sap_qty": float(i['OBD_QTY']),
-                        "pending_qty": float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0,
-                        "rejected_qty" : float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0,
-                        "order_status" : i['ORDER_STATUS'],
-                        "final_status" : i['FINAL_STATUS'] ,       
-                    }
-                ).insert(ignore_permissions=True)
-                # for j in self.items:
-                    # if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                    #     j.sales_item =  i['SALES_ITEM']
-                    #     j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                    #     self.sap_obd_number = j.delivery_no
-                    #     j.obd_sap_qty = float(i['OBD_QTY'])
-                    #     j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                    #     j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                    #     j.order_status = i['ORDER_STATUS']
-                    #     j.final_status = i['FINAL_STATUS']        
+                for j in self.items:
+                    if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                        j.sales_item =  i['SALES_ITEM']
+                        j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                        self.sap_obd_number = j.delivery_no
+                        j.obd_sap_qty = float(i['OBD_QTY'])
+                        j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                        j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                        j.order_status = i['ORDER_STATUS']
+                        j.final_status = i['FINAL_STATUS']        
 
 
 @frappe.whitelist()
