@@ -156,7 +156,6 @@ def order_reject(doc):
                         )
                         doc.save(ignore_permissions = True)
                         frappe.db.commit()
-        doc.reload()
 
     except Exception as e:
         frappe.log_error(
