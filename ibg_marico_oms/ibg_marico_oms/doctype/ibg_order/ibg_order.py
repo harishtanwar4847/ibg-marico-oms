@@ -138,6 +138,7 @@ class IBGOrder(Document):
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
         
+    def on_submit(self):
         items = []
         for i in self.order_items:
             item_entry = frappe.get_doc(
@@ -149,16 +150,18 @@ class IBGOrder(Document):
                 }
             )
             frappe.db.commit()
-            ibg_marico_oms.create_log(
-                {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Item Entry" : str(item_entry.as_dict())},"sap_create_obd",)
+            frappe.logger().info(
+                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(item_entry.as_dict()))
+			)
             items.append(item_entry)
-            ibg_marico_oms.create_log(
-                {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Items" : str(items)},"sap_create_obd",)
+            frappe.logger().info(
+                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items.as_dict()))
+			)
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
                 "ibg_order_id" : self.name,
-                "sap_so_number" : sap_number['sap_so_number'][1]['SALES_ORD'],
+                "sap_so_number" : self.sap_so_number,
                 "items" : items
             }
         ).insert(ignore_permissions=True)
