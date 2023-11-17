@@ -139,24 +139,24 @@ class IBGOrder(Document):
             self.approved_by_supplychain = self.modified_by
         
     def on_submit(self):
-        items = []
-        for i in self.order_items:
-            item_entry = frappe.get_doc(
-                {
-                    "doctype": "OBD Items",
-                    "fg_code": i.fg_code,
-                    "fg_description": i.product_description,
-                    "sales_order_qty": i.qty_in_cases,
-                }
-            )
-            frappe.db.commit()
-            frappe.logger().info(
-                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(item_entry.as_dict()))
-			)
-            items.append(item_entry)
-            frappe.logger().info(
-                "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items))
-			)
+        # items = []
+        # for i in self.order_items:
+        #     item_entry = frappe.get_doc(
+        #         {
+        #             "doctype": "OBD Items",
+        #             "fg_code": i.fg_code,
+        #             "fg_description": i.product_description,
+        #             "sales_order_qty": i.qty_in_cases,
+        #         }
+        #     )
+        #     frappe.db.commit()
+        #     frappe.logger().info(
+        #         "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(item_entry.as_dict()))
+		# 	)
+        #     items.append(item_entry)
+        #     frappe.logger().info(
+        #         "datetime : {},Item Entry : {}".format(str(frappe.utils.now_datetime()),str(items))
+		# 	)
         obd = frappe.get_doc(
             {
                 "doctype" : "OBD",
@@ -166,6 +166,18 @@ class IBGOrder(Document):
             }
         ).insert(ignore_permissions=True)
         frappe.db.commit()
+
+        for i in self.order_items:
+            item_entry = frappe.get_doc({
+                "doctype" : "OBD Items",
+                "parenttype" : "OBD",
+                "parent": obd.name,
+                "parentfield":"items",
+                "fg_code":i.fg_code,
+                "fg_description" : i.product_description,
+                "sales_order_qty" : i.qty_in_cases
+            }).insert(ignore_permissions=True)
+            frappe.db.commit()
 
 
 @frappe.whitelist()
