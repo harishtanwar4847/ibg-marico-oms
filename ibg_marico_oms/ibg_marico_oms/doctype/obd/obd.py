@@ -146,10 +146,12 @@ def order_reject(doc):
                 for i in order_details[1:]:
                     if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == item.sales_item and item.fg_code == i["FG_CODE"].lstrip('0'):
                         # item_doc = frappe.get_doc("OBD Items", item.name)
-                        item.rejected_qty = float(i["REJECTED_QTY"])
-                        item.reason_of_reject = i["REASON_OF_REJECT"]
-                        item.order_status = "Fully serviced"
-                        item.final_status = "Completed"
+                        frappe.db.set_value('OBD Items', item.name, {
+                            'rejected_qty': float(i["REJECTED_QTY"]),
+                            "reason_of_reject" : i["REASON_OF_REJECT"],
+                            "order_status" : "Fully serviced",
+                            "final_status" : "Completed",
+                        })
                         ibg_marico_oms.create_log(
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()),},
                             "obd_item",
