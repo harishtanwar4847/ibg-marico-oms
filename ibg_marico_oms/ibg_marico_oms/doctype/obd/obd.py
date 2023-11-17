@@ -146,7 +146,7 @@ def order_reject(doc):
                 for i in order_details[1:]:
                     if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == item.sales_item and item.fg_code == i["FG_CODE"].lstrip('0'):
                         # item_doc = frappe.get_doc("OBD Items", item.name)
-                        item.rejected_qty = int(i["REJECTED_QTY"])
+                        item.rejected_qty = float(i["REJECTED_QTY"])
                         item.reason_of_reject = i["REASON_OF_REJECT"]
                         item.order_status = "Fully serviced"
                         item.final_status = "Completed"
