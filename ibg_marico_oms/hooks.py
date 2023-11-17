@@ -120,9 +120,9 @@ scheduler_events = {
 	# "daily": [
 	# 	"ibg_marico_oms.tasks.daily"
 	# ],
-	# "hourly": [
-	# 	"ibg_marico_oms.tasks.hourly"
-	# ],
+	"hourly": [
+		"ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_status"
+	],
 	# "weekly": [
 	# 	"ibg_marico_oms.tasks.weekly"
 	# ],
@@ -137,10 +137,6 @@ scheduler_events = {
         "0 1 * * *": [
             "ibg_marico_oms.extract_customer_shipto"
         ],  # At 01:00 AM
-        "hourly": [
-			"ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_status"
-		],
-
 	},
 }
 
