@@ -140,18 +140,18 @@ def order_reject(doc):
                 )
                 order_details = response['IT_SO']['item']
                 ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details),},
+                    {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details[1:]),},
                     "order_details",
                 )
                 for i in order_details[1:]:
                     if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == item.sales_item and item.fg_code == i["FG_CODE"].lstrip('0'):
-                        item_doc = frappe.get_doc("OBD Items", item.name)
-                        item_doc.rejected_qty == i["REJECTED_QTY"]
-                        item_doc.reason_of_reject = i["REASON_OF_REJECT"]
-                        item_doc.order_status = "Fully serviced"
-                        item_doc.final_status = "Completed"
-                        item_doc.save(ignore_permissions = True)
-                        frappe.db.commit()
+                        # item_doc = frappe.get_doc("OBD Items", item.name)
+                        item.rejected_qty == i["REJECTED_QTY"]
+                        item.reason_of_reject = i["REASON_OF_REJECT"]
+                        item.order_status = "Fully serviced"
+                        item.final_status = "Completed"
+        doc.save(ignore_permissions = True)
+        frappe.db.commit()
 
     except Exception as e:
         frappe.log_error(
