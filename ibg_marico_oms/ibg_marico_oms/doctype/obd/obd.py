@@ -154,8 +154,8 @@ def order_reject(doc):
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()),},
                             "obd_item",
                         )
-        doc.save(ignore_permissions = True)
-        frappe.db.commit()
+                        doc.save(ignore_permissions = True)
+                        frappe.db.commit()
 
     except Exception as e:
         frappe.log_error(
