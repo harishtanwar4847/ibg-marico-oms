@@ -107,8 +107,8 @@ def order_status():
 def order_reject(doc):
     try:
         doc = frappe.get_doc("OBD", doc)
-        for i in doc.items:
-            if i.final_status == "Pending":
+        for item in doc.items:
+            if item.final_status == "Pending":
                 ibg_marico_oms.create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
                     "order_reject_before_request",
@@ -125,10 +125,10 @@ def order_reject(doc):
                 session = Session()
                 session.auth = HTTPBasicAuth(userid, pswd)
                 client=Client(wsdl,transport=Transport(session=session))
-                fg_code = i.fg_code
+                fg_code = item.fg_code
                 if len(fg_code)< 18:
                     fg_code = fg_code.zfill(18) 
-                request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : i.sales_item,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
+                request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : item.sales_item,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
                 ibg_marico_oms.create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
                     "order_reject_request",
@@ -144,13 +144,13 @@ def order_reject(doc):
                     "order_details",
                 )
                 for i in order_details[1:]:
-                    if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == i.sales_item and i.fg_code == i["FG_CODE"].lstrip('0'):
-                        item = frappe.get_doc("OBD Items", i.name)
-                        item.rejected_qty == i["REJECTED_QTY"]
-                        item.reason_of_reject = i["REASON_OF_REJECT"]
-                        item.order_status = "Fully serviced"
-                        item.final_status = "Completed"
-                        item.save(ignore_permissions = True)
+                    if i["SALES_ORDER"] == doc.sap_so_number and i["SALES_ITEM"] == item.sales_item and item.fg_code == i["FG_CODE"].lstrip('0'):
+                        item_doc = frappe.get_doc("OBD Items", item.name)
+                        item_doc.rejected_qty == i["REJECTED_QTY"]
+                        item_doc.reason_of_reject = i["REASON_OF_REJECT"]
+                        item_doc.order_status = "Fully serviced"
+                        item_doc.final_status = "Completed"
+                        item_doc.save(ignore_permissions = True)
                         frappe.db.commit()
 
     except Exception as e:
