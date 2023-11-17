@@ -10,8 +10,9 @@ from requests import Session
 from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
-    def after_save(self):
+    def before_save(self):
         order = frappe.get_doc("IBG Order", self.ibg_order_id)
+        print("--------------------{}---------------".format(self.name))
         self.sap_so_number = order.sap_so_number
         for i in order.order_items:
             item_entry = frappe.get_doc(
