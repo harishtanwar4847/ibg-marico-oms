@@ -153,7 +153,7 @@ def order_reject(doc):
                         item_doc.save(ignore_permissions=True)
                         frappe.db.commit()
                         ibg_marico_oms.create_log(
-                            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item_doc.as_dict()),},
+                            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item_doc.as_dict()), "Item Doc" : str(item_doc.name)},
                             "obd_item",
                         )
         doc.save(ignore_permissions = True)
