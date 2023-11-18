@@ -153,7 +153,7 @@ def order_reject(doc):
                         item.reason_of_reject = i["REASON_OF_REJECT"]
                         item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
                         item.final_status = "Completed" if item.reason_of_reject else "Pending"
-                        item.reload()
+                        frappe.db.commit()
 
                         ibg_marico_oms.create_log(
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
