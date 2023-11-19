@@ -15,10 +15,8 @@ frappe.ui.form.on('OBD', {
 					args: {
 						doc: frm.doc.name,
 					},
-					// callback: (res) => {
-					// 	res.message;
-					// },
 				});
+				frm.refresh()
 			});
 		}
 	}
