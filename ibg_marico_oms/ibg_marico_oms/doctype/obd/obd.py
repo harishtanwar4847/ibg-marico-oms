@@ -154,7 +154,7 @@ def order_reject(doc):
                         # item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
                         # item.final_status = "Completed" if item.reason_of_reject else "Pending"
                         # item.save(ignore_permissions = True)
-                        frappe.db.sql(""" update `tabOBD Items` set rejected_qty = {}, reason_of_reject : {}, order_status = {}, final_status = {} where name = {}""".format(float(i["REJECTED_QTY"]), i["REASON_OF_REJECT"], "Fully serviced", "Completed"))
+                        frappe.db.sql(""" update `tabOBD Items` set rejected_qty = {qty}, reason_of_reject : '{reason}', order_status = '{order_status}' , final_status = '{final_status}'  where name = '{name}' """.format(qty = float(i["REJECTED_QTY"]), reason = i["REASON_OF_REJECT"], order_status = "Fully serviced", final_status = "Completed", name = item.name))
                         frappe.db.commit()
 
 
