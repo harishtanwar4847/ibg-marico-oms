@@ -154,7 +154,7 @@ def order_reject(doc):
                         item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
                         item.final_status = "Completed" if item.reason_of_reject else "Pending"
                         item.save(ignore_permissions = True)
-
+                        frappe.db.commit()
 
 
                         ibg_marico_oms.create_log(
