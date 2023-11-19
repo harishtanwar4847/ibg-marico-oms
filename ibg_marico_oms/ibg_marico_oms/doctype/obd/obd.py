@@ -163,7 +163,7 @@ def order_reject(doc):
                         )
         # doc.save(ignore_permissions = True)
         # frappe.db.commit()
-        doc.reload()
+        frappe.reload_doctype("OBD")
 
     except Exception as e:
         frappe.log_error(
