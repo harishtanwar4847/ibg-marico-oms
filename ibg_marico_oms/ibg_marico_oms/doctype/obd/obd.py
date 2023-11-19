@@ -164,10 +164,9 @@ def order_reject(doc):
                         )
         # doc.save(ignore_permissions = True)
         # frappe.db.commit()
+        doc.reload()
         frappe.reload_doc()
-        frappe.reload_doctype("OBD")
-        frappe.reload_doctype("OBD Items")
-
+    
     except Exception as e:
         frappe.log_error(
             message="Traceback : {},  Doc : {},  doc_type : {}".format(frappe.get_traceback(),doc.name,type(doc)),
