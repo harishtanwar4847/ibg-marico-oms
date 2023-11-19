@@ -86,7 +86,7 @@ def order_status():
             if order_status_details:
                 for i in order_status_details:
                     for j in doc.items:
-                        if doc.sap_so_number == i["SALES_ORDER"] and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                        if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                             j.sales_item =  i['SALES_ITEM']
                             j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                             j.obd_sap_qty = float(i['OBD_QTY'])
@@ -153,7 +153,6 @@ def order_reject(doc):
                         item.reason_of_reject = i["REASON_OF_REJECT"]
                         item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
                         item.final_status = "Completed" if item.reason_of_reject else "Pending"
-                        frappe.db.commit()
 
                         ibg_marico_oms.create_log(
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
