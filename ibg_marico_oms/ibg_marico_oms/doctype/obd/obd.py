@@ -154,6 +154,7 @@ def order_reject(doc):
                         item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
                         item.final_status = "Completed" if item.reason_of_reject else "Pending"
                         item.save(ignore_permissions = True)
+                        doc.save(ignore_permissions = True)
                         frappe.db.commit()
 
 
@@ -161,7 +162,6 @@ def order_reject(doc):
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
                             "obd_item",
                         )
-        # doc.save(ignore_permissions = True)
         # frappe.db.commit()
         frappe.reload_doctype("OBD")
         frappe.reload_doctype("OBD Items")
