@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('OBD', {
-	refresh: function(frm) {
+	onload: function(frm) {
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 
@@ -16,9 +16,9 @@ frappe.ui.form.on('OBD', {
 						doc: frm.doc.name,
 					},
 				});
-				window.location.reload(true);
 			});
 		}
 	}
+	// window.location.reload(true);
 });
 

@@ -86,7 +86,7 @@ def order_status():
             if order_status_details:
                 for i in order_status_details:
                     for j in doc.items:
-                        if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                             j.sales_item =  i['SALES_ITEM']
                             j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                             j.obd_sap_qty = float(i['OBD_QTY'])
