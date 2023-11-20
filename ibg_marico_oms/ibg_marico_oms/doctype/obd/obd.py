@@ -148,13 +148,13 @@ def order_reject(doc):
                 )
                 for i in order_details[1:]:
                     if str(i["SALES_ORDER"]) == str(doc.sap_so_number) and int(i["SALES_ITEM"]) == int(item.sales_item) and int(item.fg_code) == int(i["FG_CODE"]):
-                        # item_doc = frappe.get_doc("OBD Items", item.name)
-                        # item.rejected_qty = float(i["REJECTED_QTY"])
-                        # item.reason_of_reject = i["REASON_OF_REJECT"]
-                        # item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
-                        # item.final_status = "Completed" if item.reason_of_reject else "Pending"
-                        # item.save(ignore_permissions = True)
-                        frappe.db.sql(""" update `tabOBD Items` set rejected_qty = {qty}, reason_of_reject = '{reason}', order_status = '{order_status}' , final_status = '{final_status}'  where name = '{name}' """.format(qty = float(i["REJECTED_QTY"]), reason = i["REASON_OF_REJECT"], order_status = "Fully serviced", final_status = "Completed", name = item.name))
+                        item_doc = frappe.get_doc("OBD Items", item.name)
+                        item.rejected_qty = float(i["REJECTED_QTY"])
+                        item.reason_of_reject = i["REASON_OF_REJECT"]
+                        item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
+                        item.final_status = "Completed" if item.reason_of_reject else "Pending"
+                        item.save(ignore_permissions = True)
+                        # frappe.db.sql(""" update `tabOBD Items` set rejected_qty = {qty}, reason_of_reject = '{reason}', order_status = '{order_status}' , final_status = '{final_status}'  where name = '{name}' """.format(qty = float(i["REJECTED_QTY"]), reason = i["REASON_OF_REJECT"], order_status = "Fully serviced", final_status = "Completed", name = item.name))
                         frappe.db.commit()
 
 
