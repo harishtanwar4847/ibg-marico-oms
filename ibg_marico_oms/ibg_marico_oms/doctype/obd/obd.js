@@ -16,6 +16,7 @@ frappe.ui.form.on('OBD', {
 						doc: frm.doc.name,
 					},
 				});
+				window.location.reload(true);
 			});
 		}
 	}
