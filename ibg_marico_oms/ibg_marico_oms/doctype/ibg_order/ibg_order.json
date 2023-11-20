@@ -10,6 +10,7 @@
  "field_order": [
   "customer",
   "bill_to",
+  "company_code",
   "order_etd",
   "column_break_4",
   "ship_to",
@@ -252,12 +253,19 @@
    "fieldtype": "Data",
    "label": "Bill To Customer Name",
    "read_only": 1
+  },
+  {
+   "fetch_from": "customer.company_code",
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-10 12:25:07.129355",
+ "modified": "2023-11-08 10:28:49.816431",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",

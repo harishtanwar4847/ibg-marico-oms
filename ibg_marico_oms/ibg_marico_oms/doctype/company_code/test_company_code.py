@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestShipTo(FrappeTestCase):
+class TestCompanyCode(FrappeTestCase):
 	pass

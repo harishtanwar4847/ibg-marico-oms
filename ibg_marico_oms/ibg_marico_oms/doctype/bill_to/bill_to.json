@@ -9,6 +9,8 @@
  "engine": "InnoDB",
  "field_order": [
   "bill_to",
+  "company_code",
+  "column_break_3",
   "customer"
  ],
  "fields": [
@@ -22,11 +24,21 @@
    "fieldname": "customer",
    "fieldtype": "Data",
    "label": "Customer"
+  },
+  {
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-23 19:33:53.718079",
+ "modified": "2023-11-06 14:24:38.041100",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Bill To",

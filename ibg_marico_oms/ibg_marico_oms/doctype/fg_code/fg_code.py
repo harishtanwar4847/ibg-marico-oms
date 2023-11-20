@@ -20,6 +20,9 @@ def fgcode_unitscs_template():
             columns=[
                 "FG Code",
                 "Units/CS",
+                "Product Description",
+                "Material Group",
+                "Company Code",
             ],
         )
         file_name = "Product_list_{}".format(frappe.utils.now_datetime().date())
@@ -57,10 +60,26 @@ def fgcode_unitscs_file_upload(upload_file):
             csv_data = read_csv_content(fcontent)
 
         for i in csv_data[1:]:
-            product_doc = frappe.get_doc("FG Code", i[0])
-            if product_doc:
+            fgcode_list = frappe.get_list("FG Code", filters = {"name" : i[0]}, fields =["name"])
+            if fgcode_list:
+                product_doc = frappe.get_doc("FG Code", i[0])
                 product_doc.unitscs = i[1]
+                if not product_doc.company_code:
+                    product_doc.company_code = i[4] if i[4] else ''
+                elif i[4] and product_doc.company_code and str(product_doc.company_code) != str(i[4]):
+                    product_doc.company_code = ""
                 product_doc.save(ignore_permissions = True)
+                frappe.db.commit()
+            else:
+                print("i[2]",i[2])
+                product_code = frappe.get_doc({
+                    "doctype" : "FG Code",
+                    "fg_code" : i[0],
+					"unitscs" : i[1],
+                    "product_description" : i[2],
+                    "material_group" : i[3],
+					"company_code" : i[4],
+				}).insert(ignore_permissions = True)    
                 frappe.db.commit()
     except Exception as e:
         frappe.log_error(

@@ -10,6 +10,7 @@
  "field_order": [
   "fg_code",
   "product_description",
+  "company_code",
   "column_break_5",
   "material_group",
   "unitscs"
@@ -40,11 +41,17 @@
   {
    "fieldname": "column_break_5",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-24 12:18:31.596206",
+ "modified": "2023-11-06 14:25:16.756086",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "FG Code",

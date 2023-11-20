@@ -3,8 +3,12 @@ import os
 import frappe
 import re
 import pyodbc as p
+from zeep import Client
+from zeep.transports import Transport
+from requests import Session
+from requests.auth import HTTPBasicAuth
 
-__version__ = '1.1.5'
+__version__ = '2.0.0-dev'
 
 def download_file(dataframe, file_name, file_extention, sheet_name):
     file_name = "{}.{}".format(file_name, file_extention)
@@ -68,6 +72,7 @@ def extract_product_data():
                         fg_code=i[0],
                         product_description=i[1],
                         material_group = i[10],
+                        company_code = i[15],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
     
@@ -97,7 +102,8 @@ def extract_customer_shipto():
                         doctype="IBG Distributor",
                         customer_name=i[2],
                         country = i[5],
-                        ship_to = i[1]
+                        ship_to = i[1],
+                        company_code = i[11],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
                 pop_name = cust_name_list.pop(0)
@@ -106,6 +112,7 @@ def extract_customer_shipto():
                         doctype="Bill To",
                         bill_to=i[1],
                         customer = i[2],
+                        company_code = i[11],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
         cursor.execute('SELECT *  FROM Mst_customer')
@@ -118,6 +125,7 @@ def extract_customer_shipto():
                 cust = frappe.get_doc("IBG Distributor", i[3])
                 if cust:
                     cust.customer_code = i[2]
+                    cust.company_code = i[12]
                     cust.save(ignore_permissions=True)
                     frappe.db.commit()
         customer_list = frappe.get_all("IBG Distributor", fields =["*"])
