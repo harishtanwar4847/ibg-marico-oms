@@ -15,9 +15,9 @@ class OBD(Document):
         order_status = order_status_bapi(doc = self)
         if len(order_status['IT_SO']['item'])>1:
             for j in self.items:
-                if not j.reason_of_reject:
+                if not j.reason_of_reject and j.final_status == "Pending":
                     for i in order_status['IT_SO']['item']:
-                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]) and not j.reason_of_reject:
+                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                             j.sales_item =  i['SALES_ITEM']
                             j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
                             self.sap_obd_number = j.delivery_no
@@ -84,17 +84,18 @@ def order_status():
         for i in obd_list:
             doc = frappe.get_doc("OBD", i.name)
             order_status_details = order_status_bapi(doc = doc)
-            if order_status_details:
-                for i in order_status_details:
-                    for j in doc.items:
-                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                            j.sales_item =  i['SALES_ITEM']
-                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                            j.obd_sap_qty = float(i['OBD_QTY'])
-                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                            j.order_status = i['ORDER_STATUS']
-                            j.final_status = i['FINAL_STATUS']
+            if len(order_status['IT_SO']['item']) > 1:
+                for j in doc.items:
+                    if not j.reason_of_reject and j.final_status == "Pending":
+                        for i in order_status['IT_SO']['item']:
+                            if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                                j.sales_item =  i['SALES_ITEM']
+                                j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                                j.obd_sap_qty = float(i['OBD_QTY'])
+                                j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                                j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                                j.order_status = i['ORDER_STATUS']
+                                j.final_status = i['FINAL_STATUS']
                 
                 if doc.items[0].delivery_no:
                     doc.sap_obd_number = doc.items[0].delivery_no
