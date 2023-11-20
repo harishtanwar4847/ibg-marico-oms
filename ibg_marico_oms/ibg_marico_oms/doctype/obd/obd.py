@@ -84,10 +84,10 @@ def order_status():
         for i in obd_list:
             doc = frappe.get_doc("OBD", i.name)
             order_status_details = order_status_bapi(doc = doc)
-            if len(order_status['IT_SO']['item']) > 1:
+            if len(order_status_details['IT_SO']['item'])>1:
                 for j in doc.items:
                     if not j.reason_of_reject and j.final_status == "Pending":
-                        for i in order_status['IT_SO']['item']:
+                        for i in order_status_details['IT_SO']['item']:
                             if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                                 j.sales_item =  i['SALES_ITEM']
                                 j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
