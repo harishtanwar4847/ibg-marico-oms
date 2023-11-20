@@ -3,22 +3,21 @@
 
 frappe.ui.form.on('OBD', {
 	refresh: function(frm) {
-		// frm.page.sidebar.remove(); // this removes the sidebar
-		// frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
+		frm.page.sidebar.remove(); // this removes the sidebar
+		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 
-		// if (frm.doc.final_status === "Pending") {
-		// 	frm.add_custom_button(__('Short Close'), function () {
-		// 		console.log("Doc Name :",frm.doc.name)
-		// 		frappe.call({
-		// 			method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_reject',
-		// 			freeze: true,
-		// 			args: {
-		// 				doc: frm.doc.name,
-		// 			},
-		// 		});
-		// 	});
-		// }
-		// window.location.reload(true);
+		if (frm.doc.final_status === "Pending") {
+			frm.add_custom_button(__('Short Close'), function () {
+				console.log("Doc Name :",frm.doc.name)
+				frappe.call({
+					method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_reject',
+					freeze: true,
+					args: {
+						doc: frm.doc.name,
+					},
+				});
+			});
+		}
 	}
 });
 
