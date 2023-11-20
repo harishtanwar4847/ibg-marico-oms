@@ -103,6 +103,7 @@ def extract_customer_shipto():
                         customer_name=i[2],
                         country = i[5],
                         ship_to = i[1],
+                        company_code = i[11],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
                 pop_name = cust_name_list.pop(0)
@@ -111,6 +112,7 @@ def extract_customer_shipto():
                         doctype="Bill To",
                         bill_to=i[1],
                         customer = i[2],
+                        company_code = i[11],
                         )).insert(ignore_permissions=True)
                 frappe.db.commit()
         cursor.execute('SELECT *  FROM Mst_customer')

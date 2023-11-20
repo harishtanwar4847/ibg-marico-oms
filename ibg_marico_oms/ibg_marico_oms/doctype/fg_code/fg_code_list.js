@@ -1,6 +1,8 @@
 frappe.listview_settings["FG Code"] = {
     hide_name_column: true,
     refresh: function (listview) {
+      listview.page.sidebar.remove(); // this removes the sidebar
+		  listview.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10");
       var is_true = frappe.user_roles.find((role) => role === "System Manager");
       if (is_true || frappe.session.user == "Administrator") {
         listview.page.add_menu_item(__("Download Product Units Template"), function () {
