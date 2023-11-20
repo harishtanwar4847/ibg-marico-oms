@@ -14,18 +14,19 @@ class OBD(Document):
         order_item_status = []
         order_status = order_status_bapi(doc = self)
         if len(order_status['IT_SO']['item'])>1:
-            for i in order_status['IT_SO']['item']:
-                for j in self.items:
-                    if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]) and not j.reason_of_reject:
-                        j.sales_item =  i['SALES_ITEM']
-                        j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                        self.sap_obd_number = j.delivery_no
-                        j.obd_sap_qty = float(i['OBD_QTY'])
-                        j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                        j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                        j.order_status = i['ORDER_STATUS']
-                        j.final_status = i['FINAL_STATUS'] 
-                        order_item_status.append(str(i["ORDER_STATUS"]))       
+            for j in self.items:
+                if not j.reason_of_reject:
+                    for i in order_status['IT_SO']['item']:
+                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]) and not j.reason_of_reject:
+                            j.sales_item =  i['SALES_ITEM']
+                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                            self.sap_obd_number = j.delivery_no
+                            j.obd_sap_qty = float(i['OBD_QTY'])
+                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                            j.order_status = i['ORDER_STATUS']
+                            j.final_status = i['FINAL_STATUS'] 
+                            order_item_status.append(str(i["ORDER_STATUS"]))       
 
         if "Partial serviced" in order_item_status:
             self.order_status = "Partial serviced"
@@ -162,10 +163,12 @@ def order_reject(doc):
                             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
                             "obd_item",
                         )
-        # doc.save(ignore_permissions = True)
-        # frappe.db.commit()
-        doc.reload()
-        frappe.reload_doc()
+        doc.order_status = "Partial serviced"
+        doc.final_status = "Completed"
+        doc.save(ignore_permissions = True)
+        frappe.db.commit()
+        # doc.reload()
+        # frappe.reload_doc()
     
     except Exception as e:
         frappe.log_error(
