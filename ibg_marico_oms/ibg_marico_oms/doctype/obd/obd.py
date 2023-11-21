@@ -18,19 +18,18 @@ class OBD(Document):
                     "order_status_save_request",
                 )
         if len(order_status['IT_SO']['item'])>1:
-                for j in self.items:
-                    if not j.reason_of_reject and j.final_status == "Pending":
-                        for i in order_status['IT_SO']['item']:
-                            if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                                j.sales_item =  i['SALES_ITEM']
-                                j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                                self.sap_obd_number = j.delivery_no
-                                j.obd_sap_qty = float(i['OBD_QTY'])
-                                j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                                j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                                j.order_status = i['ORDER_STATUS']
-                                j.final_status = i['FINAL_STATUS'] 
-
+            for j in self.items:
+                if not j.reason_of_reject and j.final_status == "Pending":
+                    for i in order_status['IT_SO']['item']:
+                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                            j.sales_item =  i['SALES_ITEM']
+                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                            self.sap_obd_number = j.delivery_no
+                            j.obd_sap_qty = float(i['OBD_QTY'])
+                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                            j.order_status = i['ORDER_STATUS']
+                            j.final_status = i['FINAL_STATUS'] 
 
         for i in self.items:
             if not i.order_status or i.order_status == "Partial serviced": 
