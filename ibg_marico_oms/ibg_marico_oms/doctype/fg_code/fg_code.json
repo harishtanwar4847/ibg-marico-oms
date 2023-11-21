@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "field:fg_code",
  "creation": "2023-02-01 20:01:12.540491",
  "default_view": "List",
@@ -10,10 +9,11 @@
  "field_order": [
   "fg_code",
   "product_description",
-  "company_code",
-  "column_break_5",
   "material_group",
-  "unitscs"
+  "column_break_5",
+  "unitscs",
+  "company_code",
+  "apply_for_all_company_code"
  ],
  "fields": [
   {
@@ -33,25 +33,31 @@
    "label": "Material Group"
   },
   {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "unitscs",
    "fieldtype": "Float",
    "label": "Units/Cs",
    "precision": "2"
   },
   {
-   "fieldname": "column_break_5",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "company_code",
    "fieldtype": "Link",
    "label": "Company Code",
    "options": "Company Code"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_for_all_company_code",
+   "fieldtype": "Check",
+   "label": "Apply for all Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-06 14:25:16.756086",
+ "modified": "2023-11-21 14:19:58.021540",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "FG Code",

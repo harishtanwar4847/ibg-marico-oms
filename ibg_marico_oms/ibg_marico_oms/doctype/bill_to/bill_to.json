@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "field:bill_to",
  "creation": "2023-03-16 11:36:19.150617",
  "default_view": "List",
@@ -10,6 +9,7 @@
  "field_order": [
   "bill_to",
   "company_code",
+  "apply_to_all_company_code",
   "column_break_3",
   "customer"
  ],
@@ -21,11 +21,6 @@
    "unique": 1
   },
   {
-   "fieldname": "customer",
-   "fieldtype": "Data",
-   "label": "Customer"
-  },
-  {
    "fieldname": "company_code",
    "fieldtype": "Link",
    "label": "Company Code",
@@ -34,11 +29,22 @@
   {
    "fieldname": "column_break_3",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_to_all_company_code",
+   "fieldtype": "Check",
+   "label": "Apply to all Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-06 14:24:38.041100",
+ "modified": "2023-11-21 14:20:52.066381",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Bill To",
