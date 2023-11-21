@@ -19,7 +19,7 @@ class OBD(Document):
                 )
         if len(order_status['IT_SO']['item'])>1:
             for j in self.items:
-                if not j.reason_of_reject and j.final_status == "Pending":
+                if not j.reason_of_reject and j.final_status == "Pending" or j.final_status == "":
                     for i in order_status['IT_SO']['item']:
                         if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                             j.sales_item =  i['SALES_ITEM']
