@@ -30,7 +30,8 @@ class OBD(Document):
                                 j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
                                 j.order_status = i['ORDER_STATUS']
                                 j.final_status = i['FINAL_STATUS'] 
-                    
+
+
         for i in self.items:
             if not i.order_status or i.order_status == "Partial serviced": 
                 order_item_status+=1
@@ -174,6 +175,6 @@ def order_reject(doc):
     
     except Exception as e:
         frappe.log_error(
-            message="Traceback : {},  Doc : {},  doc_type : {}".format(frappe.get_traceback(),doc.name,type(doc)),
+            message=frappe.get_traceback(),
             title="SAP Order Rejection Entry",
         )
