@@ -13,7 +13,11 @@ class OBD(Document):
     def before_save(self):
         order_item_status = []
         order_status = order_status_bapi(doc = self)
-        if len(order_status['IT_SO']['item'])>1:
+        ibg_marico_oms.create_log(
+                    {"datetime" : str(frappe.utils.now_datetime()),"response" : order_status,},
+                    "order_status_save_request",
+                )
+	if len(order_status['IT_SO']['item'])>1:
             for j in self.items:
                 if not j.reason_of_reject and j.final_status == "Pending":
                     for i in order_status['IT_SO']['item']:
@@ -26,8 +30,9 @@ class OBD(Document):
                             j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
                             j.order_status = i['ORDER_STATUS']
                             j.final_status = i['FINAL_STATUS'] 
-                            order_item_status.append(str(i["ORDER_STATUS"]))       
-
+            	
+	for i in self.items:
+	    order_item_status.append(str(i.order_status))       
         if "Partial serviced" in order_item_status:
             self.order_status = "Partial serviced"
         else:
@@ -97,8 +102,8 @@ def order_status():
                                 j.order_status = i['ORDER_STATUS']
                                 j.final_status = i['FINAL_STATUS']
                 
-                if doc.items[0].delivery_no:
-                    doc.sap_obd_number = doc.items[0].delivery_no
+                    if j.delivery_no:
+                    	doc.sap_obd_number = j.delivery_no
             doc.save(ignore_permissions=True)
             frappe.db.commit()
 
