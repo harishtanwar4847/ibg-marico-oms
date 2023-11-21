@@ -14,7 +14,7 @@ class OBD(Document):
         order_item_status = 0
         order_status = order_status_bapi(doc = self)
         ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"response" : order_status,},
+                    {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order_status),},
                     "order_status_save_request",
                 )
         if len(order_status['IT_SO']['item'])>1:
