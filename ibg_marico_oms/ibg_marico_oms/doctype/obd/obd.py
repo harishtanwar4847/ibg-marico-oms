@@ -31,15 +31,15 @@ class OBD(Document):
                             j.order_status = i['ORDER_STATUS']
                             j.final_status = i['FINAL_STATUS'] 
 
-        # for i in self.items:
-        #     if not i.order_status or i.order_status == "Partial serviced": 
-        #         order_item_status+=1
-        # if order_item_status >0:
-        #     self.order_status = "Partial serviced"
-        #     self.final_status = "Pending"
-        # else:
-        #     self.order_status = "Fully serviced"
-        #     self.final_status = "Completed"
+        for i in self.items:
+            if not i.order_status or i.order_status == "Partial serviced": 
+                order_item_status+=1
+        if order_item_status >0:
+            self.order_status = "Partial serviced"
+            self.final_status = "Pending"
+        else:
+            self.order_status = "Fully serviced"
+            self.final_status = "Completed"
 
 @frappe.whitelist()
 def order_status_bapi(doc):
