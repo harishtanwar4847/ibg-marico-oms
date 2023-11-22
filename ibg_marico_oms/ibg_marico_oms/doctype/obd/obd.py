@@ -86,7 +86,7 @@ def order_status_bapi(doc):
 @frappe.whitelist()
 def order_status():
     try:
-        obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending", "sap_obd_number" : ""}, fields = ["name"])
+        obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending"}, fields = ["name"])
 
         for i in obd_list:
             doc = frappe.get_doc("OBD", i.name)
