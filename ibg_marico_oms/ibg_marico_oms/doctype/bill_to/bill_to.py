@@ -66,6 +66,7 @@ def bill_to_file_upload(upload_file):
                     bill_to_doc.company_code = i[1] if i[1] else ''
                 elif i[1] and bill_to_doc.company_code and str(bill_to_doc.company_code) != str(i[1]):
                     bill_to_doc.company_code = ""
+                    bill_to_doc.apply_to_all_company_code = 1
                 bill_to_doc.save(ignore_permissions = True)
                 frappe.db.commit()
             else:
