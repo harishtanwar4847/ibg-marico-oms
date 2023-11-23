@@ -120,7 +120,7 @@ def order_reject(doc):
     try:
         doc = frappe.get_doc("OBD", doc)
         for item in doc.items:
-            if item.final_status == "Pending" or not item.final_status:
+            if item.final_status == "Pending" or not item.final_status or not item.order_status:
                 ibg_marico_oms.create_log(
                     {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
                     "order_reject_before_request",
