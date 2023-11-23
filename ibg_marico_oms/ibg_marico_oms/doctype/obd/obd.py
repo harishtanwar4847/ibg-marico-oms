@@ -125,59 +125,62 @@ def order_reject(doc):
     try:
         doc = frappe.get_doc("OBD", doc)
         for item in doc.items:
-            if item.final_status == "Pending" or not item.final_status or not item.order_status:
-                ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-                    "order_reject_before_request",
-                )
-                if frappe.utils.get_url() == "https://marico.atriina.com":
-                    wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=400&sap-user=minet&sap-password=ramram"
-                    userid = "minet"
-                    pswd = "ramram"
-                else:
-                    wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=540&sap-user=portal&sap-password=portal%40345"
-                    userid = "portal"
-                    pswd = "portal@345"
-                client = Client(wsdl)
-                session = Session()
-                session.auth = HTTPBasicAuth(userid, pswd)
-                client=Client(wsdl,transport=Transport(session=session))
-                fg_code = item.fg_code
-                if len(fg_code)< 18:
-                    fg_code = fg_code.zfill(18) 
-                request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : item.sales_item,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
-                ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
-                    "order_reject_request",
-                )
-                response=client.service.ZBAPI_ORD_REJ(**request_data)
-                ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
-                    "order_reject_response",
-                )
-                order_details = response['IT_SO']['item']
-                ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details[1:]),},
-                    "order_details",
-                )
-                for i in order_details[1:]:
-                    if str(i["SALES_ORDER"]) == str(doc.sap_so_number) and int(i["SALES_ITEM"]) == int(item.sales_item) and int(item.fg_code) == int(i["FG_CODE"]):
-                        item_doc = frappe.get_doc("OBD Items", item.name)
-                        item.rejected_qty = float(i["REJECTED_QTY"])
-                        item.reason_of_reject = i["REASON_OF_REJECT"]
-                        item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
-                        item.final_status = "Completed" if item.reason_of_reject else "Pending"
-                        item.save(ignore_permissions = True)
-                        frappe.db.commit()
+            if item.sales_item:
+                if item.final_status == "Pending" or not item.final_status or not item.order_status:
+                    ibg_marico_oms.create_log(
+                        {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+                        "order_reject_before_request",
+                    )
+                    if frappe.utils.get_url() == "https://marico.atriina.com":
+                        wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=400&sap-user=minet&sap-password=ramram"
+                        userid = "minet"
+                        pswd = "ramram"
+                    else:
+                        wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=540&sap-user=portal&sap-password=portal%40345"
+                        userid = "portal"
+                        pswd = "portal@345"
+                    client = Client(wsdl)
+                    session = Session()
+                    session.auth = HTTPBasicAuth(userid, pswd)
+                    client=Client(wsdl,transport=Transport(session=session))
+                    fg_code = item.fg_code
+                    if len(fg_code)< 18:
+                        fg_code = fg_code.zfill(18) 
+                    request_data={"SALES_ORDER" : doc.sap_so_number ,"SALES_ITEM" : item.sales_item,"FG_CODE" : fg_code, 'IT_SO': "", 'IT_RETURN':""}
+                    ibg_marico_oms.create_log(
+                        {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+                        "order_reject_request",
+                    )
+                    response=client.service.ZBAPI_ORD_REJ(**request_data)
+                    ibg_marico_oms.create_log(
+                        {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+                        "order_reject_response",
+                    )
+                    order_details = response['IT_SO']['item']
+                    ibg_marico_oms.create_log(
+                        {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details[1:]),},
+                        "order_details",
+                    )
+                    for i in order_details[1:]:
+                        if str(i["SALES_ORDER"]) == str(doc.sap_so_number) and int(i["SALES_ITEM"]) == int(item.sales_item) and int(item.fg_code) == int(i["FG_CODE"]):
+                            item_doc = frappe.get_doc("OBD Items", item.name)
+                            item.rejected_qty = float(i["REJECTED_QTY"])
+                            item.reason_of_reject = i["REASON_OF_REJECT"]
+                            item.order_status = "Fully serviced" if item.reason_of_reject else "Partial serviced"
+                            item.final_status = "Completed" if item.reason_of_reject else "Pending"
+                            item.save(ignore_permissions = True)
+                            frappe.db.commit()
 
-                        ibg_marico_oms.create_log(
-                            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
-                            "obd_item",
-                        )
-        doc.order_status = "Fully serviced"
-        doc.final_status = "Completed"
-        doc.save(ignore_permissions = True)
-        frappe.db.commit()
+                            ibg_marico_oms.create_log(
+                                {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
+                                "obd_item",
+                            )
+                doc.order_status = "Fully serviced"
+                doc.final_status = "Completed"
+                doc.save(ignore_permissions = True)
+                frappe.db.commit()
+            else:
+                frappe.throw(frappe._("Kindly note the Sales Item is not recieved from SAP."))
     
     except Exception as e:
         frappe.log_error(
