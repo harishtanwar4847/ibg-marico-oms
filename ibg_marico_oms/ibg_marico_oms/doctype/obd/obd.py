@@ -32,8 +32,12 @@ class OBD(Document):
                             j.final_status = i['FINAL_STATUS'] 
 
         for i in self.items:
+            if i.delivery_no:
+                self.sap_obd_number = i.delivery_no
+
             if not i.order_status or i.order_status == "Partial serviced": 
                 order_item_status+=1
+                
         if order_item_status >0:
             self.order_status = "Partial serviced"
             self.final_status = "Pending"
@@ -98,13 +102,15 @@ def order_status():
                             if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
                                 j.sales_item =  i['SALES_ITEM']
                                 j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                                if not doc.sap_obd_number:
-                                    doc.sap_obd_number = i['DELIVERY_NO']
                                 j.obd_sap_qty = float(i['OBD_QTY'])
                                 j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
                                 j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
                                 j.order_status = i['ORDER_STATUS']
                                 j.final_status = i['FINAL_STATUS']
+
+            for k in doc.items:
+                if k.delivery_no:
+                    doc.sap_obd_number = k.delivery_no
 
             doc.save(ignore_permissions=True)
             frappe.db.commit()
