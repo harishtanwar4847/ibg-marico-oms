@@ -51,9 +51,9 @@ class OBD(Document):
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "before_load_request",
         )
-        order_status = order_status(doc_name= self.name)
+        order = order_status(doc_name= self.name)
         ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : json(order_status),},
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order),},
             "before_load_response",
         )
 
