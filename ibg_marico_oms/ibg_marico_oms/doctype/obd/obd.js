@@ -18,6 +18,15 @@ frappe.ui.form.on('OBD', {
 				});
 			});
 		}
+	},
+	on_load: function(frm) {
+		frappe.call({
+			method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_status',
+			freeze: true,
+			args: {
+				doc_name: frm.doc.name,
+			},
+		});
 	}
 });
 

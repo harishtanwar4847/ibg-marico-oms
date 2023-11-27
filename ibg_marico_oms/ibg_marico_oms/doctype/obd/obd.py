@@ -88,31 +88,31 @@ def order_status_bapi(doc):
 
 
 @frappe.whitelist()
-def order_status():
+def order_status(doc_name):
     try:
-        obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending"}, fields = ["name"])
+        # obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending"}, fields = ["name"])
 
-        for i in obd_list:
-            doc = frappe.get_doc("OBD", i.name)
-            order_status_details = order_status_bapi(doc = doc)
-            if len(order_status_details['IT_SO']['item'])>1:
-                for j in doc.items:
-                    if not j.reason_of_reject and j.final_status == "Pending":
-                        for i in order_status_details['IT_SO']['item']:
-                            if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                                j.sales_item =  i['SALES_ITEM']
-                                j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                                j.obd_sap_qty = float(i['OBD_QTY'])
-                                j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                                j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                                j.order_status = i['ORDER_STATUS']
-                                j.final_status = i['FINAL_STATUS']
+        # for i in obd_list:
+        doc = frappe.get_doc("OBD", doc_name)
+        order_status_details = order_status_bapi(doc = doc)
+        if len(order_status_details['IT_SO']['item'])>1:
+            for j in doc.items:
+                if not j.reason_of_reject and j.final_status == "Pending":
+                    for i in order_status_details['IT_SO']['item']:
+                        if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                            j.sales_item =  i['SALES_ITEM']
+                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                            j.obd_sap_qty = float(i['OBD_QTY'])
+                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                            j.order_status = i['ORDER_STATUS']
+                            j.final_status = i['FINAL_STATUS']
 
-                    if j.delivery_no:
-                        doc.sap_obd_number = j.delivery_no
+                if j.delivery_no:
+                    doc.sap_obd_number = j.delivery_no
 
-            doc.save(ignore_permissions=True)
-            frappe.db.commit()
+        doc.save(ignore_permissions=True)
+        frappe.db.commit()
 
     except Exception:
         frappe.log_error(
