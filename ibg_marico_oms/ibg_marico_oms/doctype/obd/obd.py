@@ -11,42 +11,49 @@ from requests.auth import HTTPBasicAuth
 
 class OBD(Document):
     def before_save(self):
-        order_item_status = 0
-        order_status = order_status_bapi(doc = self)
-        ibg_marico_oms.create_log(
-                    {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order_status),},
-                    "order_status_save_request",
-                )
-        if len(order_status['IT_SO']['item'])>1:
-            for j in self.items:
-                if not j.reason_of_reject and (j.final_status == "Pending" or not j.final_status or not j.sales_item):
-                    for i in order_status['IT_SO']['item']:
-                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                            j.sales_item =  i['SALES_ITEM']
-                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                            self.sap_obd_number = j.delivery_no
-                            j.obd_sap_qty = float(i['OBD_QTY'])
-                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                            j.order_status = i['ORDER_STATUS']
-                            j.final_status = i['FINAL_STATUS'] 
+        obd_entry(self=self)
+        # order_item_status = 0
+        # order_status = order_status_bapi(doc = self)
+        # ibg_marico_oms.create_log(
+        #             {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order_status),},
+        #             "order_status_save_request",
+        #         )
+        # if len(order_status['IT_SO']['item'])>1:
+        #     for j in self.items:
+        #         if not j.reason_of_reject and (j.final_status == "Pending" or not j.final_status or not j.sales_item):
+        #             for i in order_status['IT_SO']['item']:
+        #                 if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+        #                     j.sales_item =  i['SALES_ITEM']
+        #                     j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+        #                     self.sap_obd_number = j.delivery_no
+        #                     j.obd_sap_qty = float(i['OBD_QTY'])
+        #                     j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+        #                     j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+        #                     j.order_status = i['ORDER_STATUS']
+        #                     j.final_status = i['FINAL_STATUS'] 
 
-        for i in self.items:
-            if i.delivery_no:
-                self.sap_obd_number = i.delivery_no
+        # for i in self.items:
+        #     if i.delivery_no:
+        #         self.sap_obd_number = i.delivery_no
 
-            if not i.order_status or i.order_status == "Partial serviced": 
-                order_item_status+=1
+        #     if not i.order_status or i.order_status == "Partial serviced": 
+        #         order_item_status+=1
 
-        if order_item_status >0:
-            self.order_status = "Partial serviced"
-            self.final_status = "Pending"
-        else:
-            self.order_status = "Fully serviced"
-            self.final_status = "Completed"
+        # if order_item_status >0:
+        #     self.order_status = "Partial serviced"
+        #     self.final_status = "Pending"
+        # else:
+        #     self.order_status = "Fully serviced"
+        #     self.final_status = "Completed"
 
     
     def onload(self):
+        obd_entry(self=self)
+
+
+@frappe.whitelist()
+def obd_entry(self):
+    try:
         order_item_status = 0
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
@@ -84,9 +91,11 @@ class OBD(Document):
         else:
             self.order_status = "Fully serviced"
             self.final_status = "Completed"
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(self),},
-            "before_load_response",
+    
+    except Exception:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="SAP Order Status OBD Entry",
         )
 
 @frappe.whitelist()
@@ -131,40 +140,40 @@ def order_status_bapi(doc):
         )
 
 
-@frappe.whitelist()
-def order_status(doc_name):
-    try:
-        # obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending"}, fields = ["name"])
+# @frappe.whitelist()
+# def order_status(doc_name):
+#     try:
+#         # obd_list = frappe.get_all("OBD", filters = {"final_status" : "Pending"}, fields = ["name"])
 
-        # for i in obd_list:
-        doc = frappe.get_doc("OBD", doc_name)
-        order_status_details = order_status_bapi(doc = doc)
-        if len(order_status_details['IT_SO']['item'])>1:
-            for j in doc.items:
-                if not j.reason_of_reject and j.final_status == "Pending":
-                    for i in order_status_details['IT_SO']['item']:
-                        if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
-                            j.sales_item =  i['SALES_ITEM']
-                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
-                            j.obd_sap_qty = float(i['OBD_QTY'])
-                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
-                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
-                            j.order_status = i['ORDER_STATUS']
-                            j.final_status = i['FINAL_STATUS']
+#         # for i in obd_list:
+#         doc = frappe.get_doc("OBD", doc_name)
+#         order_status_details = order_status_bapi(doc = doc)
+#         if len(order_status_details['IT_SO']['item'])>1:
+#             for j in doc.items:
+#                 if not j.reason_of_reject and j.final_status == "Pending":
+#                     for i in order_status_details['IT_SO']['item']:
+#                         if str(doc.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+#                             j.sales_item =  i['SALES_ITEM']
+#                             j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+#                             j.obd_sap_qty = float(i['OBD_QTY'])
+#                             j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+#                             j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+#                             j.order_status = i['ORDER_STATUS']
+#                             j.final_status = i['FINAL_STATUS']
 
-                if j.delivery_no:
-                    doc.sap_obd_number = j.delivery_no
+#                 if j.delivery_no:
+#                     doc.sap_obd_number = j.delivery_no
 
-        doc.save(ignore_permissions=True)
-        frappe.db.commit()
+#         doc.save(ignore_permissions=True)
+#         frappe.db.commit()
 
-        return doc
+#         return doc
 
-    except Exception:
-        frappe.log_error(
-            message=frappe.get_traceback(),
-            title="SAP Order Status OBD Entry",
-        )
+#     except Exception:
+#         frappe.log_error(
+#             message=frappe.get_traceback(),
+#             title="SAP Order Status OBD Entry",
+#         )
 
 @frappe.whitelist()
 def order_reject(doc):
