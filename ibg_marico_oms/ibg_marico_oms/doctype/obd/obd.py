@@ -46,7 +46,7 @@ class OBD(Document):
             self.final_status = "Completed"
 
     
-    def on_load(self):
+    def refresh(self):
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "before_load_request",
