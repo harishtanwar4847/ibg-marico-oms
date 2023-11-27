@@ -46,16 +46,16 @@ class OBD(Document):
             self.final_status = "Completed"
 
     
-    def refresh(self):
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-            "before_load_request",
-        )
-        order = order_status(doc_name= self.name)
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order),},
-            "before_load_response",
-        )
+    # def refresh(self):
+    #     ibg_marico_oms.create_log(
+    #         {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+    #         "before_load_request",
+    #     )
+    #     order = order_status(doc_name= self.name)
+    #     ibg_marico_oms.create_log(
+    #         {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order),},
+    #         "before_load_response",
+    #     )
 
 @frappe.whitelist()
 def order_status_bapi(doc):
