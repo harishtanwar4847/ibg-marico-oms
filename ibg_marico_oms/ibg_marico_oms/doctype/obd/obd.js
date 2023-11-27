@@ -20,6 +20,7 @@ frappe.ui.form.on('OBD', {
 		}
 	},
 	on_load: function(frm) {
+		console.log("ON Load Function")
 		frappe.call({
 			method: 'ibg_marico_oms.ibg_marico_oms.doctype.obd.obd.order_status',
 			freeze: true,
