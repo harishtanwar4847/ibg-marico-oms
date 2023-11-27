@@ -47,6 +47,7 @@ class OBD(Document):
 
     
     def onload(self):
+        order_item_status = 0
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "before_load_request",
