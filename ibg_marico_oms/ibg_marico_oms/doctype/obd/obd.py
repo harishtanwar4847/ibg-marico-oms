@@ -45,6 +45,18 @@ class OBD(Document):
             self.order_status = "Fully serviced"
             self.final_status = "Completed"
 
+    
+    def before_load(self):
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+            "before_load_request",
+        )
+        order_status = order_status(doc_name= self.name)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : order_status,},
+            "before_load_response",
+        )
+
 @frappe.whitelist()
 def order_status_bapi(doc):
     try:
@@ -113,6 +125,8 @@ def order_status(doc_name):
 
         doc.save(ignore_permissions=True)
         frappe.db.commit()
+
+        return doc
 
     except Exception:
         frappe.log_error(
