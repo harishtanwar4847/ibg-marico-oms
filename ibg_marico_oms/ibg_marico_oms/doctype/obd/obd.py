@@ -46,16 +46,47 @@ class OBD(Document):
             self.final_status = "Completed"
 
     
-    # def refresh(self):
-    #     ibg_marico_oms.create_log(
-    #         {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-    #         "before_load_request",
-    #     )
-    #     order = order_status(doc_name= self.name)
-    #     ibg_marico_oms.create_log(
-    #         {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order),},
-    #         "before_load_response",
-    #     )
+    def onload(self):
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+            "before_load_request",
+        )
+        order_status = order_status_bapi(doc = self)
+        ibg_marico_oms.create_log(
+                    {"datetime" : str(frappe.utils.now_datetime()),"response" : str(order_status),},
+                    "order_status_onload_request",
+                )
+        if len(order_status['IT_SO']['item'])>1:
+            for j in self.items:
+                if not j.reason_of_reject and (j.final_status == "Pending" or not j.final_status or not j.sales_item):
+                    for i in order_status['IT_SO']['item']:
+                        if str(self.sap_so_number) == str(i["SALES_ORDER"]) and int(j.fg_code) == int(i['FG_CODE']) and float(j.sales_order_qty) == float(i["SALES_QTY"]):
+                            j.sales_item =  i['SALES_ITEM']
+                            j.delivery_no = i['DELIVERY_NO'] if i['DELIVERY_NO'] else ''
+                            self.sap_obd_number = j.delivery_no
+                            j.obd_sap_qty = float(i['OBD_QTY'])
+                            j.pending_qty = float(i['PENDING_QTY']) if i['PENDING_QTY'] else 0
+                            j.rejected_qty = float(i['REJECTED_QTY']) if i['REJECTED_QTY'] else 0
+                            j.order_status = i['ORDER_STATUS']
+                            j.final_status = i['FINAL_STATUS'] 
+
+        for i in self.items:
+            if i.delivery_no:
+                self.sap_obd_number = i.delivery_no
+
+            if not i.order_status or i.order_status == "Partial serviced": 
+                order_item_status+=1
+
+        if order_item_status >0:
+            self.order_status = "Partial serviced"
+            self.final_status = "Pending"
+        else:
+            self.order_status = "Fully serviced"
+            self.final_status = "Completed"
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : str(self),},
+            "before_load_response",
+        )
 
 @frappe.whitelist()
 def order_status_bapi(doc):
