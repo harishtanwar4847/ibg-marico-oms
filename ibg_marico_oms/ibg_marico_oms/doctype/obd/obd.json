@@ -9,6 +9,7 @@
  "field_order": [
   "ibg_order_id",
   "customer_name",
+  "company_code",
   "sap_obd_number",
   "order_status",
   "column_break_5",
@@ -107,11 +108,18 @@
    "hidden": 1,
    "label": "Series",
    "options": "OBD-#####"
+  },
+  {
+   "fetch_from": "customer_name.company_code",
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-21 14:47:40.747046",
+ "modified": "2023-11-23 16:29:34.231630",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "OBD",
