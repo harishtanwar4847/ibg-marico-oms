@@ -30,7 +30,8 @@ class OBD(Document):
        
     
     def onload(self):
-        obd_entry(self=self)
+        if self.final_status == "Pending":
+            obd_entry(self=self)
 
 
 @frappe.whitelist()

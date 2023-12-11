@@ -6,7 +6,7 @@ frappe.ui.form.on('OBD', {
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 
-		if (frm.doc.final_status === "Pending") {
+		if (frm.doc.final_status === "Pending" && frm.doc.order_status === "Partial serviced") {
 			frm.add_custom_button(__('Short Close'), function () {
 				console.log("Doc Name :",frm.doc.name)
 				frappe.call({
