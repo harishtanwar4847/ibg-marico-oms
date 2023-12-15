@@ -171,7 +171,7 @@ def order_reject(doc):
                 doc.order_status = "Fully serviced"
                 doc.final_status = "Completed"
                 doc.save(ignore_permissions = True)
-                frappe.db.commit()
+                #frappe.db.commit()
                 doc.reload()
             else:
                 frappe.throw(frappe._("Kindly note the Sales Item is not recieved from SAP."))
