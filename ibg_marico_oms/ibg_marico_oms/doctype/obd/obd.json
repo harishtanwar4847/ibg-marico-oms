@@ -9,6 +9,7 @@
  "field_order": [
   "ibg_order_id",
   "customer_name",
+  "company_code",
   "sap_obd_number",
   "order_status",
   "column_break_5",
@@ -23,20 +24,27 @@
  ],
  "fields": [
   {
+   "columns": 1,
    "fieldname": "ibg_order_id",
    "fieldtype": "Link",
    "label": "IBG Order ID",
-   "options": "IBG Order"
+   "options": "IBG Order",
+   "read_only": 1,
+   "width": "1"
   },
   {
    "fieldname": "sap_obd_number",
    "fieldtype": "Data",
-   "label": "SAP OBD Number"
+   "label": "SAP OBD Number",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "order_status",
    "fieldtype": "Data",
-   "label": "Order Status"
+   "label": "Order Status",
+   "read_only": 1,
+   "width": "1"
   },
   {
    "fieldname": "column_break_5",
@@ -46,26 +54,34 @@
    "fetch_from": "ibg_order_id.sap_so_number",
    "fieldname": "sap_so_number",
    "fieldtype": "Data",
-   "label": "SAP SO Number"
+   "label": "SAP SO Number",
+   "read_only": 1
   },
   {
+   "columns": 11,
    "fetch_from": "ibg_order_id.customer",
    "fieldname": "customer_name",
    "fieldtype": "Link",
    "label": "Customer Name",
-   "options": "IBG Distributor"
+   "options": "IBG Distributor",
+   "read_only": 1,
+   "width": "15"
   },
   {
    "fetch_from": "ibg_order_id.created_date",
    "fieldname": "order_created_date",
    "fieldtype": "Date",
-   "label": "Order Created Date"
+   "label": "Order Created Date",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "final_status",
    "fieldtype": "Select",
    "label": "Final Status",
-   "options": "Pending\nCompleted"
+   "options": "Pending\nCompleted",
+   "read_only": 1,
+   "width": "1"
   },
   {
    "fieldname": "items_section",
@@ -91,7 +107,8 @@
    "fetch_from": "customer_name.country",
    "fieldname": "country",
    "fieldtype": "Data",
-   "label": "Country"
+   "label": "Country",
+   "read_only": 1
   },
   {
    "fieldname": "naming_series",
@@ -99,12 +116,18 @@
    "hidden": 1,
    "label": "Series",
    "options": "OBD-#####"
+  },
+  {
+   "fetch_from": "customer_name.company_code",
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2023-11-21 12:25:10.869989",
+ "modified": "2023-12-13 15:45:56.962837",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "OBD",
