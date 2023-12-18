@@ -1,0 +1,77 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"VHZDEA96cc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Home (Initiator)</span>\",\"col\":12}},{\"id\":\"NrRdLvLz2n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View Orders\",\"col\":5}},{\"id\":\"WZRRYfHb60\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval\",\"col\":5}},{\"id\":\"t1-glQ3jjN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"id\":\"GkOKo67a7O\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Orders On Hold\",\"col\":5}},{\"id\":\"qb466O9Dbo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Orders\",\"col\":5}}]",
+ "creation": "2023-05-23 17:13:28.861213",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "image-view",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Home (IBG Finance)",
+ "links": [],
+ "modified": "2023-05-23 17:18:15.655139",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Home (IBG Finance)",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "IBG Finance"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "sequence_id": 1.1,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View Orders",
+   "link_to": "IBG Order",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending for Approval",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Pending\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Rejected Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Rejected by IBG Finance\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Approved Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by Supply Chain\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Orders On Hold",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"On Hold by IBG Finance\"]}",
+   "type": "DocType"
+  }
+ ],
+ "title": "Home (IBG Finance)"
+}

@@ -172,6 +172,7 @@ def ibg_order_template():
                 "Country",
                 "Customer Name",
                 "Bill To",
+                "Company Code",
                 "Order ETD (yyyy-mm-dd)",
                 "FG Code (Order Items)",
                 "Qty in cases (Order Items)"
@@ -214,7 +215,7 @@ def order_file_upload(upload_file, doc_name = None):
         parent_list = []
         parent = ""
         for i in csv_data[1:]:
-            if not i[0] and not i[1] and not i[2] and not i[3]:
+            if not i[0] and not i[1] and not i[2] and not i[4]:
                 if parent:
                     item = frappe.get_doc(
                         {
@@ -222,14 +223,14 @@ def order_file_upload(upload_file, doc_name = None):
                             "parent": parent,
                             "parentfield": "order_items",
                             "parenttype": "IBG Order",
-                            "fg_code": i[4],
+                            "fg_code": i[5],
                             "product_description":frappe.db.get_value(
                                 "FG Code",
-                                {"name": i[4]},
+                                {"name": i[5]},
                                 "product_description",
                             ),
 
-                            "qty_in_cases": i[5],
+                            "qty_in_cases": i[6],
                             "created_date": frappe.utils.now_datetime().date()
                         }
                     ).insert(ignore_permissions=True)
@@ -243,17 +244,17 @@ def order_file_upload(upload_file, doc_name = None):
                 date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
                 date_pattern_str3 = r'^\d{4}/\d{2}/\d{2}$'
                 date_pattern_str4 = r'^\d{2}/\d{2}/\d{4}$'
-                if re.match(date_pattern_str1, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
-                elif re.match(date_pattern_str2, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
-                elif re.match(date_pattern_str3, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
-                elif re.match(date_pattern_str4, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d/%m/%Y")
+                if re.match(date_pattern_str1, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%Y-%m-%d")
+                elif re.match(date_pattern_str2, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%d-%m-%Y")
+                elif re.match(date_pattern_str3, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%Y/%m/%d")
+                elif re.match(date_pattern_str4, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%d/%m/%Y")
                 else:
                     date = ""
-                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
+                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[4])))
                 
 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
@@ -266,6 +267,7 @@ def order_file_upload(upload_file, doc_name = None):
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
+                        company_code = i[4],
                         order_etd=date,
                         )
                 ).insert(ignore_permissions=True)
@@ -274,20 +276,20 @@ def order_file_upload(upload_file, doc_name = None):
                 parent = ibg_order.name
                 parent_list.append(parent)
 
-                item = item = frappe.get_doc(
+                item = frappe.get_doc(
                     {
                         "doctype": "IBG Order Items",
                         "parent": parent,
                         "parentfield": "order_items",
                         "parenttype": "IBG Order",
-                        "fg_code": i[4],
+                        "fg_code": i[5],
                         "product_description":frappe.db.get_value(
                             "FG Code",
-                            {"name": i[4]},
+                            {"name": i[5]},
                             "product_description",
                         ),
 
-                        "qty_in_cases": i[5],
+                        "qty_in_cases": i[6],
                         "created_date": frappe.utils.now_datetime().date()
                     }
                 ).insert(ignore_permissions=True)

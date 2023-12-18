@@ -29,9 +29,7 @@ frappe.ui.form.on('IBG Order', {
 			frm.refresh_field("sap_so_number")              
 			frm.refresh_field("status")
 		}
-		var is_true = frappe.user_roles.find((role) => role === "Supply Chain");
 		var is_ini = frappe.user_roles.find((role) => role === "Initiator");
-		var is_supuser = frappe.user_roles.find((role) => role === "System Manager");
 		var is_ibg = frappe.user_roles.find((role) => role === "IBG Finance");
 		if (is_ibg || is_ini) {
 			frm.set_df_property("order_type", "read_only", 1);

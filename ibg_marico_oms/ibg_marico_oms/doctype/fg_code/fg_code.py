@@ -68,6 +68,7 @@ def fgcode_unitscs_file_upload(upload_file):
                     product_doc.company_code = i[4] if i[4] else ''
                 elif i[4] and product_doc.company_code and str(product_doc.company_code) != str(i[4]):
                     product_doc.company_code = ""
+                    product_doc.apply_to_all_company_code = 1
                 product_doc.save(ignore_permissions = True)
                 frappe.db.commit()
             else:
