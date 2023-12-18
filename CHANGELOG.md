@@ -1,5 +1,20 @@
 # Changelog
 
+## [v2.0.1] - 2023-12-18
+## [v2.0.1-uat] - 2023-12-18
+## [v2.0.1-dev] - 2023-12-18
+
+### Fixed
+
+- [Fix :  Code Review Changes] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/14)
+
+## [v2.0.0-uat] - 2023-11-20
+## [v2.0.0-dev] - 2023-11-20
+
+### Added
+
+-[Feat : Phase II CR] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/12)
+
 ## [v1.1.5] - 2023-07-11
 ## [v1.1.5-dev] - 2023-07-11
 ## [v1.1.5-uat] - 2023-07-11

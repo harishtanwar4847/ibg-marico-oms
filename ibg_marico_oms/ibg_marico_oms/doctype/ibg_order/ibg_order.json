@@ -10,6 +10,7 @@
  "field_order": [
   "customer",
   "bill_to",
+  "company_code",
   "order_etd",
   "column_break_4",
   "ship_to",
@@ -115,7 +116,7 @@
    "label": "Only for Supply Chain"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('IBG Finance') == 1 || frappe.user.has_role('System Manager') == 1;",
+   "depends_on": "eval:frappe.user.has_role('Supply Chain') == 1 || frappe.user.has_role('System Manager') == 1;",
    "fieldname": "order_type",
    "fieldtype": "Data",
    "label": "Order Type",
@@ -252,12 +253,19 @@
    "fieldtype": "Data",
    "label": "Bill To Customer Name",
    "read_only": 1
+  },
+  {
+   "fetch_from": "customer.company_code",
+   "fieldname": "company_code",
+   "fieldtype": "Link",
+   "label": "Company Code",
+   "options": "Company Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-10 12:25:07.129355",
+ "modified": "2023-11-23 15:34:28.774289",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",

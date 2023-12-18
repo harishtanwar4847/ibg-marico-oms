@@ -26,7 +26,7 @@ from requests.auth import HTTPBasicAuth
 
 class IBGOrder(Document):
     def before_save(self):
-        price = sap_price()
+        price = sap_price(doc = self)
         price_data = []
         if price:
             for j in price:
@@ -137,6 +137,30 @@ class IBGOrder(Document):
             frappe.throw(_("Please fill the Supply Chain section"))
         if self.status in ['Approved by Supply Chain']:
             self.approved_by_supplychain = self.modified_by
+        
+    def on_submit(self):
+        items = []
+        for i in self.order_items:
+            item_entry = frappe.get_doc(
+                {
+                    "doctype": "OBD Items",
+                    "fg_code": i.fg_code,
+                    "fg_description": i.product_description,
+                    "sales_order_qty": i.qty_in_cases,
+                }
+            )
+            items.append(item_entry)
+        obd = frappe.get_doc(
+            {
+                "doctype" : "OBD",
+                "ibg_order_id" : self.name,
+                "sap_so_number" : self.sap_so_number,
+                "items" : items
+            }
+        )
+        obd.insert(ignore_permissions=True)
+        frappe.db.commit()
+
 
 @frappe.whitelist()
 def ibg_order_template():
@@ -148,6 +172,7 @@ def ibg_order_template():
                 "Country",
                 "Customer Name",
                 "Bill To",
+                "Company Code",
                 "Order ETD (yyyy-mm-dd)",
                 "FG Code (Order Items)",
                 "Qty in cases (Order Items)"
@@ -158,7 +183,6 @@ def ibg_order_template():
         return ibg_marico_oms.download_file(
             dataframe=df,
             file_name=file_name,
-            file_extention="xlsx",
             sheet_name=sheet_name,
         )
     except Exception as e:
@@ -190,7 +214,7 @@ def order_file_upload(upload_file, doc_name = None):
         parent_list = []
         parent = ""
         for i in csv_data[1:]:
-            if not i[0] and not i[1] and not i[2] and not i[3]:
+            if not i[0] and not i[1] and not i[2] and not i[4]:
                 if parent:
                     item = frappe.get_doc(
                         {
@@ -198,14 +222,14 @@ def order_file_upload(upload_file, doc_name = None):
                             "parent": parent,
                             "parentfield": "order_items",
                             "parenttype": "IBG Order",
-                            "fg_code": i[4],
+                            "fg_code": i[5],
                             "product_description":frappe.db.get_value(
                                 "FG Code",
-                                {"name": i[4]},
+                                {"name": i[5]},
                                 "product_description",
                             ),
 
-                            "qty_in_cases": i[5],
+                            "qty_in_cases": i[6],
                             "created_date": frappe.utils.now_datetime().date()
                         }
                     ).insert(ignore_permissions=True)
@@ -219,17 +243,17 @@ def order_file_upload(upload_file, doc_name = None):
                 date_pattern_str2 = r'^\d{2}-\d{2}-\d{4}$'
                 date_pattern_str3 = r'^\d{4}/\d{2}/\d{2}$'
                 date_pattern_str4 = r'^\d{2}/\d{2}/\d{4}$'
-                if re.match(date_pattern_str1, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y-%m-%d")
-                elif re.match(date_pattern_str2, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d-%m-%Y")
-                elif re.match(date_pattern_str3, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%Y/%m/%d")
-                elif re.match(date_pattern_str4, i[3]):
-                    date = frappe.utils.datetime.datetime.strptime(i[3], "%d/%m/%Y")
+                if re.match(date_pattern_str1, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%Y-%m-%d")
+                elif re.match(date_pattern_str2, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%d-%m-%Y")
+                elif re.match(date_pattern_str3, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%Y/%m/%d")
+                elif re.match(date_pattern_str4, i[4]):
+                    date = frappe.utils.datetime.datetime.strptime(i[4], "%d/%m/%Y")
                 else:
                     date = ""
-                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[3])))
+                    frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[4])))
                 
 
                 bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
@@ -242,6 +266,7 @@ def order_file_upload(upload_file, doc_name = None):
                         country=i[0],
                         customer=i[1],
                         bill_to=str(int(float(i[2]))),
+                        company_code = i[4],
                         order_etd=date,
                         )
                 ).insert(ignore_permissions=True)
@@ -250,27 +275,27 @@ def order_file_upload(upload_file, doc_name = None):
                 parent = ibg_order.name
                 parent_list.append(parent)
 
-                item = item = frappe.get_doc(
+                item = frappe.get_doc(
                     {
                         "doctype": "IBG Order Items",
                         "parent": parent,
                         "parentfield": "order_items",
                         "parenttype": "IBG Order",
-                        "fg_code": i[4],
+                        "fg_code": i[5],
                         "product_description":frappe.db.get_value(
                             "FG Code",
-                            {"name": i[4]},
+                            {"name": i[5]},
                             "product_description",
                         ),
 
-                        "qty_in_cases": i[5],
+                        "qty_in_cases": i[6],
                         "created_date": frappe.utils.now_datetime().date()
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
         for i in parent_list:
             doc = frappe.get_doc("IBG Order", i)
-            price = sap_price()
+            price = sap_price(doc = doc)
             price_data = []
             if price:
                 for j in price:
@@ -449,35 +474,39 @@ def sap_rfc_data(doc):
         )
 
 @frappe.whitelist()
-def sap_price():
+def sap_price(doc):
     try:
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-            "sap_price_before_request",
-        )
-        if frappe.utils.get_url() == "https://marico.atriina.com":
-            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
-            userid = "minet"
-            pswd = "ramram"
+        if doc.company_code:
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+                "sap_price_before_request",
+            )
+            if frappe.utils.get_url() == "https://marico.atriina.com":
+                wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
+                userid = "minet"
+                pswd = "ramram"
+            else:
+                wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
+                userid = "portal"
+                pswd = "portal@345"
+            client = Client(wsdl)
+            session = Session()
+            session.auth = HTTPBasicAuth(userid, pswd)
+            client=Client(wsdl,transport=Transport(session=session))
+            request_data={'IT_PRICE': '','SALES_ORG' : doc.company_code}
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+                "sap_price_request",
+            )
+            response=client.service.ZBAPI_PRICE_MASTER(**request_data)
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+                "sap_price_response",
+            )
+            return response
+        
         else:
-            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
-            userid = "portal"
-            pswd = "portal@345"
-        client = Client(wsdl)
-        session = Session()
-        session.auth = HTTPBasicAuth(userid, pswd)
-        client=Client(wsdl,transport=Transport(session=session))
-        request_data={'IT_PRICE': '','SALES_ORG' : 'MME'}
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
-            "sap_price_request",
-        )
-        response=client.service.ZBAPI_PRICE_MASTER(**request_data)
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
-            "sap_price_response",
-        )
-        return response
+            frappe.throw(_("Please Enter a valid Company Code"))
 
     except Exception as e:
         frappe.log_error(

@@ -1,0 +1,92 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"VHZDEA96cc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Home (Initiator)</span>\",\"col\":12}},{\"id\":\"NrRdLvLz2n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View Orders\",\"col\":5}},{\"id\":\"tmIrMOcNq1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create Order\",\"col\":5}},{\"id\":\"WZRRYfHb60\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View SAP SO Number\",\"col\":5}},{\"id\":\"t1-glQ3jjN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"id\":\"GkOKo67a7O\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Orders On Hold\",\"col\":5}},{\"id\":\"qb466O9Dbo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Orders Rejected by IBG Finance\",\"col\":5}},{\"id\":\"2L_FZZVCQF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Orders Rejected by Supply Chain\",\"col\":5}}]",
+ "creation": "2023-05-23 16:59:41.612467",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "image-view",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Home (Initiator)",
+ "links": [],
+ "modified": "2023-05-23 17:12:34.958490",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Home (Initiator)",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Initiator"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View Orders",
+   "link_to": "IBG Order",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "New",
+   "label": "Create Order",
+   "link_to": "IBG Order",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "View SAP SO Number",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"sap_so_number\":[\"is\",\"set\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Approved Orders",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Approved by Supply Chain\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Orders On Hold",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"On Hold by IBG Finance\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Orders Rejected by IBG Finance",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Rejected by IBG Finance\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Orders Rejected by Supply Chain",
+   "link_to": "IBG Order",
+   "stats_filter": "{\"status\":[\"=\",\"Rejected by Supply Chain\"]}",
+   "type": "DocType"
+  }
+ ],
+ "title": "Home (Initiator)"
+}
