@@ -150,10 +150,6 @@ def order_reject(doc):
                         "order_reject_response",
                     )
                     order_details = response['IT_SO']['item']
-                    ibg_marico_oms.create_log(
-                        {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(order_details[1:]),},
-                        "order_details",
-                    )
                     for i in order_details[1:]:
                         if str(i["SALES_ORDER"]) == str(doc.sap_so_number) and int(i["SALES_ITEM"]) == int(item.sales_item) and int(item.fg_code) == int(i["FG_CODE"]):
                             item_doc = frappe.get_doc("OBD Items", item.name)
@@ -164,10 +160,6 @@ def order_reject(doc):
                             item.save(ignore_permissions = True)
                             frappe.db.commit()
 
-                            ibg_marico_oms.create_log(
-                                {"datetime" : str(frappe.utils.now_datetime()),"response" : str(item.as_dict()), "Item Doc" : str(item.name)},
-                                "obd_item",
-                            )
                 doc.order_status = "Fully serviced"
                 doc.final_status = "Completed"
                 doc.save(ignore_permissions = True)

@@ -276,7 +276,7 @@ def order_file_upload(upload_file, doc_name = None):
                 parent = ibg_order.name
                 parent_list.append(parent)
 
-                item = item = frappe.get_doc(
+                item = frappe.get_doc(
                     {
                         "doctype": "IBG Order Items",
                         "parent": parent,

@@ -10,7 +10,7 @@ from requests.auth import HTTPBasicAuth
 
 __version__ = '2.0.0-uat'
 
-def download_file(dataframe, file_name, file_extention, sheet_name):
+def download_file(dataframe, file_name, sheet_name, file_extention = "xlsx"):
     file_name = "{}.{}".format(file_name, file_extention)
     file_path = frappe.utils.get_files_path(file_name)
     if os.path.exists(file_path):
