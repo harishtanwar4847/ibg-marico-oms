@@ -30,7 +30,6 @@ def fgcode_unitscs_template():
         return ibg_marico_oms.download_file(
             dataframe=df,
             file_name=file_name,
-            file_extention="xlsx",
             sheet_name=sheet_name,
         )
     except Exception as e:
