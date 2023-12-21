@@ -421,9 +421,9 @@ def sap_rfc_data(doc):
             userid = "minet"
             pswd = "ramram"
         else:
-            wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@345'
+            wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@346'
             userid = "portal"
-            pswd = "portal@345"
+            pswd = "portal@346"
         client = Client(wsdl)
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
@@ -486,9 +486,9 @@ def sap_price(doc):
                 userid = "minet"
                 pswd = "ramram"
             else:
-                wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40345"
+                wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal@346"
                 userid = "portal"
-                pswd = "portal@345"
+                pswd = "portal@346"
             client = Client(wsdl)
             session = Session()
             session.auth = HTTPBasicAuth(userid, pswd)

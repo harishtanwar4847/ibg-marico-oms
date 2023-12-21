@@ -83,9 +83,9 @@ def order_status_bapi(doc):
             userid = "minet"
             pswd = "ramram"
         else:
-            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_STATUS&sap-client=540&sap-user=portal&sap-password=portal%40345"
+            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_STATUS&sap-client=540&sap-user=portal&sap-password=portal@346"
             userid = "portal"
-            pswd = "portal@345"
+            pswd = "portal@346"
         client = Client(wsdl)
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
@@ -129,9 +129,9 @@ def order_reject(doc):
                         userid = "minet"
                         pswd = "ramram"
                     else:
-                        wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=540&sap-user=portal&sap-password=portal%40345"
+                        wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=540&sap-user=portal&sap-password=portal@346"
                         userid = "portal"
-                        pswd = "portal@345"
+                        pswd = "portal@346"
                     client = Client(wsdl)
                     session = Session()
                     session.auth = HTTPBasicAuth(userid, pswd)
