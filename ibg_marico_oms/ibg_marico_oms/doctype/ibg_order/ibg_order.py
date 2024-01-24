@@ -32,7 +32,7 @@ class IBGOrder(Document):
         user_role = []
         for i in list(user_roles):
             user_role.append(i[0])
-        if "IBG Finance" in user_role and self.status == "Pending":
+        if (("IBG Finance" in user_role) or ("System Manager" in user_role)) and self.status == "Pending":
             price = sap_price(doc = self)
             price_data = []
             if price:
