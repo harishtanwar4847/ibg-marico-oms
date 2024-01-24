@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.0.2-dev] - 2024-01-24
+
+### Added
+
+- [Feat :  Validation for price in Approved status] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/17)
+
+
 ## [v2.0.1] - 2023-12-18
 ## [v2.0.1-uat] - 2023-12-18
 ## [v2.0.1-dev] - 2023-12-18
