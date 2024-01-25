@@ -258,9 +258,9 @@ def order_file_upload(upload_file, doc_name = None):
                     frappe.throw(_("Please enter Order ETD date {} in valid date format.".format(i[4])))
                 
 
-                bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
-                if len(bill_to) == 0:
-                    frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
+                # bill_to = frappe.get_all("Bill To", filters={"name" : i[2]}, fields = ["name"])
+                # if len(bill_to) == 0:
+                #     frappe.throw(_("Please enter a Valid Bill To code in Bill To column."))
 
                 ibg_order = frappe.get_doc(
                     dict(
@@ -295,41 +295,41 @@ def order_file_upload(upload_file, doc_name = None):
                     }
                 ).insert(ignore_permissions=True)
                 frappe.db.commit()
-        for i in parent_list:
-            doc = frappe.get_doc("IBG Order", i)
-            price = sap_price(doc = doc)
-            price_data = []
-            if price:
-                for j in price:
-                    if (j['CUSTOMER'].isnumeric()==True) and (int(doc.bill_to) == int(j['CUSTOMER'])):
-                        price_data.append(j)
-            if len(price_data) >= 1:
-                for i in doc.order_items:
-                    for j in price_data:
-                        if int(i.fg_code) == int(j['MATERIAL']):
-                            i.billing_rate = float(j['RATE'])
-                            i.rate_valid_from = j['VALID_FROM']
-                            i.rate_valid_to = j['VALID_TO']
-                            i.units = j['CURRENCY']
-                        else:
-                           frappe.log_error(
-                                message= "Order Id -{}\n"
-                                + "Customer name -{}\n"
-                                + "Bill To Code -{}\n"
-                                + "Message - Price Data for {} Unavailable.".format(doc.name,doc.customer, doc.bill_to, i.fg_code),
-                                title="Price Data unavailable in SAP Price BAPI",
-                            ) 
-                doc.save(ignore_permissions = True)
-                frappe.db.commit()
-            else:
-                frappe.log_error(
-                    message= "Order Id -{}\n"
-                    + "Customer name -{}\n"
-                    + "Bill To Code -{}\n"
-                    + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
-                    title="Price Data unavailable in SAP Price BAPI",
-                )
-                frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(doc.customer, doc.bill_to)))
+        # for i in parent_list:
+        #     doc = frappe.get_doc("IBG Order", i)
+        #     price = sap_price(doc = doc)
+        #     price_data = []
+        #     if price:
+        #         for j in price:
+        #             if (j['CUSTOMER'].isnumeric()==True) and (int(doc.bill_to) == int(j['CUSTOMER'])):
+        #                 price_data.append(j)
+        #     if len(price_data) >= 1:
+        #         for i in doc.order_items:
+        #             for j in price_data:
+        #                 if int(i.fg_code) == int(j['MATERIAL']):
+        #                     i.billing_rate = float(j['RATE'])
+        #                     i.rate_valid_from = j['VALID_FROM']
+        #                     i.rate_valid_to = j['VALID_TO']
+        #                     i.units = j['CURRENCY']
+        #                 else:
+        #                    frappe.log_error(
+        #                         message= "Order Id -{}\n"
+        #                         + "Customer name -{}\n"
+        #                         + "Bill To Code -{}\n"
+        #                         + "Message - Price Data for {} Unavailable.".format(doc.name,doc.customer, doc.bill_to, i.fg_code),
+        #                         title="Price Data unavailable in SAP Price BAPI",
+        #                     ) 
+        #         doc.save(ignore_permissions = True)
+        #         frappe.db.commit()
+        #     else:
+        #         frappe.log_error(
+        #             message= "Order Id -{}\n"
+        #             + "Customer name -{}\n"
+        #             + "Bill To Code -{}\n"
+        #             + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
+        #             title="Price Data unavailable in SAP Price BAPI",
+        #         )
+        #         frappe.throw(_("Data for the Customer name ({})/Bill To ({}) unavailable in SAP.".format(doc.customer, doc.bill_to)))
 
     except Exception as e:
         frappe.log_error(

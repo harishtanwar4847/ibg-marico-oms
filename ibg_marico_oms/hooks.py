@@ -131,9 +131,6 @@ scheduler_events = {
 	# ],
 	"cron" : {
 		"0 2 * * *": ["ibg_marico_oms.extract_product_data"],  # At 02:00 AM daily
-        # "0 0,12 * * *": [
-        #     "ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.sap_price"
-        # ],  # At 12:00 AM daily
         "0 1 * * *": [
             "ibg_marico_oms.extract_customer_shipto"
         ],  # At 01:00 AM
