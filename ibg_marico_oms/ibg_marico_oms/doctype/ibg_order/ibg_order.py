@@ -545,7 +545,7 @@ def price_update(doc):
                 qty += float(i.qty_in_cases)
                 if i.billing_rate:
                     i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
-                total_order_value += float(i.order_value)
+                    total_order_value += float(i.order_value)
             doc.total_qty_in_cases = qty
             doc.total_order_value = total_order_value
 
