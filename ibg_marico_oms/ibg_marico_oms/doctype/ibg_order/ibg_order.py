@@ -527,6 +527,8 @@ def sap_price(doc):
 @frappe.whitelist()
 def price_update(doc):
         price = sap_price(doc = doc)
+        total_order_value = 0
+        qty = 0
         price_data = []
         if price:
             for j in price:
@@ -540,6 +542,12 @@ def price_update(doc):
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
                         i.units = j['CURRENCY']
+                qty += float(i.qty_in_cases)
+                i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                total_order_value += float(i.order_value)
+            doc.total_qty_in_cases = qty
+            doc.total_order_value = total_order_value
+
         else:
             frappe.log_error(
                 message= "Order Id -{}\n"
