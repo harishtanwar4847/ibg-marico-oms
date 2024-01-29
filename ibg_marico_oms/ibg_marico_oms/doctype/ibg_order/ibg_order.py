@@ -421,18 +421,19 @@ def firm_plan_report(doc_filters = None):
 def sap_rfc_data(doc):
     try:
         doc = frappe.get_doc('IBG Order', doc.name)
+        setting_doc = frappe.get_single("IBG-App Settings")
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "", "Order_id" : str(doc.name)},
             "sap_ord_before_request",
         )
         if frappe.utils.get_url() == "https://marico.atriina.com":
-            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=400&sap-user=minet&sap-password=ramram"
-            userid = "minet"
-            pswd = "ramram"
+            wsdl = (setting_doc.live_url).format(setting_doc.order_bapi)
+            userid = setting_doc.live_sap_user
+            pswd = setting_doc.live_sap_password
         else:
-            wsdl = 'http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_IBG_ORD&sap-client=540&sap-user=portal&sap-password=portal@346'
-            userid = "portal"
-            pswd = "portal@346"
+            wsdl = (setting_doc.staging_url).format(setting_doc.order_bapi)
+            userid = setting_doc.staging_sap_user
+            pswd = setting_doc.staging_sap_password
         client = Client(wsdl)
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
@@ -486,18 +487,19 @@ def sap_rfc_data(doc):
 def sap_price(doc):
     try:
         if doc.company_code:
+            setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(
                 {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
                 "sap_price_before_request",
             )
             if frappe.utils.get_url() == "https://marico.atriina.com":
-                wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=400&sap-user=minet&sap-password=ramram"
-                userid = "minet"
-                pswd = "ramram"
+                wsdl = (setting_doc.live_url).format(setting_doc.price_bapi)
+                userid = setting_doc.live_sap_user
+                pswd = setting_doc.live_sap_password
             else:
-                wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_PRICE_MASTER&sap-client=540&sap-user=portal&sap-password=portal%40346"
-                userid = "portal"
-                pswd = "portal@346"
+                wsdl = (setting_doc.staging_url).format(setting_doc.price_bapi)
+                userid = setting_doc.staging_sap_user
+                pswd = setting_doc.staging_sap_password
             client = Client(wsdl)
             session = Session()
             session.auth = HTTPBasicAuth(userid, pswd)
