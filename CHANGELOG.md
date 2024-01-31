@@ -1,10 +1,11 @@
 # Changelog
 
+## [v2.0.3-uat] - 2024-01-31
 ## [v2.0.3-dev] - 2024-01-31
 
 ### Added
 
-- [Feat :  Validation changes for price in Approved by IBG Finance status] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/17)
+- [Feat :  Validation changes for price in Approved by IBG Finance status | App setting doctype] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/17)
 
 ## [v2.0.2-dev] - 2024-01-24
 
