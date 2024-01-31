@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-29 17:27:01.194251",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "server_credentials_section",
+  "staging_url",
+  "staging_sap_user",
+  "staging_sap_password",
+  "column_break_5",
+  "server_credentials_live",
+  "live_url",
+  "live_sap_user",
+  "live_sap_password",
+  "section_break_9",
+  "price_bapi",
+  "order_bapi",
+  "column_break_12",
+  "obd_order_status_bapi",
+  "obd_order_reject_bapi"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "server_credentials_section",
+   "fieldtype": "Heading",
+   "label": "Server Credentials (Staging)"
+  },
+  {
+   "fieldname": "staging_url",
+   "fieldtype": "Data",
+   "label": "Staging URL"
+  },
+  {
+   "fieldname": "staging_sap_user",
+   "fieldtype": "Data",
+   "label": "Staging SAP User"
+  },
+  {
+   "fieldname": "staging_sap_password",
+   "fieldtype": "Data",
+   "label": "Staging SAP Password"
+  },
+  {
+   "fieldname": "live_url",
+   "fieldtype": "Data",
+   "label": "Live URL"
+  },
+  {
+   "fieldname": "live_sap_user",
+   "fieldtype": "Data",
+   "label": "Live SAP User"
+  },
+  {
+   "fieldname": "live_sap_password",
+   "fieldtype": "Data",
+   "label": "Live SAP Password"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "BAPI List"
+  },
+  {
+   "fieldname": "obd_order_status_bapi",
+   "fieldtype": "Data",
+   "label": "OBD Order Status BAPI"
+  },
+  {
+   "fieldname": "order_bapi",
+   "fieldtype": "Data",
+   "label": "Order BAPI"
+  },
+  {
+   "fieldname": "obd_order_reject_bapi",
+   "fieldtype": "Data",
+   "label": "OBD Order Reject BAPI"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "server_credentials_live",
+   "fieldtype": "Heading",
+   "label": "Server Credentials (Live)"
+  },
+  {
+   "fieldname": "price_bapi",
+   "fieldtype": "Data",
+   "label": "Price BAPI"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-01-29 17:53:26.701283",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "IBG-App Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
