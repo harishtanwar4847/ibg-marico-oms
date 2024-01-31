@@ -74,18 +74,19 @@ def obd_entry(self):
 @frappe.whitelist()
 def order_status_bapi(doc):
     try:
+        setting_doc = frappe.get_single("IBG-App Settings")
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
             "order_status_before_request",
         )
         if frappe.utils.get_url() == "https://marico.atriina.com":
-            wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_STATUS&sap-client=400&sap-user=minet&sap-password=ramram"
-            userid = "minet"
-            pswd = "ramram"
+            wsdl = (setting_doc.live_url).format(setting_doc.obd_order_reject_bapi)
+            userid = setting_doc.live_sap_user
+            pswd = setting_doc.live_sap_password
         else:
-            wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_STATUS&sap-client=540&sap-user=portal&sap-password=portal%40345"
-            userid = "portal"
-            pswd = "portal@345"
+            wsdl = (setting_doc.staging_url).format(setting_doc.obd_order_reject_bapi)
+            userid = setting_doc.staging_sap_user
+            pswd = setting_doc.staging_sap_password
         client = Client(wsdl)
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
@@ -117,6 +118,7 @@ def order_status_bapi(doc):
 def order_reject(doc):
     try:
         doc = frappe.get_doc("OBD", doc)
+        setting_doc = frappe.get_single("IBG-App Settings")
         for item in doc.items:
             if item.sales_item:
                 if item.final_status == "Pending" or not item.final_status or not item.order_status:
@@ -125,13 +127,13 @@ def order_reject(doc):
                         "order_reject_before_request",
                     )
                     if frappe.utils.get_url() == "https://marico.atriina.com":
-                        wsdl = "http://219.64.5.107:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=400&sap-user=minet&sap-password=ramram"
-                        userid = "minet"
-                        pswd = "ramram"
+                        wsdl = (setting_doc.live_url).format(setting_doc.obd_order_reject_bapi)
+                        userid = setting_doc.live_sap_user
+                        pswd = setting_doc.live_sap_password
                     else:
-                        wsdl = "http://14.140.115.225:8000/sap/bc/soap/wsdl11?services=ZBAPI_ORD_REJ&sap-client=540&sap-user=portal&sap-password=portal%40345"
-                        userid = "portal"
-                        pswd = "portal@345"
+                        wsdl = (setting_doc.staging_url).format(setting_doc.obd_order_reject_bapi)
+                        userid = setting_doc.staging_sap_user
+                        pswd = setting_doc.staging_sap_password
                     client = Client(wsdl)
                     session = Session()
                     session.auth = HTTPBasicAuth(userid, pswd)
