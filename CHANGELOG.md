@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.0.4] - 2024-02-09
+## [v2.0.4-uat] - 2024-02-09
+
+### Added
+
+- [Fix: Company code issue] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/22)
+
 ## [v2.0.3+1] - 2024-01-31
 ## [v2.0.3-uat] - 2024-01-31
 ## [v2.0.3-dev] - 2024-01-31
