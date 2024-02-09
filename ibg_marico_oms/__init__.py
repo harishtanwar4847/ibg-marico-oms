@@ -8,7 +8,7 @@ from zeep.transports import Transport
 from requests import Session
 from requests.auth import HTTPBasicAuth
 
-__version__ = '2.0.3+1'
+__version__ = '2.0.4-uat'
 
 def download_file(dataframe, file_name, sheet_name, file_extention = "xlsx"):
     file_name = "{}.{}".format(file_name, file_extention)
@@ -125,7 +125,8 @@ def extract_customer_shipto():
                 cust = frappe.get_doc("IBG Distributor", i[3])
                 if cust:
                     cust.customer_code = i[2]
-                    cust.company_code = i[12]
+                    if not cust.customer_code:
+                        cust.company_code = i[12]
                     cust.save(ignore_permissions=True)
                     frappe.db.commit()
         customer_list = frappe.get_all("IBG Distributor", fields =["*"])
