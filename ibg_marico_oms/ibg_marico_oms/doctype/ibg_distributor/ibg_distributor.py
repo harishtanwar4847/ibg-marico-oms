@@ -59,29 +59,30 @@ def distributor_file_upload(upload_file):
             csv_data = read_csv_content(fcontent)
 
         for i in csv_data[1:]:
-            distributor_list = frappe.get_list("IBG Distributor", filters = {"name" : i[0]}, fields =["name"])
-            if distributor_list:
-                distributor_doc = frappe.get_doc("IBG Distributor", i[0])
-                distributor_doc.customer_code = i[1]
-                distributor_doc.country = i[2]
-                distributor_doc.ship_to = i[3]
-                if not distributor_doc.company_code:
-                    distributor_doc.company_code = i[4] if i[4] else ''
-                elif i[4] and distributor_doc.company_code and str(distributor_doc.company_code) != str(i[4]):
-                    distributor_doc.company_code = ""
-                    distributor_doc.apply_to_all_company_code = 1
-                distributor_doc.save(ignore_permissions = True)
-                frappe.db.commit()
-            else:
-                distributor = frappe.get_doc({
-                    "doctype" : "IBG Distributor",
-                    "customer_name" : i[0],
-                    "customer_code" : i[1],
-					"country" : i[2],
-					"ship_to" : i[3],
-					"company_code" : i[4],
-				}).insert(ignore_permissions = True)    
-                frappe.db.commit()
+            if i[0]:
+                distributor_list = frappe.get_list("IBG Distributor", filters = {"name" : i[0]}, fields =["name"])
+                if distributor_list:
+                    distributor_doc = frappe.get_doc("IBG Distributor", i[0])
+                    distributor_doc.customer_code = i[1]
+                    distributor_doc.country = i[2]
+                    distributor_doc.ship_to = i[3]
+                    if i[4]:
+                        distributor_doc.company_code = i[4]
+                    elif i[4] and distributor_doc.company_code and str(distributor_doc.company_code) != str(i[4]):
+                        distributor_doc.company_code = ""
+                        distributor_doc.apply_to_all_company_code = 1
+                    distributor_doc.save(ignore_permissions = True)
+                    frappe.db.commit()
+                else:
+                    distributor = frappe.get_doc({
+                        "doctype" : "IBG Distributor",
+                        "customer_name" : i[0],
+                        "customer_code" : i[1],
+                        "country" : i[2],
+                        "ship_to" : i[3],
+                        "company_code" : i[4],
+                    }).insert(ignore_permissions = True)    
+                    frappe.db.commit()
     except Exception as e:
         frappe.log_error(
             message=frappe.get_traceback(),

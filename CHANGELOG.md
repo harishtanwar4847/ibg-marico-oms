@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.0.5] - 2024-02-15
+## [v2.0.5-uat] - 2024-02-15
+
+### Added
+
+- [Fix: Upload Issue] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/25)
+
+
 ## [v2.0.4] - 2024-02-09
 ## [v2.0.4-uat] - 2024-02-09
 
