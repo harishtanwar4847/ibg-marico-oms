@@ -8,7 +8,7 @@ from zeep.transports import Transport
 from requests import Session
 from requests.auth import HTTPBasicAuth
 
-__version__ = '2.0.4'
+__version__ = '2.0.4-uat'
 
 def download_file(dataframe, file_name, sheet_name, file_extention = "xlsx"):
     file_name = "{}.{}".format(file_name, file_extention)
