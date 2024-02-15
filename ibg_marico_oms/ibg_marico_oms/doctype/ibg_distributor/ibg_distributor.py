@@ -68,9 +68,9 @@ def distributor_file_upload(upload_file):
                     distributor_doc.ship_to = i[3]
                     if not distributor_doc.company_code:
                         distributor_doc.company_code = i[4] if i[4] else ''
-                    elif i[4] and distributor_doc.company_code and str(distributor_doc.company_code) != str(i[4]):
-                        distributor_doc.company_code = ""
-                        distributor_doc.apply_to_all_company_code = 1
+                    # elif i[4] and distributor_doc.company_code and str(distributor_doc.company_code) != str(i[4]):
+                    #     distributor_doc.company_code = ""
+                    #     distributor_doc.apply_to_all_company_code = 1
                     distributor_doc.save(ignore_permissions = True)
                     frappe.db.commit()
                 else:
