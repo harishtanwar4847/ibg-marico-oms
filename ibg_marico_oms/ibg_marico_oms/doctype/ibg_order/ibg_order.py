@@ -597,9 +597,10 @@ def send_selected_attachments(selected_attachments):
         file_urls = frappe.get_value("Attachment", attachment, "attachment")
         if file_urls:
             for file_url in file_urls.split("\n"):
-                file_data = get_file(file_url)
-                if file_data:
-                    attachments.append({"filename": file_url.split("/")[-1], "content": file_data.getvalue()})
+                file_data_list = get_file(file_url)
+                for file_data in file_data_list:
+                    if file_data:
+                        attachments.append({"filename": file_data.filename, "content": file_data.file_content.getvalue()})
 
     if attachments:
         message = frappe.sendmail(
@@ -618,5 +619,6 @@ def send_selected_attachments(selected_attachments):
 def send_attachments_email(selected_attachments):
     selected_attachments = frappe.parse_json(selected_attachments)
     send_selected_attachments(selected_attachments)
+
 
 
