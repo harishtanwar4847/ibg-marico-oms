@@ -42,7 +42,8 @@
   "remarks",
   "column_break_27",
   "approved_by_supplychain",
-  "supplychain_remarks"
+  "supplychain_remarks",
+  "attachment"
  ],
  "fields": [
   {
@@ -260,12 +261,18 @@
    "fieldtype": "Link",
    "label": "Company Code",
    "options": "Company Code"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Select",
+   "label": "Attachment",
+   "options": "Attachment"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-23 15:34:28.774289",
+ "modified": "2024-02-21 17:12:09.618428",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
