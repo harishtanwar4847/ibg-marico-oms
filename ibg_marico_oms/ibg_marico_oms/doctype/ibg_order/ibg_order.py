@@ -569,7 +569,7 @@ def send_selected_attachments(selected_attachments):
     for attachment in selected_attachments:
         file_url = frappe.get_value("Attachment", attachment, "attachment")
         if file_url:
-            attachments.append(get_file(file_url))
+            attachments.append({"file_url":get_file(file_url)})
 
     if attachments:
         message = frappe.sendmail(
