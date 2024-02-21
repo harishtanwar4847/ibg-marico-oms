@@ -565,12 +565,8 @@ from frappe.utils.file_manager import get_file
 
 def send_selected_attachments(selected_attachments):
     attachments = []
-    attach = []
-    for id in selected_attachments:
-        attach.append(frappe.get_doc("Attachment",id))
-        
-    for attachment in attach:
-        
+
+    for attachment in selected_attachments:
         file_url = frappe.get_value("Attachment", attachment, "file_url")
         if file_url:
             attachments.append(get_file(file_url))
