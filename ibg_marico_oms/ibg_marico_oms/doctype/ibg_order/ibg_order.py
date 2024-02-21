@@ -598,7 +598,7 @@ def send_selected_attachments(selected_attachments):
         if file_url:
             file_data = get_file(file_url)
             if file_data:
-                file_content = file_data.getvalue()  # Get file content as bytes
+                # file_content = file_data.getvalue()  # Get file content as bytes
                 attachments.append({"file_name": attachment, "file_content": file_content})
 
     if attachments:
