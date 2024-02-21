@@ -567,7 +567,7 @@ def send_selected_attachments(selected_attachments):
     attachments = []
 
     for attachment in selected_attachments:
-        file_url = frappe.get_value("Attachment Table", attachment, "file_url")
+        file_url = frappe.get_value("Attachment", attachment, "file_url")
         if file_url:
             attachments.append(get_file(file_url))
 
