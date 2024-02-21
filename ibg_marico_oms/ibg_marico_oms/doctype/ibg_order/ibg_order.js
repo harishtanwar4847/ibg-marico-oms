@@ -6,13 +6,13 @@ frappe.ui.form.on('IBG Order', {
 
 	refresh: function(frm) {
 		frm.add_custom_button(__('buttonName'), function(){
-			var selected_attachments = frm.doc.selected_attachments;
-			var select_rows = frm.doc.get_selected().attachment
+			// var selected_attachments = frm.selected_attachments;
+			var selected_attachments = frm.get_selected().attachment
 			if (selected_attachments && selected_attachments.length > 0) {
 				frappe.call({
 					method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.send_attachments_email',
 					args: {
-						selected_attachments: select_rows
+						selected_attachments: selected_attachments
 						
 					},
 					callback: function(response) {
