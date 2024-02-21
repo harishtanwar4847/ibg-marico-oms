@@ -599,7 +599,7 @@ def send_selected_attachments(selected_attachments):
             file_data = get_file(file_url)
             if file_data:
                 # file_content = file_data.getvalue()  # Get file content as bytes
-                attachments.append({"file_name": attachment, "file_content": file_content})
+                attachments.append({"file_name": attachment, "file_content": file_data})
 
     if attachments:
         message = frappe.sendmail(
