@@ -563,13 +563,43 @@ def price_update(doc):
 import frappe
 from frappe.utils.file_manager import get_file
 
+# def send_selected_attachments(selected_attachments):
+#     attachments = []
+
+#     for attachment in selected_attachments:
+#         file_url = frappe.get_value("Attachment", attachment, "attachment")
+#         if file_url:
+#             attachments.append({"file_url":get_file(file_url)})
+
+#     if attachments:
+#         message = frappe.sendmail(
+#             recipients=["ankit.patil@atriina.com"],
+#             subject="Selected Attachments",
+#             content="Please find the selected attachments.",
+#             attachments=attachments
+#         )
+
+#         if message:
+#             frappe.msgprint("Email sent successfully.")
+#         else:
+#             frappe.msgprint("Failed to send email.")
+#     else:
+#         frappe.msgprint("No attachments selected.")
+
+# @frappe.whitelist()
+# def send_attachments_email(selected_attachments):
+#     selected_attachments = frappe.parse_json(selected_attachments)
+#     send_selected_attachments(selected_attachments)
 def send_selected_attachments(selected_attachments):
     attachments = []
 
     for attachment in selected_attachments:
         file_url = frappe.get_value("Attachment", attachment, "attachment")
         if file_url:
-            attachments.append({"file_url":get_file(file_url)})
+            file_data = get_file(file_url)
+            if file_data:
+                file_content = file_data.getvalue()  # Get file content as bytes
+                attachments.append({"file_name": attachment, "file_content": file_content})
 
     if attachments:
         message = frappe.sendmail(
@@ -590,3 +620,4 @@ def send_selected_attachments(selected_attachments):
 def send_attachments_email(selected_attachments):
     selected_attachments = frappe.parse_json(selected_attachments)
     send_selected_attachments(selected_attachments)
+
