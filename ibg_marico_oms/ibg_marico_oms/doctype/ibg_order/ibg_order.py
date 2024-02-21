@@ -559,3 +559,34 @@ def price_update(doc):
                 + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
                 title="Price Data unavailable in SAP Price BAPI",
             )
+
+import frappe
+from frappe.utils.file_manager import get_file
+
+def send_selected_attachments(selected_attachments):
+    attachments = []
+
+    for attachment in selected_attachments:
+        file_url = frappe.get_value("Attachment Table", attachment, "file_url")
+        if file_url:
+            attachments.append(get_file(file_url))
+
+    if attachments:
+        message = frappe.sendmail(
+            recipients=["ankit.patil@atriina.com"],
+            subject="Selected Attachments",
+            content="Please find the selected attachments.",
+            attachments=attachments
+        )
+
+        if message:
+            frappe.msgprint("Email sent successfully.")
+        else:
+            frappe.msgprint("Failed to send email.")
+    else:
+        frappe.msgprint("No attachments selected.")
+
+@frappe.whitelist()
+def send_attachments_email(selected_attachments):
+    selected_attachments = frappe.parse_json(selected_attachments)
+    send_selected_attachments(selected_attachments)

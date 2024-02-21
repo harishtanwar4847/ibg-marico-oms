@@ -2,7 +2,29 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('IBG Order', {
+	
+
 	refresh: function(frm) {
+		frm.add_custom_button(__('buttonName'), function(){
+			var selected_attachments = frm.doc.selected_attachments;
+			if (selected_attachments && selected_attachments.length > 0) {
+				frappe.call({
+					method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.send_attachments_email',
+					args: {
+						selected_attachments: selected_attachments
+					},
+					callback: function(response) {
+						if (response.message) {
+							frappe.msgprint(response.message);
+						}
+					}
+				});
+			}else {
+                frappe.msgprint("No attachments selected.");
+            }
+
+		  });
+		  
 		if (frm.doc.__islocal === 1){
 			frm.set_value("remarks","") 
 			frm.set_value("created_date",new Date().toJSON().slice(0, 10)) 
