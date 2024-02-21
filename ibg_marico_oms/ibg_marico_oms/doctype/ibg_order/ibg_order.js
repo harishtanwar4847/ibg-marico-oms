@@ -10,7 +10,7 @@ frappe.ui.form.on('IBG Order', {
 			var selected_attachments = frm.get_selected().attachment
 			if (selected_attachments && selected_attachments.length > 0) {
 				frappe.call({
-					method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.send_attachments_email',
+					method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.send_attachments_email',
 					args: {
 						selected_attachments: selected_attachments
 						
