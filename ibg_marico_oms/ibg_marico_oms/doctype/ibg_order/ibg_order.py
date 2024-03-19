@@ -593,7 +593,7 @@ def cargo_tracking(doc):
             session = Session()
             session.auth = HTTPBasicAuth(userid, pswd)
             client=Client(wsdl,transport=Transport(session=session))
-            request_data={'IT_PRICE': '','SALES_ORG' : doc.company_code}
+            request_data={'IT_FINAL':''}
             ibg_marico_oms.create_log(
                 {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
                 "sap_cargo_tracking_request",
