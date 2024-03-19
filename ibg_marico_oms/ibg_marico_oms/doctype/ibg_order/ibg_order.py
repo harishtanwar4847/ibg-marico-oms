@@ -603,6 +603,15 @@ def cargo_tracking(doc):
                 {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
                 "sap_cargo_tracking_request",
             )
+            if response:
+                for i in response:
+                    cargo = frappe.get_doc(
+                    {
+                        "doctype" : "Invoice Details",
+                        "invoice_number":i['INV_NO']
+                    }
+                )
+
             return response
         
         else:
