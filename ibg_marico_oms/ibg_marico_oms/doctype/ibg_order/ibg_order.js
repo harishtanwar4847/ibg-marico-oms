@@ -40,7 +40,6 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_df_property("sales_group", "read_only", 1);
 		}
 		frm.add_custom_button(__('Create Cargo'), function(){
-			console.log("********************",frm.doc.sap_so_number)
 			frappe.route_options = {
                 'so_number': frm.doc.sap_so_number,
 				'distributor_name': frm.doc.customer,
