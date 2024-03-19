@@ -575,6 +575,7 @@ def cargo_tracking(doc):
         )
         cargo.insert(ignore_permissions= True)
         frappe.db.commit()
+        print("****************",cargo.name)
         if doc.sap_so_number:
             setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(
@@ -605,15 +606,20 @@ def cargo_tracking(doc):
             )
             if response:
                 for i in response:
-                    cargo = frappe.get_doc(
-                    {
-                        "doctype" : "Invoice Details",
-                        "invoice_number":i['INV_NO']
-                    }
-                )
-
-            return response
-        
+                    if i['SO_NO'] == doc.sap_so_number:
+                        invoice_details = frappe.get_doc(
+                        {
+                            'doctype' : 'Invoice Details',
+                            'parent' : cargo.name,
+                            'invoice_number':i['INV_NO'],
+                            'distributor_po_no':i['DIST_PO_NO'],
+                            'invoice_value_usd':i['INV_VAL_USD'],
+                            'noof_cases':i['CASES_NO'],
+                            'invoice_date':i['INV_DATE']
+                        }
+                        )
+                        invoice_details.insert(ignore_permissions= True)
+                        frappe.db.commit()
         else:
             frappe.throw(_("Error"))
 
