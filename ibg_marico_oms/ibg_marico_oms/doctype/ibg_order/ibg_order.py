@@ -563,7 +563,18 @@ def price_update(doc):
 @frappe.whitelist()
 def cargo_tracking(doc):
     try:
-        cargo_doc = frappe.get_doc('Cargo',doc)
+        cargo = frappe.get_doc(
+            {
+                "doctype" : "Cargo",
+                "distributor_name":doc.distributor_name,
+                "distributor_code" : doc.bill_to,
+                "so_number" : doc.sap_so_number
+            }
+        )
+        cargo.insert(ignore_permissions= True)
+        frappe.db.commit()
+        
+        doc = frappe.get_doc('IBG Order',doc)
         if doc.sap_so_number:
             setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(

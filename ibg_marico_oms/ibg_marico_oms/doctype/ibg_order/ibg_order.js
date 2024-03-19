@@ -40,13 +40,6 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_df_property("sales_group", "read_only", 1);
 		}
 		frm.add_custom_button(__('Create Cargo'), function(){
-			frappe.route_options = {
-                'so_number': frm.doc.sap_so_number,
-				'distributor_name': frm.doc.customer,
-				'distributor_code' : frm.doc.bill_to,
-				'country': frm.doc.country
-            };
-            frappe.new_doc('Cargo').save(ignore_permissions=True);
 			frappe.call({
 				method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
 				freeze: true,
