@@ -46,7 +46,7 @@ frappe.ui.form.on('IBG Order', {
 				'distributor_code' : frm.doc.bill_to,
 				'country': frm.doc.country
             };
-            frappe.new_doc('Cargo');
+            frappe.new_doc('Cargo').save(ignore_permissions=True);
 			frappe.call({
 				method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
 				freeze: true,
