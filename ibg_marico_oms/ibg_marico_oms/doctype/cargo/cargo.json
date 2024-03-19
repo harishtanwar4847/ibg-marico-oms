@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-18 18:27:25.251650",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "so_number",
+  "distributor_code",
+  "distributor_name",
+  "country",
+  "month",
+  "shipping_line",
+  "bl_no",
+  "etd",
+  "eta_tentative",
+  "eta_actual",
+  "courier_name",
+  "awb_no",
+  "awb_date",
+  "invoice_details_section",
+  "invoice_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "so_number",
+   "fieldtype": "Data",
+   "label": "SO Number"
+  },
+  {
+   "fieldname": "distributor_code",
+   "fieldtype": "Data",
+   "label": "Distributor Code"
+  },
+  {
+   "fieldname": "distributor_name",
+   "fieldtype": "Data",
+   "label": "Distributor name"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Data",
+   "label": "Month"
+  },
+  {
+   "fieldname": "shipping_line",
+   "fieldtype": "Data",
+   "label": "Shipping Line"
+  },
+  {
+   "fieldname": "bl_no",
+   "fieldtype": "Data",
+   "label": "BL No"
+  },
+  {
+   "fieldname": "etd",
+   "fieldtype": "Date",
+   "label": "ETD"
+  },
+  {
+   "fieldname": "eta_tentative",
+   "fieldtype": "Date",
+   "label": "ETA Tentative"
+  },
+  {
+   "fieldname": "eta_actual",
+   "fieldtype": "Date",
+   "label": "ETA Actual"
+  },
+  {
+   "fieldname": "courier_name",
+   "fieldtype": "Data",
+   "label": "Courier Name"
+  },
+  {
+   "fieldname": "awb_no",
+   "fieldtype": "Data",
+   "label": "AWB NO"
+  },
+  {
+   "fieldname": "awb_date",
+   "fieldtype": "Date",
+   "label": "AWB Date"
+  },
+  {
+   "fieldname": "invoice_details_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Details"
+  },
+  {
+   "fieldname": "invoice_details",
+   "fieldtype": "Table",
+   "label": "Invoice Details",
+   "options": "Invoice Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-19 10:00:48.402548",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Cargo",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -39,6 +39,23 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_df_property("distribution_channel", "read_only", 1);
 			frm.set_df_property("sales_group", "read_only", 1);
 		}
+		frm.add_custom_button(__('Create Cargo'), function(){
+			console.log("********************",frm.doc.sap_so_number)
+			frappe.route_options = {
+                'so_number': frm.doc.sap_so_number,
+				'distributor_name': frm.doc.customer,
+				'distributor_code' : frm.doc.bill_to,
+				'country': frm.doc.country
+            };
+            frappe.new_doc('Cargo');
+			frappe.call({
+				method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
+				freeze: true,
+				args: {
+					doc: frm.doc.name,
+				},
+			});
+		});
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 	},
@@ -148,5 +165,6 @@ frappe.ui.form.on('IBG Order', {
 			frm.fields_dict["order_items"].grid.wrapper.find(".grid-duplicate-row").hide();
 			frm.fields_dict["order_items"].grid.wrapper.find(".grid-append-row").hide();
 		}
-  },
+  	},
+
 });

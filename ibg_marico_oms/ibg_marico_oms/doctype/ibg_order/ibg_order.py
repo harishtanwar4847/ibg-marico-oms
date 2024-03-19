@@ -559,3 +559,46 @@ def price_update(doc):
                 + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
                 title="Price Data unavailable in SAP Price BAPI",
             )
+
+@frappe.whitelist()
+def cargo_tracking(doc):
+    try:
+        if doc.sap_so_number:
+            setting_doc = frappe.get_single("IBG-App Settings")
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+                "sap_cargo_tracking_request",
+            )
+            if frappe.utils.get_url() == "https://marico.atriina.com":
+                wsdl = (setting_doc.live_url).format(setting_doc.cargo_bapi)
+                userid = setting_doc.live_sap_user
+                pswd = setting_doc.live_sap_password
+            else:
+                wsdl = (setting_doc.staging_url).format(setting_doc.cargo_bapi)
+                userid = setting_doc.staging_sap_user
+                pswd = setting_doc.staging_sap_password
+            client = Client(wsdl)
+            session = Session()
+            session.auth = HTTPBasicAuth(userid, pswd)
+            client=Client(wsdl,transport=Transport(session=session))
+            request_data={'IT_PRICE': '','SALES_ORG' : doc.company_code}
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+                "sap_cargo_tracking_request",
+            )
+            response=client.service.ZBAPI_IBG_CARGO_TRACKING(**request_data)
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+                "sap_cargo_tracking_request",
+            )
+            return response
+        
+        else:
+            frappe.throw(_("Error"))
+
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="SAP Cargo Tracking Error",
+        )
+
