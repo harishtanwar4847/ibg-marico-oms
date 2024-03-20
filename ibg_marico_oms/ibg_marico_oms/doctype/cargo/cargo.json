@@ -119,7 +119,7 @@
    "fieldname": "attachments",
    "fieldtype": "Table",
    "label": "Attachments",
-   "options": "Cargo Attachment"
+   "options": "Attachment"
   },
   {
    "fieldname": "column_break_pmrsm",
@@ -128,7 +128,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-20 10:12:35.889298",
+ "modified": "2024-03-20 10:17:01.772300",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",
