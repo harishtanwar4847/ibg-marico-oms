@@ -121,15 +121,16 @@ class IBGOrder(Document):
 
     def before_submit(self):
         sap_number = sap_rfc_data(self)
-        frappe.log_error(
-                message= "SAP Error -\n{}".format(sap_number),
-                title="SAP Order Number Generation Error",
-            )
+        # frappe.log_error(
+        #         message= "SAP Error -\n{}".format(sap_number),
+        #         title="SAP Order Number Generation Error",
+        #     )
         if len(sap_number['sap_error']) > 1:
             frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            self.discount_net_value = sap_number['discount_net_value'][1]['DISCOUNT_NET_VALUE']
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
         user_roles = frappe.db.get_values(
@@ -628,3 +629,7 @@ def cargo_tracking(doc):
             title="SAP Cargo Tracking Error",
         )
 
+@frappe.whitelist()
+def check_cargo_entry(so_number):
+    cargo_exists = frappe.db.exists('Cargo', {'so_number': so_number})
+    return cargo_exists

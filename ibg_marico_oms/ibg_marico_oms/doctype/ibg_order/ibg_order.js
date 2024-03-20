@@ -39,15 +39,40 @@ frappe.ui.form.on('IBG Order', {
 			frm.set_df_property("distribution_channel", "read_only", 1);
 			frm.set_df_property("sales_group", "read_only", 1);
 		}
-		frm.add_custom_button(__('Create Cargo'), function(){
-			frappe.call({
-				method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
-				freeze: true,
-				args: {
-					doc: frm.doc.name,
-				},
-			});
+		// if (frm.doc.workflow_state === 'Approved by Supply Chain') {
+		// 	frm.add_custom_button(__('Create Cargo'), function() {
+		// 		frappe.call({
+		// 			method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
+		// 			freeze: true,
+		// 			args: {
+		// 				doc: frm.doc.name,
+		// 			},
+		// 		});
+		// 	});
+		// }
+		// Check if workflow_state is 'Approved by Supply Chain' and Cargo entry not created
+		frappe.call({
+			method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.check_cargo_entry',
+			args: {
+					'so_number': frm.doc.sap_so_number
+			},
+			callback: function(response) {
+				if (frm.doc.workflow_state === 'Approved by Supply Chain' && !response.message) {
+					// Add the 'Create Cargo' button
+					frm.add_custom_button(__('Create Cargo'), function() {
+						// Call cargo_tracking method
+						frappe.call({
+							method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
+							freeze: true,
+							args: {
+								doc: frm.doc.name,
+							},
+						});
+					});
+				}
+			}
 		});
+
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
 	},
