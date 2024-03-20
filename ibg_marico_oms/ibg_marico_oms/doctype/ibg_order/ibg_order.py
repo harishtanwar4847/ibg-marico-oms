@@ -607,18 +607,28 @@ def cargo_tracking(doc):
             if response:
                 for i in response:
                     if i['SO_NO'] == doc.sap_so_number:
-                        invoice_details = frappe.get_doc(
-                        {
-                            'doctype' : 'Invoice Details',
-                            'parent' : cargo.name,
-                            'parenttype':'Cargo',
-                            'invoice_number':i['INV_NO'],
-                            'distributor_po_no':i['DIST_PO_NO'],
-                            'invoice_value_usd':i['INV_VAL_USD'],
-                            'noof_cases':i['CASES_NO']
-                        }
-                        )
-                        invoice_details.insert(ignore_permissions= True)
+                        # invoice_details = frappe.get_doc(
+                        # {
+                        #     'doctype' : 'Invoice Details',
+                        #     'parent' : cargo.name,
+                        #     'parenttype':'Cargo',
+                        #     'invoice_number':i['INV_NO'],
+                        #     'distributor_po_no':i['DIST_PO_NO'],
+                        #     'invoice_value_usd':i['INV_VAL_USD'],
+                        #     'noof_cases':i['CASES_NO']
+                        # }
+                        # )
+                        # invoice_details.insert(ignore_permissions= True)
+                        # frappe.db.commit()
+                        invoice_details = frappe.new_doc('Invoice Details')
+                        invoice_details.parent = cargo.name
+                        invoice_details.parenttype = 'Cargo'
+                        invoice_details.parentfield = 'invoice_details'
+                        invoice_details.invoice_number = i['INV_NO']
+                        invoice_details.distributor_po_no = i['DIST_PO_NO']
+                        invoice_details.invoice_value_usd = i['INV_VAL_USD']
+                        invoice_details.noof_cases = i['CASES_NO']
+                        invoice_details.insert(ignore_permissions=True)
                         frappe.db.commit()
         else:
             frappe.throw(_("Error"))
