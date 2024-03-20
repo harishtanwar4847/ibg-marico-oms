@@ -628,6 +628,9 @@ def cargo_tracking(doc):
                         invoice_details.distributor_po_no = i['DIST_PO_NO']
                         invoice_details.invoice_value_usd = i['INV_VAL_USD']
                         invoice_details.noof_cases = i['CASES_NO']
+                        invoice_date = datetime.strptime(i['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
+                        invoice_details.invoice_date = invoice_date
+
                         invoice_details.insert(ignore_permissions=True)
                         frappe.db.commit()
         else:
