@@ -1,6 +1,6 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2024-03-18 18:27:25.251650",
  "default_view": "List",
  "doctype": "DocType",
@@ -13,6 +13,7 @@
   "country",
   "month",
   "shipping_line",
+  "column_break_pmrsm",
   "bl_no",
   "etd",
   "eta_tentative",
@@ -21,7 +22,10 @@
   "awb_no",
   "awb_date",
   "invoice_details_section",
-  "invoice_details"
+  "invoice_details",
+  "section_break_hkb9u",
+  "attachments",
+  "naming_series"
  ],
  "fields": [
   {
@@ -99,14 +103,36 @@
    "fieldtype": "Table",
    "label": "Invoice Details",
    "options": "Invoice Details"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Series",
+   "options": "OBD-#####"
+  },
+  {
+   "fieldname": "section_break_hkb9u",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Cargo Attachments"
+  },
+  {
+   "fieldname": "column_break_pmrsm",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-19 10:00:48.402548",
+ "modified": "2024-03-19 19:51:12.144415",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

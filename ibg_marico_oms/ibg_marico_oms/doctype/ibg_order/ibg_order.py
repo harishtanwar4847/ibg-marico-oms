@@ -611,6 +611,7 @@ def cargo_tracking(doc):
                         {
                             'doctype' : 'Invoice Details',
                             'parent' : cargo.name,
+                            'parenttype':'Cargo',
                             'invoice_number':i['INV_NO'],
                             'distributor_po_no':i['DIST_PO_NO'],
                             'invoice_value_usd':i['INV_VAL_USD'],
