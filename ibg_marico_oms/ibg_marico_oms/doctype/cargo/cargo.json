@@ -13,6 +13,7 @@
   "country",
   "month",
   "shipping_line",
+  "distributor_email_id",
   "column_break_pmrsm",
   "bl_no",
   "etd",
@@ -25,7 +26,8 @@
   "invoice_details",
   "section_break_hkb9u",
   "attachments",
-  "naming_series"
+  "naming_series",
+  "amended_from"
  ],
  "fields": [
   {
@@ -50,8 +52,9 @@
   },
   {
    "fieldname": "month",
-   "fieldtype": "Data",
-   "label": "Month"
+   "fieldtype": "Select",
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
   },
   {
    "fieldname": "shipping_line",
@@ -109,7 +112,7 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Series",
-   "options": "OBD-#####"
+   "options": "Cargo-.#####."
   },
   {
    "fieldname": "section_break_hkb9u",
@@ -124,11 +127,26 @@
   {
    "fieldname": "column_break_pmrsm",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Cargo",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "distributor_email_id",
+   "fieldtype": "Data",
+   "label": "Distributor Email ID"
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2024-03-20 10:17:01.772300",
+ "modified": "2024-03-20 15:35:58.593218",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",

@@ -71,7 +71,7 @@ class IBGOrder(Document):
         total_qty = 0
         for i in self.order_items:
             if i.billing_rate:
-                i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                i.order_value = float(i.qty_in_cases) * (float(i.billing_rate)/float(i.per_unit))
                 total_order_value += i.order_value
             total_qty += float(i.qty_in_cases)
         self.total_qty_in_cases = total_qty
@@ -544,9 +544,10 @@ def price_update(doc):
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
                         i.units = j['CURRENCY']
+                        i.per_unit = j['PER']
                 qty += float(i.qty_in_cases)
                 if i.billing_rate:
-                    i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                    i.order_value = float(i.qty_in_cases) * (float(i.billing_rate)/float(i.per_unit))
                     total_order_value += float(i.order_value)
             doc.total_qty_in_cases = qty
             doc.total_order_value = total_order_value
@@ -564,18 +565,17 @@ def price_update(doc):
 def cargo_tracking(doc):
     try:
         doc = frappe.get_doc('IBG Order',doc)
-        print("++++++++++++++++",doc.customer)
         cargo = frappe.get_doc(
             {
                 "doctype" : "Cargo",
                 "distributor_name":doc.customer,
                 "distributor_code" : doc.bill_to,
-                "so_number" : doc.sap_so_number
+                "so_number" : doc.sap_so_number,
+                "country": doc.country
             }
         )
         cargo.insert(ignore_permissions= True)
         frappe.db.commit()
-        print("****************",cargo.name)
         if doc.sap_so_number:
             setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(
@@ -607,19 +607,6 @@ def cargo_tracking(doc):
             if response:
                 for i in response:
                     if i['SO_NO'] == doc.sap_so_number:
-                        # invoice_details = frappe.get_doc(
-                        # {
-                        #     'doctype' : 'Invoice Details',
-                        #     'parent' : cargo.name,
-                        #     'parenttype':'Cargo',
-                        #     'invoice_number':i['INV_NO'],
-                        #     'distributor_po_no':i['DIST_PO_NO'],
-                        #     'invoice_value_usd':i['INV_VAL_USD'],
-                        #     'noof_cases':i['CASES_NO']
-                        # }
-                        # )
-                        # invoice_details.insert(ignore_permissions= True)
-                        # frappe.db.commit()
                         invoice_details = frappe.new_doc('Invoice Details')
                         invoice_details.parent = cargo.name
                         invoice_details.parenttype = 'Cargo'
@@ -630,11 +617,10 @@ def cargo_tracking(doc):
                         invoice_details.noof_cases = i['CASES_NO']
                         invoice_date = datetime.strptime(i['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
                         invoice_details.invoice_date = invoice_date
-
                         invoice_details.insert(ignore_permissions=True)
                         frappe.db.commit()
         else:
-            frappe.throw(_("Error"))
+            frappe.throw(_("Cargo tracking Error"))
 
     except Exception as e:
         frappe.log_error(
