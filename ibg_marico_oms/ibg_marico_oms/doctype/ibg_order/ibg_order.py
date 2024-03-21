@@ -11,7 +11,7 @@ import pandas as pd
 import ibg_marico_oms
 from frappe.model.document import Document
 from frappe.utils.csvutils import read_csv_content
-from frappe import _
+from frappe import _, enqueue
 from datetime import datetime
 from itertools import groupby
 import xmltodict
@@ -121,9 +121,7 @@ class IBGOrder(Document):
         price_update(doc=self)
 
     def before_submit(self):
-        sap_number = sap_rfc_data(self)
-        if sap_number:
-            self.process_sap_response(sap_number)
+        enqueue(process_sap_response, queue='long', kwargs={'doc': self})
 
 
 
