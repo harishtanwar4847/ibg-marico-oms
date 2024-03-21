@@ -121,7 +121,12 @@ class IBGOrder(Document):
         price_update(doc=self)
 
     def before_submit(self):
-        sap_number = sap_rfc_data(self, callback=lambda sap_number: self.process_sap_response(sap_number))
+        sap_number = None
+        while sap_number is None:
+            sap_number = sap_rfc_data(self)
+            time.sleep(1)  # Wait for 1 second before checking again
+
+        self.process_sap_response(sap_number)
 
 
     def process_sap_response(self,sap_number):
