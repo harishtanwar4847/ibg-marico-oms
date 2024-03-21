@@ -11,7 +11,7 @@ import pandas as pd
 import ibg_marico_oms
 from frappe.model.document import Document
 from frappe.utils.csvutils import read_csv_content
-from frappe import _, enqueue
+from frappe import _
 from datetime import datetime
 from itertools import groupby
 import xmltodict
@@ -121,37 +121,32 @@ class IBGOrder(Document):
         price_update(doc=self)
 
     def before_submit(self):
-        enqueue(process_sap_response, queue='long', kwargs={'doc': self})
-
-
-
-    def process_sap_response(self,sap_number):
-        # sap_number = sap_rfc_data(self)
+        sap_number = sap_rfc_data(self)
         # frappe.log_error(
         #         message= "SAP Error -\n{}".format(sap_number),
         #         title="SAP Order Number Generation Error",
         #     )
-        if sap_number:
-            if len(sap_number['sap_error']) > 1:
-                frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
+        time.sleep(10)
+        if len(sap_number['sap_error']) > 1:
+            frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
-            if len(sap_number['sap_so_number']) > 1:
-                self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
-                self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
-                frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
-            
+        if len(sap_number['sap_so_number']) > 1:
+            self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
+            frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
+        
 
-            user_roles = frappe.db.get_values(
-                "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
-            )
-            user_role = []
-            for i in list(user_roles):
-                user_role.append(i[0])
-            
-            if "Supply Chain" in user_role and (self.status == "Approved by Supply Chain" or self.status == "Approved by IBG Finance") and (not self.order_type or not self.division or not self.sales_organizational or not self.distribution_channel):
-                frappe.throw(_("Please fill the Supply Chain section"))
-            if self.status in ['Approved by Supply Chain']:
-                self.approved_by_supplychain = self.modified_by
+        user_roles = frappe.db.get_values(
+            "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
+        )
+        user_role = []
+        for i in list(user_roles):
+            user_role.append(i[0])
+        
+        if "Supply Chain" in user_role and (self.status == "Approved by Supply Chain" or self.status == "Approved by IBG Finance") and (not self.order_type or not self.division or not self.sales_organizational or not self.distribution_channel):
+            frappe.throw(_("Please fill the Supply Chain section"))
+        if self.status in ['Approved by Supply Chain']:
+            self.approved_by_supplychain = self.modified_by
         
     def on_submit(self):
         items = []
