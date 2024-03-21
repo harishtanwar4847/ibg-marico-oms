@@ -71,7 +71,22 @@ frappe.ui.form.on('IBG Order', {
 					});
 				}
 			}
+			
 		});
+		if (frm.doc.workflow_state === 'Approved by Supply Chain' && !response.message) {
+			// Add the 'Create Cargo' button
+			frm.add_custom_button(__('Create PR'), function() {
+				// Call cargo_tracking method
+				// frappe.call({
+				// 	method: 'ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.cargo_tracking',
+				// 	freeze: true,
+				// 	args: {
+				// 		doc: frm.doc.name,
+				// 	},
+				// });
+			});
+		}
+		
 
 		frm.page.sidebar.remove(); // this removes the sidebar
 		frm.page.wrapper.find(".layout-main-section-wrapper").removeClass("col-md-10"); // this removes class "col-md-10" from content block, which sets width to 83%
