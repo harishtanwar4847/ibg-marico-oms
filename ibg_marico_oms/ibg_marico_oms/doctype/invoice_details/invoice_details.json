@@ -18,37 +18,42 @@
    "fieldname": "invoice_number",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Invoice Number"
+   "label": "Invoice Number",
+   "read_only": 1
   },
   {
    "fieldname": "distributor_po_no",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Distributor Po No"
+   "label": "Distributor Po No",
+   "read_only": 1
   },
   {
    "fieldname": "invoice_value_usd",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Invoice Value Usd"
+   "label": "Invoice Value Usd",
+   "read_only": 1
   },
   {
    "fieldname": "noof_cases",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "No.of Cases"
+   "label": "No.of Cases",
+   "read_only": 1
   },
   {
    "fieldname": "invoice_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Invoice Date"
+   "label": "Invoice Date",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-03-19 12:29:36.782509",
+ "modified": "2024-03-21 11:17:26.667450",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Invoice Details",
