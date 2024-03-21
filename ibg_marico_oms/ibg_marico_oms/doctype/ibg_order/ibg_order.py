@@ -133,10 +133,6 @@ class IBGOrder(Document):
             self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
-        # if len(sap_number.get('discount_net_value')) > 1:
-        #     self.discount_net_value = sap_number['discount_net_value'][1]['DISCOUNT_NET_VALUE']
-        #     frappe.msgprint(_("Get discount net value {}".format(sap_number['discount_net_value'][1]['DISCOUNT_NET_VALUE'])))
-
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
