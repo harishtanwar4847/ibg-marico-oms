@@ -121,7 +121,11 @@ class IBGOrder(Document):
         price_update(doc=self)
 
     def before_submit(self):
-        sap_number = sap_rfc_data(self)
+        sap_number = sap_rfc_data(self, callback=lambda sap_number: self.process_sap_response(sap_number))
+
+
+    def process_sap_response(self,sap_number):
+        # sap_number = sap_rfc_data(self)
         # frappe.log_error(
         #         message= "SAP Error -\n{}".format(sap_number),
         #         title="SAP Order Number Generation Error",
