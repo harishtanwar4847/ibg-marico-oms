@@ -149,6 +149,7 @@ class IBGOrder(Document):
             self.approved_by_supplychain = self.modified_by
         
     def on_submit(self):
+        time.sleep(20)
         items = []
         for i in self.order_items:
             item_entry = frappe.get_doc(
@@ -477,7 +478,6 @@ def sap_rfc_data(doc):
                 title="SAP Order Number Generation Error",
             )        
         sap_response = {"sap_error" : response['IT_ERR']['item'] , "sap_so_number" : response['IT_RET']['item']}
-        time.sleep(30)
 
         return sap_response
         
