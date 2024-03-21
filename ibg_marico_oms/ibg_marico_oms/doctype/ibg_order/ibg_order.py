@@ -130,7 +130,7 @@ class IBGOrder(Document):
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
-            self.discount_net_value = sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE']
+            self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
         # if len(sap_number.get('discount_net_value')) > 1:
