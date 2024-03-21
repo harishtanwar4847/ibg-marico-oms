@@ -153,7 +153,6 @@ class IBGOrder(Document):
             self.approved_by_supplychain = self.modified_by
         
     def on_submit(self):
-        time.sleep(20)
         items = []
         for i in self.order_items:
             item_entry = frappe.get_doc(
