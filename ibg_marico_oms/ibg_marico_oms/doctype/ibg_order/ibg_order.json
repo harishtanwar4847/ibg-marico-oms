@@ -264,7 +264,7 @@
   },
   {
    "fieldname": "discount_net_value",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "Discount Net Value",
    "read_only": 1
   }
@@ -272,7 +272,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-20 17:58:44.970950",
+ "modified": "2024-03-21 11:55:52.345184",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
