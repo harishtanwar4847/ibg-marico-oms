@@ -126,7 +126,7 @@ class IBGOrder(Document):
         #         message= "SAP Error -\n{}".format(sap_number),
         #         title="SAP Order Number Generation Error",
         #     )
-        time.sleep(30)
+        
         if len(sap_number['sap_error']) > 1:
             frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
@@ -477,6 +477,7 @@ def sap_rfc_data(doc):
                 title="SAP Order Number Generation Error",
             )        
         sap_response = {"sap_error" : response['IT_ERR']['item'] , "sap_so_number" : response['IT_RET']['item']}
+        time.sleep(30)
 
         return sap_response
         
