@@ -122,7 +122,8 @@ class IBGOrder(Document):
 
     def before_submit(self):
         sap_number = sap_rfc_data(self)
-        self.process_sap_response(sap_number)
+        if sap_number:
+            self.process_sap_response(sap_number)
 
 
 
