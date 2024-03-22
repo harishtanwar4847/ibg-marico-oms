@@ -19,6 +19,8 @@
   "column_break_6",
   "country",
   "created_date",
+  "distributor_order_reference",
+  "distributor_po_date",
   "status",
   "items_section",
   "order_items",
@@ -266,12 +268,22 @@
    "fieldname": "discount_net_value",
    "fieldtype": "Float",
    "label": "Discount Net Value"
+  },
+  {
+   "fieldname": "distributor_order_reference",
+   "fieldtype": "Data",
+   "label": "Distributor Order Reference"
+  },
+  {
+   "fieldname": "distributor_po_date",
+   "fieldtype": "Date",
+   "label": "Distributor PO Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-21 12:13:45.671345",
+ "modified": "2024-03-22 10:39:26.179432",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order",
