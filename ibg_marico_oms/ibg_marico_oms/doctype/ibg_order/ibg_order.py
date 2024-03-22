@@ -134,6 +134,8 @@ class IBGOrder(Document):
             # self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
+        time.sleep(5)
+
         if self.sap_so_number:
             net_value = net_discount_value(self.sap_so_number)
             self.discount_net_value = net_value
