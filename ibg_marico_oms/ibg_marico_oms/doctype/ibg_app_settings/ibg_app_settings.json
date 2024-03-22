@@ -22,7 +22,8 @@
   "cargo_bapi",
   "column_break_12",
   "obd_order_status_bapi",
-  "obd_order_reject_bapi"
+  "obd_order_reject_bapi",
+  "discount_net_value_bapi"
  ],
  "fields": [
   {
@@ -102,12 +103,17 @@
    "fieldname": "cargo_bapi",
    "fieldtype": "Data",
    "label": "Cargo BAPI"
+  },
+  {
+   "fieldname": "discount_net_value_bapi",
+   "fieldtype": "Data",
+   "label": "Discount Net Value BAPI"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-19 12:35:37.179661",
+ "modified": "2024-03-22 14:44:34.717549",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG-App Settings",

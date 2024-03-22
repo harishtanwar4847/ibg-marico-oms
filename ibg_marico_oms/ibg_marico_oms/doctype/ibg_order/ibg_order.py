@@ -133,6 +133,10 @@ class IBGOrder(Document):
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
             # self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
+
+        if self.sap_so_number:
+            net_value = net_discount_value(self.sap_so_number)
+            self.discount_net_value = net_value
         
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
@@ -634,3 +638,41 @@ def cargo_tracking(doc):
 def check_cargo_entry(so_number):
     cargo_exists = frappe.db.exists('Cargo', {'so_number': so_number})
     return cargo_exists
+
+@frappe.whitelist()
+def net_discount_value(sap_so_number):
+    try:
+        setting_doc = frappe.get_single("IBG-App Settings")
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+            "discount_net_value_request",
+        )
+        if frappe.utils.get_url() == "https://marico.atriina.com":
+            wsdl = (setting_doc.live_url).format(setting_doc.discount_net_value_bapi)
+            userid = setting_doc.live_sap_user
+            pswd = setting_doc.live_sap_password
+        else:
+            wsdl = (setting_doc.staging_url).format(setting_doc.discount_net_value_bapi)
+            userid = setting_doc.staging_sap_user
+            pswd = setting_doc.staging_sap_password
+        client = Client(wsdl)
+        session = Session()
+        session.auth = HTTPBasicAuth(userid, pswd)
+        client=Client(wsdl,transport=Transport(session=session))
+        request_data={'SALES_ORD' : ''}
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+            "discount_net_value_request",
+        )
+        response=client.service.ZBAPI_IBGORD_NETVAL(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+            "discount_net_value_response",
+        )
+        return response
+
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="Discount Net Value",
+        )
