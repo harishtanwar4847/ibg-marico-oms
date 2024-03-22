@@ -661,7 +661,7 @@ def net_discount_value(sap_so_number):
         session = Session()
         session.auth = HTTPBasicAuth(userid, pswd)
         client=Client(wsdl,transport=Transport(session=session))
-        request_data={'SALES_ORD' : ''}
+        request_data={'SALES_ORD' :sap_so_number}
         ibg_marico_oms.create_log(
             {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
             "discount_net_value_request",
