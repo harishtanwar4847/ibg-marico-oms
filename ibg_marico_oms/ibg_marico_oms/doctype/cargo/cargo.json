@@ -23,7 +23,12 @@
   "awb_no",
   "awb_date",
   "invoice_details_section",
-  "invoice_details",
+  "invoice_number",
+  "distributor_po_no",
+  "invoice_value_usd",
+  "column_break_23ghe",
+  "noof_cases",
+  "invoice_date",
   "section_break_hkb9u",
   "attachments",
   "naming_series",
@@ -106,12 +111,6 @@
    "label": "Invoice Details"
   },
   {
-   "fieldname": "invoice_details",
-   "fieldtype": "Table",
-   "label": "Invoice Details",
-   "options": "Invoice Details"
-  },
-  {
    "fieldname": "naming_series",
    "fieldtype": "Data",
    "hidden": 1,
@@ -145,12 +144,41 @@
    "fieldname": "distributor_email_id",
    "fieldtype": "Data",
    "label": "Distributor Email ID"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "label": "Invoice Number"
+  },
+  {
+   "fieldname": "distributor_po_no",
+   "fieldtype": "Data",
+   "label": "Distributor Po No"
+  },
+  {
+   "fieldname": "invoice_value_usd",
+   "fieldtype": "Data",
+   "label": "Invoice Value Usd"
+  },
+  {
+   "fieldname": "column_break_23ghe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "noof_cases",
+   "fieldtype": "Data",
+   "label": "No.of Cases"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-21 11:16:26.111377",
+ "modified": "2024-03-26 11:33:23.652087",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",

@@ -573,17 +573,6 @@ def price_update(doc):
 def cargo_tracking(doc):
     try:
         doc = frappe.get_doc('IBG Order',doc)
-        cargo = frappe.get_doc(
-            {
-                "doctype" : "Cargo",
-                "distributor_name":doc.customer,
-                "distributor_code" : doc.bill_to,
-                "so_number" : doc.sap_so_number,
-                "country": doc.country
-            }
-        )
-        cargo.insert(ignore_permissions= True)
-        frappe.db.commit()
         if doc.sap_so_number:
             setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(
@@ -613,19 +602,19 @@ def cargo_tracking(doc):
                 "sap_cargo_tracking_request",
             )
             if response:
-                for i in response:
-                    if i['SO_NO'] == doc.sap_so_number:
-                        invoice_details = frappe.new_doc('Invoice Details')
-                        invoice_details.parent = cargo.name
-                        invoice_details.parenttype = 'Cargo'
-                        invoice_details.parentfield = 'invoice_details'
-                        invoice_details.invoice_number = i['INV_NO']
-                        invoice_details.distributor_po_no = i['DIST_PO_NO']
-                        invoice_details.invoice_value_usd = i['INV_VAL_USD']
-                        invoice_details.noof_cases = i['CASES_NO']
-                        invoice_date = datetime.strptime(i['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
-                        invoice_details.invoice_date = invoice_date
-                        invoice_details.insert(ignore_permissions=True)
+                for invoice in response:
+                    if invoice['SO_NO'] == doc.sap_so_number:
+                        invoice_date = datetime.strptime(invoice['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
+                        cargo = frappe.new_doc("Cargo")
+                        cargo.distributor_name = doc.customer
+                        cargo.distributor_code = doc.bill_to
+                        cargo.so_number = doc.sap_so_number
+                        cargo.country = doc.country
+                        cargo.invoice_number = invoice['INV_NO']
+                        cargo.distributor_po_no = invoice['DIST_PO_NO']
+                        cargo.invoice_value_usd = invoice['INV_VAL_USD']
+                        cargo.invoice_date = invoice_date
+                        cargo.insert(ignore_permissions=True)
                         frappe.db.commit()
         else:
             frappe.throw(_("Cargo tracking Error"))
@@ -645,10 +634,6 @@ def check_cargo_entry(so_number):
 def net_discount_value(sap_so_number):
     try:
         setting_doc = frappe.get_single("IBG-App Settings")
-        ibg_marico_oms.create_log(
-            {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
-            "discount_net_value_request",
-        )
         if frappe.utils.get_url() == "https://marico.atriina.com":
             wsdl = (setting_doc.live_url).format(setting_doc.discount_net_value_bapi)
             userid = setting_doc.live_sap_user
