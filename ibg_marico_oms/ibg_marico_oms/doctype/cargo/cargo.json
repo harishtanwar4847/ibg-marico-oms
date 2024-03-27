@@ -27,7 +27,7 @@
   "distributor_po_no",
   "invoice_value_usd",
   "column_break_23ghe",
-  "noof_cases",
+  "no_of_cases",
   "invoice_date",
   "section_break_hkb9u",
   "attachments",
@@ -170,22 +170,22 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "noof_cases",
-   "fieldtype": "Data",
-   "label": "No.of Cases",
-   "read_only": 1
-  },
-  {
    "fieldname": "invoice_date",
    "fieldtype": "Date",
    "label": "Invoice Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "no_of_cases",
+   "fieldtype": "Data",
+   "label": "No.of Cases",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-27 14:14:08.059685",
+ "modified": "2024-03-27 14:31:50.948883",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",
