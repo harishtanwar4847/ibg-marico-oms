@@ -11,7 +11,7 @@
  "is_hidden": 0,
  "label": "Home (Supply Chain)",
  "links": [],
- "modified": "2023-05-23 17:20:32.966860",
+ "modified": "2024-03-27 10:34:51.163780",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Home (Supply Chain)",
@@ -31,7 +31,7 @@
    "role": "Administrator"
   }
  ],
- "sequence_id": 1.2,
+ "sequence_id": 3.0,
  "shortcuts": [
   {
    "color": "Grey",
