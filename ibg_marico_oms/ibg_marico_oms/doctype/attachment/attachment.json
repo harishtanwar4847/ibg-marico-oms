@@ -10,6 +10,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "attachment",
    "fieldtype": "Attach",
    "in_list_view": 1,
@@ -20,7 +21,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-03-20 10:18:35.613664",
+ "modified": "2024-03-26 16:47:00.446063",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Attachment",
