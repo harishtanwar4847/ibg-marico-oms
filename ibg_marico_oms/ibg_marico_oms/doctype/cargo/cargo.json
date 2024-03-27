@@ -38,6 +38,7 @@
   {
    "fieldname": "so_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "SO Number",
    "read_only": 1
   },
@@ -148,6 +149,7 @@
   {
    "fieldname": "invoice_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Invoice Number",
    "read_only": 1
   },
@@ -183,7 +185,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-27 10:46:56.509174",
+ "modified": "2024-03-27 14:14:08.059685",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",
