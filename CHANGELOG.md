@@ -1,5 +1,11 @@
 # Changelog
 
+## [v3.0.0-dev] - 2024-03-28
+
+### Added
+
+- [Feat: Add Field to select MLLC and carry out code related changes for same|Add button to get Sales invoice no and |details from SAP in IBG Order|Create form to and fetch invoice no and other details|Create form to upload and download export and cargo document|Add Fields Distributor order reference field and date of distributor po|Auto mail with|attached document and send mail with selected document|Cargo tracking Report|So Report|Add new fields : Discount Net Value (full from sap)|Change Order Value Calculation|Add per unit field from SAP] (https://github.com/atrina-technologies-pvt-ltd/ibg-marico-oms/pull/27)
+
 ## [v2.0.5] - 2024-02-15
 ## [v2.0.5-uat] - 2024-02-15
 
