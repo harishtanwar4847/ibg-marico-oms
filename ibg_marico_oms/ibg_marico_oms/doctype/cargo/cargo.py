@@ -22,12 +22,12 @@ def send_email_attachments(doc_name):
 				file_path = attachment_row.attachment
 				attachments.append({'file_url':file_path})
 
-			email_content = "Please find attached the files you requested."
+			email_content = "Please find attached the files below,"
 
 			
 			frappe.sendmail(
 				recipients= doc.distributor_email_id,
-				subject="Email with Attachments",
+				subject="Cargo Documents",
 				message=email_content,
 				attachments=attachments,
 			)
