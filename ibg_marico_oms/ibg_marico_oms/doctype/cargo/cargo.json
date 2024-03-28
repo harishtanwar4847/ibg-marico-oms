@@ -68,8 +68,9 @@
   },
   {
    "fieldname": "shipping_line",
-   "fieldtype": "Data",
-   "label": "Shipping Line"
+   "fieldtype": "Link",
+   "label": "Shipping Line",
+   "options": "Shipping Line"
   },
   {
    "fieldname": "bl_no",
@@ -93,8 +94,9 @@
   },
   {
    "fieldname": "courier_name",
-   "fieldtype": "Data",
-   "label": "Courier Name"
+   "fieldtype": "Link",
+   "label": "Courier Name",
+   "options": "Courier Name"
   },
   {
    "fieldname": "awb_no",
@@ -185,7 +187,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-27 14:31:50.948883",
+ "modified": "2024-03-28 10:27:41.896541",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Cargo",
