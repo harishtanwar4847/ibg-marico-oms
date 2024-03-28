@@ -11,7 +11,7 @@
  "is_hidden": 0,
  "label": "Home (IBG Finance)",
  "links": [],
- "modified": "2023-05-23 17:18:15.655139",
+ "modified": "2024-03-27 10:34:51.117736",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Home (IBG Finance)",
@@ -31,7 +31,7 @@
    "role": "Administrator"
   }
  ],
- "sequence_id": 1.1,
+ "sequence_id": 2.0,
  "shortcuts": [
   {
    "color": "Grey",

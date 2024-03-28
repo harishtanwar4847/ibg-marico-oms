@@ -13,6 +13,7 @@
   "units",
   "order_value",
   "column_break_7",
+  "per_unit",
   "product_description",
   "rate_valid_from",
   "rate_valid_to",
@@ -96,12 +97,17 @@
    "fieldtype": "Date",
    "label": "Order Created on",
    "read_only": 1
+  },
+  {
+   "fieldname": "per_unit",
+   "fieldtype": "Data",
+   "label": "Per Unit"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-23 16:41:50.187946",
+ "modified": "2024-03-20 12:13:23.912827",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG Order Items",

@@ -19,9 +19,11 @@
   "section_break_9",
   "price_bapi",
   "order_bapi",
+  "cargo_bapi",
   "column_break_12",
   "obd_order_status_bapi",
-  "obd_order_reject_bapi"
+  "obd_order_reject_bapi",
+  "discount_net_value_bapi"
  ],
  "fields": [
   {
@@ -96,12 +98,22 @@
    "fieldname": "price_bapi",
    "fieldtype": "Data",
    "label": "Price BAPI"
+  },
+  {
+   "fieldname": "cargo_bapi",
+   "fieldtype": "Data",
+   "label": "Cargo BAPI"
+  },
+  {
+   "fieldname": "discount_net_value_bapi",
+   "fieldtype": "Data",
+   "label": "Discount Net Value BAPI"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-01-29 17:53:26.701283",
+ "modified": "2024-03-22 14:44:34.717549",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "IBG-App Settings",
