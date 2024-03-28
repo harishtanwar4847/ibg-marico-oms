@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2024-03-18 18:27:25.251650",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "so_number",
+  "distributor_code",
+  "distributor_name",
+  "country",
+  "month",
+  "shipping_line",
+  "distributor_email_id",
+  "column_break_pmrsm",
+  "bl_no",
+  "etd",
+  "eta_tentative",
+  "eta_actual",
+  "courier_name",
+  "awb_no",
+  "awb_date",
+  "invoice_details_section",
+  "invoice_number",
+  "distributor_po_no",
+  "invoice_value_usd",
+  "column_break_23ghe",
+  "no_of_cases",
+  "invoice_date",
+  "section_break_hkb9u",
+  "attachments",
+  "naming_series",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "so_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "SO Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "distributor_code",
+   "fieldtype": "Data",
+   "label": "Distributor Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "distributor_name",
+   "fieldtype": "Data",
+   "label": "Distributor name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country",
+   "read_only": 1
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
+  },
+  {
+   "fieldname": "shipping_line",
+   "fieldtype": "Link",
+   "label": "Shipping Line",
+   "options": "Shipping Line"
+  },
+  {
+   "fieldname": "bl_no",
+   "fieldtype": "Data",
+   "label": "BL No"
+  },
+  {
+   "fieldname": "etd",
+   "fieldtype": "Date",
+   "label": "ETD"
+  },
+  {
+   "fieldname": "eta_tentative",
+   "fieldtype": "Date",
+   "label": "ETA Tentative"
+  },
+  {
+   "fieldname": "eta_actual",
+   "fieldtype": "Date",
+   "label": "ETA Actual"
+  },
+  {
+   "fieldname": "courier_name",
+   "fieldtype": "Link",
+   "label": "Courier Name",
+   "options": "Courier Name"
+  },
+  {
+   "fieldname": "awb_no",
+   "fieldtype": "Data",
+   "label": "AWB NO"
+  },
+  {
+   "fieldname": "awb_date",
+   "fieldtype": "Date",
+   "label": "AWB Date"
+  },
+  {
+   "fieldname": "invoice_details_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Details"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Series",
+   "options": "Cargo-.#####."
+  },
+  {
+   "fieldname": "section_break_hkb9u",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attachment"
+  },
+  {
+   "fieldname": "column_break_pmrsm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Cargo",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "distributor_email_id",
+   "fieldtype": "Data",
+   "label": "Distributor Email ID"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Invoice Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "distributor_po_no",
+   "fieldtype": "Data",
+   "label": "Distributor Po No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "invoice_value_usd",
+   "fieldtype": "Data",
+   "label": "Invoice Value Usd",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_23ghe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "no_of_cases",
+   "fieldtype": "Data",
+   "label": "No.of Cases",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-03-28 10:27:41.896541",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Cargo",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
