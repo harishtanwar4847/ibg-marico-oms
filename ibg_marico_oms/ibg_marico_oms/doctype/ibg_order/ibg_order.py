@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import calendar
 from random import randint
 import re
+import time
 
 import frappe
 import pandas as pd
@@ -71,7 +72,7 @@ class IBGOrder(Document):
         total_qty = 0
         for i in self.order_items:
             if i.billing_rate:
-                i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                i.order_value = float(i.qty_in_cases) * (float(i.billing_rate)/float(i.per_unit))
                 total_order_value += i.order_value
             total_qty += float(i.qty_in_cases)
         self.total_qty_in_cases = total_qty
@@ -121,17 +122,24 @@ class IBGOrder(Document):
 
     def before_submit(self):
         sap_number = sap_rfc_data(self)
-        frappe.log_error(
-                message= "SAP Error -\n{}".format(sap_number),
-                title="SAP Order Number Generation Error",
-            )
+        # frappe.log_error(
+        #         message= "SAP Error -\n{}".format(sap_number),
+        #         title="SAP Order Number Generation Error",
+        #     )
         if len(sap_number['sap_error']) > 1:
             frappe.throw(_(sap_number['sap_error'][1]['ERROR_MSG']))
 
         if len(sap_number['sap_so_number']) > 1:
             self.sap_so_number = sap_number['sap_so_number'][1]['SALES_ORD']
+            # self.discount_net_value = float(sap_number['sap_so_number'][1]['DISCOUNT_NET_VALUE'])
             frappe.msgprint(_("SAP SO Number generated is {}".format(sap_number['sap_so_number'][1]['SALES_ORD'])))
 
+        time.sleep(5)
+
+        if self.sap_so_number:
+            net_value = net_discount_value(self.sap_so_number)
+            self.discount_net_value = net_value
+        
         user_roles = frappe.db.get_values(
             "Has Role", {"parent": frappe.session.user, "parenttype": "User"}, ["role"]
         )
@@ -544,9 +552,10 @@ def price_update(doc):
                         i.rate_valid_from = j['VALID_FROM']
                         i.rate_valid_to = j['VALID_TO']
                         i.units = j['CURRENCY']
+                        i.per_unit = j['PER']
                 qty += float(i.qty_in_cases)
                 if i.billing_rate:
-                    i.order_value = float(i.qty_in_cases) * float(i.billing_rate)
+                    i.order_value = float(i.qty_in_cases) * (float(i.billing_rate)/float(i.per_unit))
                     total_order_value += float(i.order_value)
             doc.total_qty_in_cases = qty
             doc.total_order_value = total_order_value
@@ -559,3 +568,99 @@ def price_update(doc):
                 + "Message - Price Data Unavailable.".format(doc.name,doc.customer,doc.bill_to),
                 title="Price Data unavailable in SAP Price BAPI",
             )
+
+@frappe.whitelist()
+def cargo_tracking(doc):
+    try:
+        doc = frappe.get_doc('IBG Order',doc)
+        if doc.sap_so_number:
+            setting_doc = frappe.get_single("IBG-App Settings")
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"response" : "",},
+                "sap_cargo_tracking_request",
+            )
+            if frappe.utils.get_url() == "https://marico.atriina.com":
+                wsdl = (setting_doc.live_url).format(setting_doc.cargo_bapi)
+                userid = setting_doc.live_sap_user
+                pswd = setting_doc.live_sap_password
+            else:
+                wsdl = (setting_doc.staging_url).format(setting_doc.cargo_bapi)
+                userid = setting_doc.staging_sap_user
+                pswd = setting_doc.staging_sap_password
+            client = Client(wsdl)
+            session = Session()
+            session.auth = HTTPBasicAuth(userid, pswd)
+            client=Client(wsdl,transport=Transport(session=session))
+            request_data={'IT_FINAL':''}
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+                "sap_cargo_tracking_request",
+            )
+            response=client.service.ZBAPI_IBG_CARGO_TRACKING(**request_data)
+            ibg_marico_oms.create_log(
+                {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+                "sap_cargo_tracking_request",
+            )
+            if response:
+                for invoice in response:
+                    if invoice['SO_NO'] == doc.sap_so_number:
+                        invoice_date = datetime.strptime(invoice['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
+                        cargo = frappe.new_doc("Cargo")
+                        cargo.distributor_name = doc.customer
+                        cargo.distributor_code = doc.bill_to
+                        cargo.so_number = doc.sap_so_number
+                        cargo.country = doc.country
+                        cargo.invoice_number = invoice['INV_NO']
+                        cargo.distributor_po_no = invoice['DIST_PO_NO']
+                        cargo.invoice_value_usd = invoice['INV_VAL_USD']
+                        cargo.no_of_cases = invoice['CASES_NO']
+                        cargo.invoice_date = invoice_date
+                        cargo.insert(ignore_permissions=True)
+                        frappe.db.commit()
+        else:
+            frappe.throw(_("Cargo tracking Error"))
+
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="SAP Cargo Tracking Error",
+        )
+
+@frappe.whitelist()
+def check_cargo_entry(so_number):
+    cargo_exists = frappe.db.exists('Cargo', {'so_number': so_number})
+    return cargo_exists
+
+@frappe.whitelist()
+def net_discount_value(sap_so_number):
+    try:
+        setting_doc = frappe.get_single("IBG-App Settings")
+        if frappe.utils.get_url() == "https://marico.atriina.com":
+            wsdl = (setting_doc.live_url).format(setting_doc.discount_net_value_bapi)
+            userid = setting_doc.live_sap_user
+            pswd = setting_doc.live_sap_password
+        else:
+            wsdl = (setting_doc.staging_url).format(setting_doc.discount_net_value_bapi)
+            userid = setting_doc.staging_sap_user
+            pswd = setting_doc.staging_sap_password
+        client = Client(wsdl)
+        session = Session()
+        session.auth = HTTPBasicAuth(userid, pswd)
+        client=Client(wsdl,transport=Transport(session=session))
+        request_data={'SALES_ORD' :sap_so_number}
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),},
+            "discount_net_value_request",
+        )
+        response=client.service.ZBAPI_IBGORD_NETVAL(**request_data)
+        ibg_marico_oms.create_log(
+            {"datetime" : str(frappe.utils.now_datetime()),"request" : str(request_data),"response" : str(response),},
+            "discount_net_value_response",
+        )
+        return response
+
+    except Exception as e:
+        frappe.log_error(
+            message=frappe.get_traceback(),
+            title="Discount Net Value",
+        )

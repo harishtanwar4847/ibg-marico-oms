@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"VHZDEA96cc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Home (Initiator)</span>\",\"col\":12}},{\"id\":\"NrRdLvLz2n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View Orders\",\"col\":5}},{\"id\":\"WZRRYfHb60\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval\",\"col\":5}},{\"id\":\"t1-glQ3jjN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"id\":\"qb466O9Dbo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Orders\",\"col\":5}}]",
+ "content": "[{\"id\":\"VHZDEA96cc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Home (Initiator)</span>\",\"col\":12}},{\"id\":\"NrRdLvLz2n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"View Orders\",\"col\":5}},{\"id\":\"WZRRYfHb60\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending for Approval\",\"col\":5}},{\"id\":\"t1-glQ3jjN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Orders\",\"col\":5}},{\"id\":\"MKRutyTfNr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order Report\",\"col\":3}},{\"id\":\"qb466O9Dbo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Orders\",\"col\":5}}]",
  "creation": "2023-05-23 17:19:05.669733",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -11,7 +11,7 @@
  "is_hidden": 0,
  "label": "Home (Supply Chain)",
  "links": [],
- "modified": "2023-05-23 17:20:32.966860",
+ "modified": "2024-03-27 10:34:51.163780",
  "modified_by": "Administrator",
  "module": "IBG Marico OMS",
  "name": "Home (Supply Chain)",
@@ -31,8 +31,15 @@
    "role": "Administrator"
   }
  ],
- "sequence_id": 1.2,
+ "sequence_id": 3.0,
  "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Sales Order Report",
+   "link_to": "Sales Order Report",
+   "type": "Report"
+  },
   {
    "color": "Grey",
    "doc_view": "List",

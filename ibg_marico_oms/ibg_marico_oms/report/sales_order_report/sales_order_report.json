@@ -1,0 +1,37 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-03-27 14:56:04.922012",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "modified": "2024-03-28 16:18:00.441397",
+ "modified_by": "Administrator",
+ "module": "IBG Marico OMS",
+ "name": "Sales Order Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    ibg.owner AS \"Initiator::200\",\n    ibg.name AS \"Order ID::150\",\n    ibg.creation AS \"Created Date:Date:100\",\n    ibg.country AS \"Country::100\",\n    ibg.customer AS \"Ship to Customer Name::150\",\n    ibg.bill_to_customer AS \"Bill to Customer Name::150\",\n    ibg.sap_so_number AS \"SAP SO No::100\",\n    ibg.distributor_order_reference as \"Distributor Order Refrence::200\",\n    ibg.distributor_po_date as \"Distributor Order Date:Date:100\",\n    i.fg_code AS \"FG Code::100\",\n    i.qty_in_cases AS \"QTY::100\",\n    i.billing_rate AS \"Billing Rate:Float:100\",\n    i.units AS \"Units::100\",\n    i.order_value AS \"Order Value:Float:100\",\n    i.product_description AS \"Product Description::200\",\n    oi.obd_sap_qty AS \"Disp Qty::100\",\n    (oi.obd_sap_qty * i.billing_rate) AS \"Disp Value::100\",\n    oi.pending_qty AS \"Pending Qty::100\",\n    (i.order_value * oi.pending_qty) AS \"Pending Value::100\",\n    obd.order_status AS \"Order Status::200\",\n    CASE\n        WHEN oi.rejected_qty > 0 THEN \"Yes\"\n        ELSE \"No\"\n    END AS \"Short Closed::100\",\n    oi.creation AS \"OBD Date:Date:100\",\n    (oi.obd_sap_qty / i.qty_in_cases) * 100 AS \"Dispatch service level::100\",\n    DATEDIFF(oi.creation, ibg.creation) AS \"Dispatch lead time in days::100\"\nFROM\n    `tabIBG Order` AS ibg\nJOIN\n    `tabIBG Order Items` AS i ON ibg.name = i.parent\nJOIN\n    `tabOBD` AS obd ON ibg.name = obd.ibg_order_id\nJOIN\n    `tabOBD Items` AS oi ON obd.name = oi.parent\nWHERE\n    oi.fg_code = i.fg_code\n    AND oi.sales_order_qty = i.qty_in_cases\n    AND ibg.creation BETWEEN %(from_date)s AND %(to_date)s",
+ "ref_doctype": "IBG Order",
+ "report_name": "Sales Order Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Initiator"
+  },
+  {
+   "role": "Supply Chain"
+  },
+  {
+   "role": "IBG Finance"
+  }
+ ]
+}
