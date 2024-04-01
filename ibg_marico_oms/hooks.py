@@ -134,6 +134,7 @@ scheduler_events = {
         "0 1 * * *": [
             "ibg_marico_oms.extract_customer_shipto"
         ],  # At 01:00 AM
+        "0 * * * *":["ibg_marico_oms.ibg_marico_oms.doctype.ibg_order.ibg_order.create_cargo"]
 	},
 }
 

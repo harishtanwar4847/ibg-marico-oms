@@ -175,6 +175,8 @@ class IBGOrder(Document):
         obd.insert(ignore_permissions=True)
         frappe.db.commit()
 
+    
+
 
 @frappe.whitelist()
 def ibg_order_template():
@@ -570,9 +572,9 @@ def price_update(doc):
             )
 
 @frappe.whitelist()
-def cargo_tracking(doc):
+def cargo_tracking(doc_name):
     try:
-        doc = frappe.get_doc('IBG Order',doc)
+        doc = frappe.get_doc('IBG Order',doc_name)
         if doc.sap_so_number:
             setting_doc = frappe.get_single("IBG-App Settings")
             ibg_marico_oms.create_log(
@@ -627,9 +629,17 @@ def cargo_tracking(doc):
         )
 
 @frappe.whitelist()
-def check_cargo_entry(so_number):
-    cargo_exists = frappe.db.exists('Cargo', {'so_number': so_number})
-    return cargo_exists
+def create_cargo():
+        ibg_order = frappe.get_all("IBG Order",filters={'status': 'Approved by Supply Chain'})
+        for i in ibg_order:
+            # doc = frappe.get_doc("IBG Order",i.name)
+            cargo_tracking(i.name)
+
+
+# @frappe.whitelist()
+# def check_cargo_entry(so_number):
+#     cargo_exists = frappe.db.exists('Cargo', {'so_number': so_number})
+#     return cargo_exists
 
 @frappe.whitelist()
 def net_discount_value(sap_so_number):
