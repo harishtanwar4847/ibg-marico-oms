@@ -606,19 +606,21 @@ def cargo_tracking(doc_name):
             if response:
                 for invoice in response:
                     if invoice['SO_NO'] == doc.sap_so_number:
-                        invoice_date = datetime.strptime(invoice['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
-                        cargo = frappe.new_doc("Cargo")
-                        cargo.distributor_name = doc.customer
-                        cargo.distributor_code = doc.bill_to
-                        cargo.so_number = doc.sap_so_number
-                        cargo.country = doc.country
-                        cargo.invoice_number = invoice['INV_NO']
-                        cargo.distributor_po_no = invoice['DIST_PO_NO']
-                        cargo.invoice_value_usd = invoice['INV_VAL_USD']
-                        cargo.no_of_cases = invoice['CASES_NO']
-                        cargo.invoice_date = invoice_date
-                        cargo.insert(ignore_permissions=True)
-                        frappe.db.commit()
+                        existing_cargo = frappe.get_all("Cargo", filters={"invoice_number": invoice['INV_NO']}, fields=["name"])
+                        if not existing_cargo:
+                            invoice_date = datetime.strptime(invoice['INV_DATE'], '%d.%m.%Y').strftime('%Y-%m-%d')
+                            cargo = frappe.new_doc("Cargo")
+                            cargo.distributor_name = doc.customer
+                            cargo.distributor_code = doc.bill_to
+                            cargo.so_number = doc.sap_so_number
+                            cargo.country = doc.country
+                            cargo.invoice_number = invoice['INV_NO']
+                            cargo.distributor_po_no = invoice['DIST_PO_NO']
+                            cargo.invoice_value_usd = invoice['INV_VAL_USD']
+                            cargo.no_of_cases = invoice['CASES_NO']
+                            cargo.invoice_date = invoice_date
+                            cargo.insert(ignore_permissions=True)
+                            frappe.db.commit()
         else:
             frappe.throw(_("Cargo tracking Error"))
 
